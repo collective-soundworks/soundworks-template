@@ -57,7 +57,7 @@ window.addEventListener('load', () => {
   var checkin = new clientSide.Checkin({
     dialog: false
   });
-  var loader = new clientSide.Loader(file)
+  var loader = new clientSide.Loader(file);
   var performance = new MyPerformance(loader);
 
   // Start the scenario and link the modules

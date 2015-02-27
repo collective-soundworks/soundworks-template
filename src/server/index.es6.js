@@ -28,7 +28,7 @@ var checkin = new serverSide.Checkin({
   numPlaces: 1000, // we accept a maximum of 1000 players
   order: 'ascending'
 });
-var performance = new MyPerformance()
+var performance = new MyPerformance();
 
 // Launch server
 server.start(app, dir, 8000);
