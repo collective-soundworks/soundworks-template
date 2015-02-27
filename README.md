@@ -17,7 +17,7 @@ A scenario based on *Soundworks* is made of a succession and combination of modu
 Here are the important things to do on the client side.
 
 - Initialize the client in the chosen namespace. Here, we are writing a file for a client that actually takes part in the performance (we refer to it as a `player`), so we use the namespace `'/player'` in the initialization: `client.init('/player');`.
-- Create a module for the performance. This is the `class MyPerformance extends clientSide.Module {}` part.
+- Create a module for the performance. This is the `class MyPerformance extends clientSide.Module { ... }` part.
 - Initialize all the modules we'll need. Here, the `welcome`, `checkin`, `loader` and `performance modules.
 - Start the scenario and link the modules. This is what happens in the `client.start(...)` method.
 
