@@ -25,7 +25,7 @@ Here are the important things to do on the client side.
 
 Here are the important things to do on the server side.
 
-- Create a module for the performance. This is the `class MyPerformance extends serverSide.Module {}` part.
+- Create a module for the performance. This is the `class MyPerformance extends serverSide.Module { ... }` part.
 - Initialize all the modules that serve the client. Here, the `checkin` and `performance` modules.
 - Start the server and map the modules to the namespaces that require them. That is the `server.start(app)` and the `server.map(...)` part.
 
