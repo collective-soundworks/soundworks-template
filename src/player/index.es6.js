@@ -51,7 +51,7 @@ window.addEventListener('load', () => {
   // Instantiate the modules
   var welcome = new clientSide.Dialog({
     id: 'welcome',
-    text: "<p>Welcome to <b>My Performance</b>.</p> <p>Touch the screen to join!</p>",
+    text: "<p>Welcome to <b>My Scenario</b>.</p> <p>Touch the screen to join!</p>",
     activateAudio: true
   });
   var checkin = new clientSide.Checkin({

@@ -33,6 +33,6 @@ var performance = new MyPerformance();
 // Launch server
 server.start(app, dir, 8000);
 // Map the modules required by the clients in each namespace
-server.map('/player', 'My Performance', checkin, performance);
+server.map('/player', 'My Scenario', checkin, performance);
 // server.map('/env', 'My Performance - Environment', audioPerformance);
 // server.map('/conductor', 'My Performance - Conductor', control, conductorPerformance);
