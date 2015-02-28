@@ -26,11 +26,11 @@ class MyPerformance extends serverSide.Module {
 // Instantiate of the modules
 var checkin = new serverSide.Checkin({
   numPlaces: 1000, // we accept a maximum of 1000 players
-  order: 'ascending'
+  order: 'ascending' // we assign the indices in ascending order
 });
 var performance = new MyPerformance();
 
-// Launch server
+// Launch server with the application app, using the public directory dir, on port 8000
 server.start(app, dir, 8000);
 // Map the modules required by the clients in each namespace
 server.map('/player', 'My Scenario', checkin, performance);
