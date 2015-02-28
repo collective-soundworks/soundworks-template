@@ -2,7 +2,7 @@
 
 In this folder, you will find a template to build a scenario on Soundworks. The template implements the following very simple scenario: when a client connects to the server, it gets an index (*i.e.* a number we can refer to later on that corresponds to that client), and plays a sound.
 
-The full documentation of Soundworks lies in the [*Soundworks* GitHub repository](https://github.com/collective-soundworks/soundworks). However, let's explain in short whathow this works.
+The full documentation of Soundworks lies in the [*Soundworks* GitHub repository](https://github.com/collective-soundworks/soundworks). However, let's explain in short how this works.
 
 ## Project structure
 
