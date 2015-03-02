@@ -26,7 +26,7 @@ class MyPerformance extends clientSide.Module {
       bufferSource.connect(audioContext.destination);
       bufferSource.start(audioContext.currentTime);
 
-      this.view.innerHTML = '<div class="centered-content">Contratulations, you just played a sound!</div>'; // display some feedback text in the view
+      this.view.innerHTML = '<div class="centered-content">Congratulations, you just played a sound!</div>'; // display some feedback text in the view
 
       /* We would usually call the .done() method when the module has done its duty,
        * however since the performance is the last module to be called in this scenario,
@@ -37,7 +37,7 @@ class MyPerformance extends clientSide.Module {
   }
 
   /* You usually won't have to write your own .done() method but in case you need to,
-   * you _have to_ include super.done() at the end of the method.
+   * you absolutely have to include super.done() at the end of the method.
    */
   // done() {
   //   super.done(); // mandatory
