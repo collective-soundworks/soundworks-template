@@ -15,8 +15,8 @@ class MyPerformance extends serverSide.Module {
   constructor() {}
 
   connect(client) {
-    client.socket.on('perf_start', () => {
-      client.socket.emit('play_sound');
+    client.receive('perf_start', () => {
+      client.send('play_sound');
     });
   }
 

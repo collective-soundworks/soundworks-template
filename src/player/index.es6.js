@@ -3,7 +3,7 @@ var clientSide = require('soundworks/client');
 var client = clientSide.client;
 var audioContext = require('audio-context');
 
-// Initiliazing the socket.io namespace
+// Initiliazing the namespace
 client.init('/player');
 
 class MyPerformance extends clientSide.Module {
@@ -17,16 +17,16 @@ class MyPerformance extends clientSide.Module {
     super.start(); // mandatory
 
     // Send a message to the server indicating that we started the performance
-    client.socket.emit('perf_start');
+    client.send('perf_start');
 
     // Play a sound when we receive a message from the server
-    client.socket.on('play_sound', () => {
+    client.receive('play_sound', () => {
       let bufferSource = audioContext.createBufferSource();
       bufferSource.buffer = this.loader.audioBuffers[0]; // get the audioBuffers from the loader
       bufferSource.connect(audioContext.destination);
       bufferSource.start(audioContext.currentTime);
 
-      this.view.innerHTML = '<div class="centered-content">Congratulations, you just played a sound!</div>'; // display some feedback text in the view
+      this.setViewText('Congratulations, you just played a sound!'); // display some feedback text in the view
 
       /* We would usually call the .done() method when the module has done its duty,
        * however since the performance is the last module to be called in this scenario,
