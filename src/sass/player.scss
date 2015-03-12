@@ -1,6 +1,12 @@
+// General styling
 @import '01-reset';
 @import '02-fonts';
 @import '03-colors';
 @import '04-general';
+
+// Module specific partials
 @import '05-checkin';
 @import '07-loader';
+
+// Your own partials if needed
+// @import 'performance'
