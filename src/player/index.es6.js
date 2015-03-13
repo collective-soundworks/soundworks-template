@@ -1,26 +1,23 @@
-// Loading the libraries
+// Load the libraries
 var clientSide = require('soundworks/client');
 var client = clientSide.client;
 var audioContext = require('audio-context');
 
-// Initiliazing the namespace
+// Initiliaze the client in its namespace
 client.init('/player');
 
-class MyPerformance extends clientSide.Module {
-  constructor(loader) {
-    super('performance', true);
+class MyPerformance extends clientSide.Performance {
+  constructor(loader, options = {}) {
+    super(options);
 
     this.loader = loader; // the loader module
   }
 
   start() {
-    super.start(); // mandatory
+    super.start(); // don't forget this
 
-    // Send a message to the server indicating that we started the performance
-    client.send('perf_start');
-
-    // Play a sound when we receive a message from the server
-    client.receive('play_sound', () => {
+    // On reception of a WebSocket message from the server, play a sound
+    client.receive('performance:play', () => {
       let bufferSource = audioContext.createBufferSource();
       bufferSource.buffer = this.loader.audioBuffers[0]; // get the audioBuffers from the loader
       bufferSource.connect(audioContext.destination);
@@ -35,13 +32,6 @@ class MyPerformance extends clientSide.Module {
       // this.done(); 
     });
   }
-
-  /* You usually won't have to write your own .done() method but in case you need to,
-   * you absolutely have to include super.done() at the end of the method.
-   */
-  // done() {
-  //   super.done(); // mandatory
-  // }
 }
 
 var file = ['sounds/sound.mp3'];

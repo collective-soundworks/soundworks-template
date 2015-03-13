@@ -11,16 +11,21 @@ var path = require('path');
 var dir = path.join(__dirname, '../../public');
 
 // Performance module
-class MyPerformance extends serverSide.Module {
+class MyPerformance extends serverSide.Performance {
   constructor() {}
 
   connect(client) {
-    client.receive('perf_start', () => {
-      client.send('play_sound');
-    });
+    super(client); // don't forget this
+    
+    client.send('play_sound'); // send WebSocket message to the client
   }
 
-  disconnect(client) {}
+  /* If anything needs to happen when a client disconnects from the server,
+   * write it in the disconnect method.
+   */
+  // disconnect(client) {
+  //   super(client); // don't forget this
+  // }
 }
 
 // Instantiate of the modules
@@ -30,7 +35,7 @@ var checkin = new serverSide.Checkin({
 });
 var performance = new MyPerformance();
 
-// Launch server with the application app, using the public directory dir, on port 8000
+// Launch server with the application 'app', using the public directory 'dir', on port 8000
 server.start(app, dir, 8000);
 // Map the modules required by the clients in each namespace
 server.map('/player', 'My Scenario', checkin, performance);
