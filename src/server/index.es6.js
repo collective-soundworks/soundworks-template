@@ -12,19 +12,23 @@ var dir = path.join(__dirname, '../../public');
 
 // Performance module
 class MyPerformance extends serverSide.Performance {
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   connect(client) {
-    super(client); // don't forget this
+    super.connect(client); // don't forget this
     
-    client.send('play_sound'); // send WebSocket message to the client
+    client.receive('performance:start', () => { // when the client joins the performance...
+      client.send('performance:play'); // ... send a WebSocket message instruction to the client
+    });
   }
 
   /* If anything needs to happen when a client disconnects from the server,
    * write it in the disconnect method.
    */
   // disconnect(client) {
-  //   super(client); // don't forget this
+  //   super.disconnect(client); // don't forget this
   // }
 }
 

@@ -14,7 +14,7 @@ class MyPerformance extends clientSide.Performance {
   }
 
   start() {
-    super.start(); // don't forget this
+    super.start(); // don't forget this (in particular, it sends the 'performance:start' message)
 
     // On reception of a WebSocket message from the server, play a sound
     client.receive('performance:play', () => {
