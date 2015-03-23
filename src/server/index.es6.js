@@ -29,9 +29,9 @@ class MyPerformance extends serverSide.Performance {
    * write it in the 'disconnect' method.
    */
   // disconnect(client) {
-  //   ... // your code
-  //
   //   super.disconnect(client); // don't forget this
+  //
+  //   ... // your code
   // }
 
   /* If anything needs to happen when a client starts the performance,
@@ -47,9 +47,9 @@ class MyPerformance extends serverSide.Performance {
    * write it in the 'exit' method.
    */
   // exit(client) {
-  //   ... // your code
-  //
   //   super.exit(client); // don't forget this
+  //
+  //   ... // your code
   // }
 }
 
