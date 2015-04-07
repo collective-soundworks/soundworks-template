@@ -1,10 +1,10 @@
 // Load the libraries
 var clientSide = require('soundworks/client');
 var client = clientSide.client;
-var audioContext = require('audio-context');
+var audioContext = clientSide.audioContext;
 
 // Initiliaze the client in its namespace
-client.init('/player');
+client.init('player');
 
 class MyPerformance extends clientSide.Performance {
   constructor(loader, options = {}) {
@@ -44,9 +44,7 @@ window.addEventListener('load', () => {
     text: "<p>Welcome to <b>My Scenario</b>.</p> <p>Touch the screen to join!</p>",
     activateAudio: true
   });
-  var checkin = new clientSide.Checkin({
-    dialog: false
-  });
+  var checkin = new clientSide.Checkin();
   var loader = new clientSide.Loader(file);
   var performance = new MyPerformance(loader);
 

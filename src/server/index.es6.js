@@ -55,14 +55,13 @@ class MyPerformance extends serverSide.Performance {
 
 // Instantiate of the modules
 var checkin = new serverSide.Checkin({
-  numPlaces: 1000, // we accept a maximum of 1000 players
-  order: 'ascending' // we assign the indices in ascending order
+  maxClients: 1000, // we accept a maximum of 1000 clients
 });
 var performance = new MyPerformance();
 
 // Launch server with the application 'app', using the public directory 'dir', on port 8000
 server.start(app, dir, 8000);
-// Map the modules required by the clients in each namespace
-server.map('/player', 'My Scenario', checkin, performance);
-// server.map('/env', 'My Performance - Environment', audioPerformance);
-// server.map('/conductor', 'My Performance - Conductor', control, conductorPerformance);
+// Map the modules to each type of clients that require them
+server.map('player', checkin, performance);
+// server.map('env', audioPerformance);
+// server.map('conductor', control, conductorPerformance);

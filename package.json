@@ -5,7 +5,7 @@
     "Norbert Schnell"
   ],
   "description": "This template allows you to bootstrap a Soundworks scenario. It currently simply allows the connected clients to play a sound.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "scripts": {
     "start": "node src/server/index.js"
   },
@@ -14,7 +14,7 @@
     "ejs": "^2.3.1",
     "express": "^4.8.6",
     "socket.io": "1.1.0",
-    "soundworks": "collective-soundworks/soundworks.git#master"
+    "soundworks": "collective-soundworks/soundworks.git#v0.3.0"
   },
   "devDependencies": {
     "browserify": "~5.11.0",
