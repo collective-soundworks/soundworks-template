@@ -55,6 +55,9 @@ my-scenario/
 ├── src/
 │   ├── player/
 │   │   └── index.es6.js
+│   ├── sass/
+│   │   ├── ... <SASS partials needed>
+│   │   └── player.scss
 │   └── server/
 │       └── index.es6.js
 ├── views/
@@ -354,3 +357,7 @@ var performance = new MyPerformance()
 server.start(app, dir, 8000); // start the application 'app', with the public directory 'dir', on port 8000
 server.map('player', 'My Scenario', checkin, performance);
 ```
+
+### 4. Run!
+
+Congratulations, you just created your first scenario! To compile the files and launch the server, open a Terminal window in the project folder, run `npm install` to install all the dependencies, and then simply run the `gulp` command. Enjoy!
