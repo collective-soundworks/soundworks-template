@@ -33,6 +33,7 @@ With this template, you have a basis on which you can build any *Soundworks*-bas
 
 - [*Soundworks* documentation](https://github.com/collective-soundworks/soundworks)
 - A few other scenario examples:
+  - [*Beats*](https://github.com/collective-soundworks/soundworks-beats)
   - [*Drops*](https://github.com/collective-soundworks/soundworks-drops)
   - [*Paths*](https://github.com/collective-soundworks/soundworks-paths)
   - [*Wandering Sound*](https://github.com/collective-soundworks/soundworks-wanderingsound)
