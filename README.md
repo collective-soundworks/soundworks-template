@@ -317,11 +317,14 @@ On the server side, we now edit the file `src/server/index.es6.js`. First, we re
 var serverSide = require('soundworks/server');
 var server = serverSide.server;
 
-// Set up the Express application
+// Setup the Express app
 var express = require('express');
 var app = express();
+
+// Start the server with a given public directory and port
 var path = require('path');
 var dir = path.join(__dirname, '../../public');
+server.start(app, dir, 3000);
 ```
 
 Then, we set up the modules that the client needs to communicate with. In this example, there is the `Checkin` module, and the `Performance` module we’ll need to write ourselves.
@@ -355,7 +358,7 @@ We can now instantiate the performance module, and start the server and map the 
 var performance = new MyPerformance()
 
 server.start(app, dir, 8000); // start the application 'app', with the public directory 'dir', on port 8000
-server.map('player', 'My Scenario', checkin, performance);
+server.map('player', 'My Scenario', checkin, performance); // map the modules to the 'player' clients
 ```
 
 ### 4. Run!
