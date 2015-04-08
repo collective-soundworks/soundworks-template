@@ -1,35 +1,33 @@
-# Soundworks Template
+# Soundworks template
 
 In this folder, you will find a template to build a scenario on *Soundworks*. The template implements the following very simple scenario: when a client connects to the server, it gets an index (*i.e.* a number we can refer to later on that corresponds to that client), and plays a sound.
 
 The full documentation of Soundworks lies in the [*Soundworks* GitHub repository](https://github.com/collective-soundworks/soundworks). However, let's explain in short how this works.
 
-## Project structure
+## In short
 
-The project structure is similar to an Express app. Please refer to [*How to write a scenario*](https://github.com/collective-soundworks/soundworks#how-to-write-a-scenario) in the documentation for more details.
+### Project structure
 
-## Architecture
+The project structure is similar to an Express app: use the structure of this template to get started. For more information, please refer to [*Express app structure*](https://github.com/collective-soundworks/soundworks/blob/develop/README.md#express-app-structure) in the documentation for more details.
 
-A scenario based on *Soundworks* is made of a succession and combination of modules. Please refer to [*How to write a module*](https://github.com/collective-soundworks/soundworks#how-to-write-a-module) in the documentation for more details.
+### Architecture
 
-### Client side
+A scenario based on *Soundworks* is made of a succession and combination of modules. Please refer to [*Composing a scenario from modules*](https://github.com/collective-soundworks/soundworks/blob/develop/README.md#composing-a-scenario-from-modules) in the documentation for more details. In short, here are the main takeaways on the client and server sides.
 
-Here are the important things to do on the client side.
+#### Client side
 
-- Initialize the client in the chosen namespace. Here, we are writing a file for a client that actually takes part in the performance (we refer to it as a `player`), so we use the namespace `'/player'` in the initialization: `client.init('/player');`.
-- Create a module for the performance. This is the `class MyPerformance extends clientSide.Module { ... }` part.
-- Initialize all the modules we'll need. Here, the `welcome`, `checkin`, `loader` and `performance modules.
+- Initialize the client with a type. Here, we are writing a file for a client that actually takes part in the performance (we refer to it as a `player`), so we use the client type `'player'` in the initialization: `client.init('player')`.
+- Create a module for the performance. This is the `class MyPerformance extends clientSide.Performance { ... }` part.
+- Initialize all the modules we'll need. Here, the `welcome`, `checkin`, `loader` and `performance` modules.
 - Start the scenario and link the modules. This is what happens in the `client.start(...)` method.
 
-### Server side
+#### Server side
 
-Here are the important things to do on the server side.
-
-- Create a module for the performance. This is the `class MyPerformance extends serverSide.Module { ... }` part.
+- Create a module for the performance. This is the `class MyPerformance extends serverSide.Performance { ... }` part.
 - Initialize all the modules that serve the client. Here, the `checkin` and `performance` modules.
-- Start the server and map the modules to the namespaces that require them. That is the `server.start(app)` and the `server.map(...)` part.
+- Start the server and map the modules to the types of clients that require them. That is the `server.start(app)` and the `server.map(...)` part.
 
-## Unleash your creativity!
+### Unleash your creativity!
 
 With this template, you have a basis on which you can build any *Soundworks*-based scenario, and we can't wait to see what you come up with. You might find these resources helpful:
 
@@ -38,3 +36,318 @@ With this template, you have a basis on which you can build any *Soundworks*-bas
   - [*Drops*](https://github.com/collective-soundworks/soundworks-drops)
   - [*Paths*](https://github.com/collective-soundworks/soundworks-paths)
   - [*Wandering Sound*](https://github.com/collective-soundworks/soundworks-wanderingsound)
+
+## Detailed tutorial
+
+In this section, we will go through the making of the *Soundworks* template scenario step by step. Let's call it *My Scenario*. In *My Scenario*, any client that connects to the server through the root URL (`http://my.server.address:port/`) plays a sound when joining the performance, and plays another sound when other clients connect to the server. Consequently, we will focus on *Soundworks*’ default client type `player`, which is the type of any client that connect to the server through the root URL.
+
+### 1. Create a new *Soundworks* project
+
+Let’s create a new *Soundworks* project. It should have the basic structure of an Express app, as shown below.
+
+```
+my-scenario/
+├── public/
+│   └── sounds/
+│       ├── sound-other.mp3
+│       └── sound-welcome.mp3
+├── src/
+│   ├── player/
+│   │   └── index.es6.js
+│   └── server/
+│       └── index.es6.js
+├── views/
+│   └── player.ejs
+├── gulpfile.js
+├── package.json
+└── README.md
+```
+
+### 2. Client side
+
+On the client side, there are three things we need to do: set up the EJS file that will generate the HTML, write the Javascript code, and write the SASS files that will generate the CSS.
+
+#### Setting up the EJS file
+
+Let’s start with the easy part, the EJS file located in `my-scenario/views/player.ejs`.
+
+```html
+<!doctype html5>
+<html>
+  <head>
+    <!-- settings -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- title -->
+    <title>My Scenario</title>
+
+    <!-- stylesheets -->
+    <link rel="stylesheet" href="stylesheets/player.css">
+    
+    <!-- scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+
+  <body>
+    <div id="container" class="container"></div>
+    <script src="javascripts/player.js"></script>
+  </body>
+</html>
+
+```
+
+The most important things here are:
+
+- To load the `stylesheets/player.css` stylesheet that will be generated by the SASS file we’ll write later,
+- To load the `socket.io` library with `script(src="/socket.io/socket.io.js")`, since this is what we currently use to handle the WebSockets,
+- To have a `div` element in the `body` that has the ID `#container` and a class `.container`,
+- And to load the `javascripts/player.js` Javascript file.
+
+#### Writing our scenario in Javascript
+
+Now let’s write the core of our scenario in the `src/player/index.es6.js` file. This is the file that is loaded by any client who connects to the server through the root URL `http://my.server.address:port/`. Such a client is called `player`.
+
+Step by step, this is how the scenario will look like when a participant connects to the server through that URL:
+
+- The screen displays a `welcome` screen that the user has to click to enter the scenario,
+- The clients goes through a `checkin` process with the server while a `loader` loads the audio files to play,
+- Finally, the user enters the `performance`, in which the smartphone plays the welcome sound, and plays another sound when other clients connect to the server.
+
+First of all, let’s load the library and initialize our WebSockets namespace (currently, with `socket.io`).
+
+```javascript
+// Require the Soundworks library (client side) and the 'client' object
+var clientSide = require('soundworks/client');
+var client = clientSide.client;
+
+// Initialize the type of client to associate it to the corresponding URL
+// ('player' clients connect via the root URL)
+client.init('player');
+```
+
+The client type here `'player'` because we are editing the Javascript file for the `player` clients who connect to the server through the root URL.
+
+Then, all the scenario will happen when the HTML document is ready, so let’s wrap all the scenario logic in a callback function.
+
+```javascript
+window.addEventListener('load', () => {
+   // Scenario logic
+   ...
+});
+```
+
+##### Welcome module
+
+The `welcome` module displays a text to welcome the users who connect to the server. We also ask the users to click on the screen to hide this screen and start the scenario. Under the hood, we use this click to activate the Web Audio API on iOS devices (on iOS, sound is muted until a user action triggers some audio commands). This is exactly what the [`ClientDialog`](#clientdialog) module is made for.
+
+```javascript
+window.addEventListener('load', () => {
+
+  var welcome = new clientSide.Dialog({
+    name: 'welcome',
+    text: "<p>Welcome to <b>My Scenario</b>.</p> <p>Touch the screen to join!</p>",
+    activateAudio: true
+  });
+
+  ... // the rest of the scenario logic
+});
+```
+
+Here:
+
+- The `name` parameter corresponds to the `id` attribute and a class of the HTML element in which the content of the module is displayed (the `view`).
+- The `text` parameter contains the text to display on the screen when the module is displayed.
+- Finally, the property `activateAudio` is set to `true` to enable the sound on iOS devices as well as to start the Web Audio clock (that will be required for the synchronization process).
+
+**Note:** this step is required in almost any scenario you could imagine, at least to activate the Web Audio on iOS devices.
+
+##### Checkin module
+
+The `Checkin` module allows the client to register on the server and to get an id (*i.e.* an index) that we can refer to later. In some cases, the `Checkin` module could also assign a physical place to the client (for instance if the performance takes place in a theater and that the user has a precise seat — in that case we would also use the `Setup` module), but this is not the case in this example.
+
+```javascript
+window.addEventListener('load', () => {
+  ... // what we've done already
+
+  var checkin = new clientSide.Checkin();
+
+  ... // the rest of the scenario logic
+});
+```
+
+##### Loader module
+
+The `Loader` module allows the client to load audio files from the public folder, and that are then stored in an `audioBuffers` array attribute.
+
+```javascript@
+var files = ['sounds/sound-welcome.mp3', 'sounds/sound-others.mp3']; // the path to the audio files in the public folder
+
+window.addEventListener('load', () => {
+  ... // what we've done already
+
+  var loader = new clientSide.Loader(files);
+
+  ... // the rest of the scenario logic
+});
+```
+
+##### Performance module
+
+To create the performance, we have to write our own module `MyPerformance`. For this, we simply extend the `Performance` client and server classes.
+
+In the constructor, we keep the `options` argument from the base class, and we also pass in the `loader` module since we’ll have to access the `audioBuffers` attribute to play the files in the performance.
+
+```javascript
+class MyPerformance extends clientSide.Performance {
+  constructor(loader, options = {}) {
+    super(options); // same behavior as the base class
+
+    this.loader = loader; // the loader module
+  }
+
+  ... // the rest of the class
+}
+```
+
+Then, we write the `.start()` method that is called when the performance starts. We want that method to play a sound immediately, and when we receive a message from the server.
+
+```javascript
+class MyPerformance extends clientSide.Performance {
+  ... // the constructor
+
+  start() {
+    super.start(); // don't forget this
+
+    // Play the welcome sound immediately
+    let src = audioContext.createBufferSource();
+    src.buffer = this.loader.audioBuffers[0]; // get the first audio buffer from the loader
+    src.connect(audioContext.destination);
+    src.start(audioContext.currentTime);
+
+    this.setCenteredViewContent('Let’s go!'); // display some feedback text in the view
+
+    // Play another sound when we receive the 'play' message from the server
+    client.receive('performance:play', () => {
+      let bufferSource = audioContext.createBufferSource();
+      bufferSource.buffer = this.loader.audioBuffers[1]; // get the second audio buffer from the loader
+      bufferSource.connect(audioContext.destination);
+      bufferSource.start(audioContext.currentTime);
+    });
+
+    /* We would usually call the .done() method when the module can hand off the control to subsequent modules,
+     * however since the performance is the last module to be called in this scenario, this is not necessary here.
+     */
+    // this.done(); 
+  }
+}
+```
+
+**Note:** in theory, we would need to call the 'done' method when the module can hand off the control to the subsequent modules, but since the `performance` is the last thing that happens in *My Scenario*, we don’t need to do it in this specific case.
+
+Now let’s glue everything together.
+
+```javascript
+window.addEventListener('load', () => {
+  // Instantiate the modules
+  var welcome = new clientSide.Dialog({
+    id: 'welcome',
+    text: "<p>Welcome to <b>My Scenario</b>.</p> <p>Touch the screen to join!</p>",
+    activateAudio: true
+  });
+  var checkin = new clientSide.Checkin({
+    dialog: false
+  });
+  var loader = new clientSide.Loader(file);
+  var performance = new MyPerformance(loader);
+
+  // Start the scenario and link the modules
+  client.start(
+    client.serial(
+      client.parallel( // we launch in parallel the welcome module, the loading of the files, and the checkin
+        welcome,
+        loader,
+        checkin
+      ),
+      performance // when all of them are done, we launch the performance
+    )
+  );
+}
+```
+
+#### Writing the SASS file(s) for styling
+
+The last thing we have to do on the client side is to write the SASS file(s) that will generate the `public/player.css` file.
+
+The template contains all the library's SASS files, including the general styling partials and the module specific partials.
+
+Among them, there are four SASS partials that we’ll always need in any scenario (the generic partials):
+- `_01-reset.scss`, that resets the CSS rules of several DOM elements,
+- `_02-fonts.scss`, that sets up the Quicksand font,
+- `_03-colors.scss`, that sets up some color SASS variables,
+- `_04-general.scss`, that sets up the general CSS that is common to all the modules.
+
+Then, we notice that in `player/index.es6.js`, we used 3 different modules from the library: `ClientDialog` for the `welcome` module, `ClientCheckin` for the `checkin` module, and `ClientLoader` for the `loader` module. Among these, the `Loader` and the `Checkin` require a SASS partial (cf. the [API section](#api) above).
+
+So there we go, let’s write our `src/sass/player.css` file by requiring the partials we need.
+
+```sass
+@import '01-reset';
+@import '02-fonts';
+@import '03-colors';
+@import '04-general';
+@import '77-checkin';
+@import '77-loader';
+```
+
+We could also add our own SASS code (that goes along the `MyPerformance` module, for example) if we had to customize some of the appearance.
+
+### 3. Server side
+
+On the server side, we now edit the file `src/server/index.es6.js`. First, we require the libraries and set up the Express app.
+
+```javascript
+// Require the Soundworks library (server side)
+var serverSide = require('soundworks/server');
+var server = serverSide.server;
+
+// Set up the Express application
+var express = require('express');
+var app = express();
+var path = require('path');
+var dir = path.join(__dirname, '../../public');
+```
+
+Then, we set up the modules that the client needs to communicate with. In this example, there is the `Checkin` module, and the `Performance` module we’ll need to write ourselves.
+
+For the `Checkin` module, since we don’t need a map of the seats or anything like that, we just indicate the maximum number of players this performance allows, and the order in which the module assigns the indices.
+
+```javascript
+var checkin = new serverSide.Checkin({ maxClients: 100 }); // we accept a maximum of 100 clients
+```
+
+Finally, we have to write the performance module. The `.enter(client)` method is called when the client `client` calls its `start` method (*i.e.* when it enters the performance). When that happens, we simply send a WebSocket message back to all the other clients to tell them to play a sound (`client.broadcast('performance:play');`). In this example, nothing needs to be done when the client connects to the server, disconnects from the server, or exists the performance (apart from what the `ServerPerformance` base class already does), so we don't have to override these methods.
+
+```javascript
+class MyPerformance extends serverSide.Performance {
+  constructor() {}
+
+  // When the client enters the performance...
+  enter(client) {
+    super.enter(client); // call base class constructor (don't forget this)
+
+    // Send a 'play' message to all other clients
+    client.broadcast('performance:play');
+  }
+}
+
+```
+
+We can now instantiate the performance module, and start the server and map the `'player'` client type to the modules we just set up: this last command indicates that all clients connecting as a `'player'` (through the root URL) will need to communicate with the `checkin` and `performance` modules on the server side.
+
+```javascript
+var performance = new MyPerformance()
+
+server.start(app, dir, 8000); // start the application 'app', with the public directory 'dir', on port 8000
+server.map('/player', 'My Scenario', checkin, performance);
+```
