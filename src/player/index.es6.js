@@ -14,27 +14,34 @@ class MyPerformance extends clientSide.Performance {
   }
 
   start() {
-    super.start(); // don't forget this (in particular, it sends the 'performance:start' message)
+    super.start(); // don't forget this
 
-    // On reception of a WebSocket message from the server, play a sound
+    // Play the welcome sound immediately
+    let src = audioContext.createBufferSource();
+    src.buffer = this.loader.audioBuffers[0]; // get the first audio buffer from the loader
+    src.connect(audioContext.destination);
+    src.start(audioContext.currentTime);
+
+    this.setCenteredViewContent('Let’s go!'); // display some feedback text in the view
+
+    // Play another sound when we receive the 'play' message from the server
     client.receive('performance:play', () => {
-      let bufferSource = audioContext.createBufferSource();
-      bufferSource.buffer = this.loader.audioBuffers[0]; // get the audioBuffers from the loader
-      bufferSource.connect(audioContext.destination);
-      bufferSource.start(audioContext.currentTime);
-
-      this.setViewText('Congratulations, you just played a sound!'); // display some feedback text in the view
-
-      /* We would usually call the .done() method when the module has done its duty,
-       * however since the performance is the last module to be called in this scenario,
-       * we don't need it.
-       */
-      // this.done(); 
+      let src = audioContext.createBufferSource();
+      src.buffer = this.loader.audioBuffers[1]; // get the second audioBuffer from the loader
+      src.connect(audioContext.destination);
+      src.start(audioContext.currentTime);
     });
+
+    /* We would usually call the 'done' method when the module
+     * can hand over the control to subsequent modules,
+     * however since the performance is the last module to be called
+     * in this scenario, we don't need it here.
+     */
+    // this.done(); 
   }
 }
 
-var file = ['sounds/sound.mp3'];
+var files = ['sounds/sound-welcome.mp3', 'sounds/sound-others.mp3'];
 
 // Where the magic happens
 window.addEventListener('load', () => {
@@ -45,7 +52,7 @@ window.addEventListener('load', () => {
     activateAudio: true
   });
   var checkin = new clientSide.Checkin();
-  var loader = new clientSide.Loader(file);
+  var loader = new clientSide.Loader(files);
   var performance = new MyPerformance(loader);
 
   // Start the scenario and link the modules
