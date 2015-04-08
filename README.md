@@ -298,12 +298,19 @@ Then, we notice that in `player/index.es6.js`, we used 3 different modules from 
 So there we go, let’s write our `src/sass/player.css` file by requiring the partials we need.
 
 ```sass
+// General styling
 @import '01-reset';
 @import '02-fonts';
 @import '03-colors';
 @import '04-general';
+
+// Module specific partials
 @import '77-checkin';
 @import '77-loader';
+
+// Your own partials if needed
+// @import 'performance'
+
 ```
 
 We could also add our own SASS code (that goes along the `MyPerformance` module, for example) if we had to customize some of the appearance.
