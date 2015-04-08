@@ -2,17 +2,17 @@
 
 In this folder, you will find a template to build a scenario on *Soundworks*. The template implements the following very simple scenario: when a client connects to the server, it gets an index (*i.e.* a number we can refer to later on that corresponds to that client), and plays a sound.
 
-The full documentation of Soundworks lies in the [*Soundworks* GitHub repository](https://github.com/collective-soundworks/soundworks). However, let's explain in short how this works.
+The full documentation of Soundworks lies in the [*Soundworks* GitHub repository](https://github.com/collective-soundworks/soundworks). However, let's explain in short how this works, and then go through a detailed tutorial.
 
 ## In short
 
 ### Project structure
 
-The project structure is similar to an Express app: use the structure of this template to get started. For more information, please refer to [*Express app structure*](https://github.com/collective-soundworks/soundworks/blob/develop/README.md#express-app-structure) in the documentation for more details.
+The project structure is similar to an Express app: use the structure of this template to get started. For more information, please refer to [*Express app structure*](https://github.com/collective-soundworks/soundworks/tree/master/README.md#express-app-structure) in the documentation for more details.
 
 ### Architecture
 
-A scenario based on *Soundworks* is made of a succession and combination of modules. Please refer to [*Composing a scenario from modules*](https://github.com/collective-soundworks/soundworks/blob/develop/README.md#composing-a-scenario-from-modules) in the documentation for more details. In short, here are the main takeaways on the client and server sides.
+A scenario based on *Soundworks* is made of a succession and combination of modules. Please refer to [*Composing a scenario from modules*](https://github.com/collective-soundworks/soundworks/tree/master/README.md#composing-a-scenario-from-modules) in the documentation for more details. In short, here are the main takeaways on the client and server sides.
 
 #### Client side
 
@@ -180,7 +180,7 @@ window.addEventListener('load', () => {
 
 The `Loader` module allows the client to load audio files from the public folder, and that are then stored in an `audioBuffers` array attribute.
 
-```javascript@
+```javascript
 var files = ['sounds/sound-welcome.mp3', 'sounds/sound-others.mp3']; // the path to the audio files in the public folder
 
 window.addEventListener('load', () => {
@@ -229,21 +229,23 @@ class MyPerformance extends clientSide.Performance {
 
     // Play another sound when we receive the 'play' message from the server
     client.receive('performance:play', () => {
-      let bufferSource = audioContext.createBufferSource();
-      bufferSource.buffer = this.loader.audioBuffers[1]; // get the second audio buffer from the loader
-      bufferSource.connect(audioContext.destination);
-      bufferSource.start(audioContext.currentTime);
+      let src = audioContext.createBufferSource();
+      src.buffer = this.loader.audioBuffers[1]; // get the second audio buffer from the loader
+      src.connect(audioContext.destination);
+      src.start(audioContext.currentTime);
     });
 
-    /* We would usually call the .done() method when the module can hand off the control to subsequent modules,
-     * however since the performance is the last module to be called in this scenario, this is not necessary here.
+    /* We would usually call the 'done' method when the module
+     * can hand over the control to subsequent modules,
+     * however since the performance is the last module to be called
+     * in this scenario, we don't need it here.
      */
     // this.done(); 
   }
 }
 ```
 
-**Note:** in theory, we would need to call the 'done' method when the module can hand off the control to the subsequent modules, but since the `performance` is the last thing that happens in *My Scenario*, we don’t need to do it in this specific case.
+**Note:** in theory, we would need to call the `done` method when the module can hand off the control to the subsequent modules, but since the `performance` is the last thing that happens in *My Scenario*, we don’t need to do it in this specific case.
 
 Now let’s glue everything together.
 
@@ -287,7 +289,7 @@ Among them, there are four SASS partials that we’ll always need in any scenari
 - `_03-colors.scss`, that sets up some color SASS variables,
 - `_04-general.scss`, that sets up the general CSS that is common to all the modules.
 
-Then, we notice that in `player/index.es6.js`, we used 3 different modules from the library: `ClientDialog` for the `welcome` module, `ClientCheckin` for the `checkin` module, and `ClientLoader` for the `loader` module. Among these, the `Loader` and the `Checkin` require a SASS partial (cf. the [API section](#api) above).
+Then, we notice that in `player/index.es6.js`, we used 3 different modules from the library: `ClientDialog` for the `welcome` module, `ClientCheckin` for the `checkin` module, and `ClientLoader` for the `loader` module. Among these, the `Loader` and the `Checkin` require a SASS partial (cf. the [API section](https://github.com/collective-soundworks/soundworks/tree/master/README.md#api) of the *Soundworks* documentation).
 
 So there we go, let’s write our `src/sass/player.css` file by requiring the partials we need.
 
@@ -349,5 +351,5 @@ We can now instantiate the performance module, and start the server and map the 
 var performance = new MyPerformance()
 
 server.start(app, dir, 8000); // start the application 'app', with the public directory 'dir', on port 8000
-server.map('/player', 'My Scenario', checkin, performance);
+server.map('player', 'My Scenario', checkin, performance);
 ```
