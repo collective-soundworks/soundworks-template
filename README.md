@@ -357,8 +357,8 @@ We can now instantiate the performance module, and start the server and map the 
 ```javascript
 var performance = new MyPerformance()
 
-server.start(app, dir, 8000); // start the application 'app', with the public directory 'dir', on port 8000
-server.map('player', 'My Scenario', checkin, performance); // map the modules to the 'player' clients
+// Map the server modules to the 'player' client type (and root URL)
+server.map('player', checkin, performance);
 ```
 
 ### 4. Run!
