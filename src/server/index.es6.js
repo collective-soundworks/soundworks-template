@@ -1,6 +1,6 @@
 'use strict';
 
-// Soundworks library
+// Require the Soundworks library (server side)
 var serverSide = require('soundworks/server');
 var server = serverSide.server;
 

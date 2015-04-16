@@ -1,9 +1,11 @@
-// Load the libraries
+'use strict';
+
+// Require the Soundworks library (client side)
 var clientSide = require('soundworks/client');
 var client = clientSide.client;
 var audioContext = clientSide.audioContext;
 
-// Initiliaze the client in its namespace
+// Initiliaze the client with its type
 client.init('player');
 
 class MyPerformance extends clientSide.Performance {
@@ -47,7 +49,7 @@ var files = ['sounds/sound-welcome.mp3', 'sounds/sound-others.mp3'];
 window.addEventListener('load', () => {
   // Instantiate the modules
   var welcome = new clientSide.Dialog({
-    id: 'welcome',
+    name: 'welcome',
     text: "<p>Welcome to <b>My Scenario</b>.</p> <p>Touch the screen to join!</p>",
     activateAudio: true
   });
