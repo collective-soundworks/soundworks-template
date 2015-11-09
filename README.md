@@ -370,4 +370,9 @@ server.map('player', checkin, performance);
 
 ### 4. Run!
 
-Congratulations, you just created your first scenario! To compile the files and launch the server, open a Terminal window in the project folder, run `npm install` to install all the dependencies, and then simply run the `gulp` command. Enjoy!
+Congratulations, you just created your first scenario! To compile the files and launch the server, open a Terminal window in the project folder, run `npm install` to install all the dependencies
+
+#### Available commands
+
+- `npm run watch` - run the server, watch files and transpile / browserify / sassify when needed
+- `npm run bundle` - transpile all files and recreate the browserified bundles
