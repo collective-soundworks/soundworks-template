@@ -103,6 +103,10 @@ function killServer() {
   server.kill();
 }
 
+
+// MAIN LOGIC
+// -----------------------------------------------
+
 function watch() {
   var toMonitor = [serverSrcDir, viewsDir, clientSrcDir, styleSrcDir];
 
@@ -159,9 +163,6 @@ function processStyles(src) {
     });
 }
 
-function transpileAll() {
-
-}
 
 function transpile(src, stack, callback) {
   if (src === undefined && stack && stack.length) {
