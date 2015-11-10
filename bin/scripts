@@ -171,7 +171,7 @@ function transpile(src, stack, callback) {
 
   var target = getJsTargetName(src);
 
-  babel.transformFile(src, {}, function (err, result) {
+  babel.transformFile(src, function (err, result) {
     if (err) { return console.log(err.codeFrame); }
 
     fse.outputFile(target, result.code, function(err) {
@@ -193,6 +193,16 @@ function transpile(src, stack, callback) {
 function bundleAll() {
   var es6files = [];
   console.log('bundleAll', path.join(cwd, clientSrcDir));
+
+  var sassDone = false;
+  // transpile css
+  fse
+    .walk(path.join(cwd, styleSrcDir))
+    .on('data', function(item) {
+      if (sassDone) { return; }
+      processStyles(item.path);
+      sassDone = true;
+    });
 
   // transpile all es6 files
   fse
