@@ -3,7 +3,7 @@ var fork = require('child_process').fork;
 var path = require('path');
 var util = require('util');
 
-var babel = require('babel-core');
+var babel = require('babel');
 var browserify = require('browserify');
 var fse = require('fs-extra');
 var nodeWatch = require('node-watch');
@@ -16,7 +16,7 @@ var watchify = require('watchify');
 // -----------------------------------------------
 
 var jsSrcDir = 'src';
-var jsDistDir = 'dist';
+var jsDistDir = '.';
 var styleSrcDir = 'sass';
 var viewsDir = 'views';
 
@@ -26,6 +26,12 @@ var clientDistDir = path.join(jsDistDir, 'client');
 var serverIndex = path.join(jsDistDir, 'server/index.js');
 var jsPublicDir = 'public/js';
 var stylePublicDir = 'public/css';
+
+var babelOptions = {
+  sourceMap: 'inline',
+  modules: 'common',
+  optional: ['runtime']
+};
 
 // GLOBALS
 // -----------------------------------------------
@@ -171,7 +177,7 @@ function transpile(src, stack, callback) {
 
   var target = getJsTargetName(src);
 
-  babel.transformFile(src, function (err, result) {
+  babel.transformFile(src, babelOptions, function(err, result) {
     if (err) { return console.log(err.codeFrame); }
 
     fse.outputFile(target, result.code, function(err) {

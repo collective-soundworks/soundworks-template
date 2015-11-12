@@ -1,7 +1,5 @@
-'use strict';
-
 // Require the Soundworks library (server side)
-var serverSide = require('soundworks')('server');
+var serverSide = require('soundworks/server');
 var server = serverSide.server;
 
 // Setup the Express app
@@ -10,7 +8,7 @@ var app = express();
 
 // Start the server with a given public directory and port
 var path = require('path');
-var dir = path.join(__dirname, '../../public');
+var dir = path.join(process.cwd(), 'public');
 
 server.start(app, dir, 3000);
 

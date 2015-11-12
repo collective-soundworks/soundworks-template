@@ -1,5 +1,5 @@
 // Require the Soundworks library (client side)
-var clientSide = require('soundworks')('client');
+var clientSide = require('soundworks/client');
 var client = clientSide.client;
 var audioContext = clientSide.audioContext;
 
