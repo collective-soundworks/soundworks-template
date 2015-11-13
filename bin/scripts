@@ -1,5 +1,7 @@
 #!/usr/bin/env node
+var execSync = require('child_process').execSync;
 var fork = require('child_process').fork;
+var fs   = require('fs');
 var path = require('path');
 var util = require('util');
 
@@ -71,6 +73,10 @@ switch (command) {
 var cwd = process.cwd();
 runServer();
 
+// remove boring .DS_Store files
+console.log(util.format('%s=> Delete ".DS_Store" files%s', green, NC));
+execSync("find . -name '*.DS_Store' -type f -delete");
+
 process.on('uncaughtException', function (err) {
   console.log('Caught exception: ' + err);
   killServer();
@@ -99,8 +105,11 @@ function getJsBundleName(src) {
 }
 
 function runServer() {
+  var serverIndexPath = path.join(cwd, serverIndex);
+  // @note deprecated in node > 0
+  if (!fs.existsSync(serverIndexPath)) { return; }
   console.log(util.format('%s=> Start server%s', green, NC));
-  server = fork(path.join(cwd, serverIndex));
+  server = fork(serverIndexPath);
 }
 
 function killServer() {
