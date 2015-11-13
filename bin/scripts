@@ -278,7 +278,7 @@ function bundle(src) {
       bundler
         .bundle()
         .on('error', function(err) {
-          console.err(err.message);
+          console.error(err.message);
         })
         .on('end', function() {
           var end = new Date().getTime();
