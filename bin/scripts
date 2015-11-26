@@ -205,17 +205,18 @@ function transpile(src, stack, callback) {
 }
 
 function bundleAll() {
-  var es6files = [];
   console.log('bundleAll', path.join(cwd, clientSrcDir));
 
+  var es6files = [];
   var sassDone = false;
   var sassFolder = path.join(cwd, styleSrcDir);
+
   // @NOTE exists is now deprecated
   if (!fs.existsSync(sassFolder)) {
     sassDone = true;
   } else {
     fse
-      .walk()
+      .walk(sassFolder)
       .on('data', function(item) {
         if (sassDone) { return; }
         processStyles(item.path);
