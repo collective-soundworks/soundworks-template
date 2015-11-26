@@ -100,7 +100,6 @@ function getJsBundleTarget(src) {
 
 // returns the name of the specific client folder
 function getJsBundleName(src) {
-  // renturn the anem of the folder
   return src.replace(clientSrcDir, '').split('/')[1];
 }
 
@@ -210,14 +209,19 @@ function bundleAll() {
   console.log('bundleAll', path.join(cwd, clientSrcDir));
 
   var sassDone = false;
-  // transpile css
-  fse
-    .walk(path.join(cwd, styleSrcDir))
-    .on('data', function(item) {
-      if (sassDone) { return; }
-      processStyles(item.path);
-      sassDone = true;
-    });
+  var sassFolder = path.join(cwd, styleSrcDir);
+  // @NOTE exists is now deprecated
+  if (!fs.existsSync(sassFolder)) {
+    sassDone = true;
+  } else {
+    fse
+      .walk()
+      .on('data', function(item) {
+        if (sassDone) { return; }
+        processStyles(item.path);
+        sassDone = true;
+      });
+  }
 
   // transpile all es6 files
   fse
@@ -269,7 +273,6 @@ function bundle(src) {
       packageCache: {}, // required for watchify
       plugin: [watchify],
       fullPaths: false,
-      // transform: ['unreachable-branch-transform']
     });
 
     function rebundle() {
