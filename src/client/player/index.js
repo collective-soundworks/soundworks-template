@@ -7,7 +7,7 @@ import PlayerPerformance from './PlayerPerformance.js';
 // Files to load
 const audioFiles = ['sounds/sound-welcome.mp3', 'sounds/sound-others.mp3'];
 
-// Initiliaze the client type
+// Initialize the client type
 client.init('player');
 
 // Where the magic happens
@@ -31,6 +31,6 @@ window.addEventListener('load', () => {
       parallel(welcome, loader, checkin),
       // When the initialization step is done, we launch the performance
       performance
-    )
+    );
   );
 });
