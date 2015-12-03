@@ -2,10 +2,11 @@
   "name": "template",
   "authors": [
     "Sébastien Robaszkiewicz",
-    "Norbert Schnell"
+    "Norbert Schnell",
+    "Benjamin Matuszewski"
   ],
-  "description": "This template allows you to bootstrap a Soundworks scenario. It currently simply allows the connected clients to play a sound.",
-  "version": "0.3.1",
+  "description": "This template allows you to bootstrap a Soundworks scenario. The example scenario of this template allows the connected clients to play a sound.",
+  "version": "0.4.0",
   "scripts": {
     "bundle": "node ./bin/scripts --bundle",
     "start": "node dist/server/index.js",
