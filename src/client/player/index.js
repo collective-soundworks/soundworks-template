@@ -1,12 +1,12 @@
 // Require the Soundworks library (client side)
-var clientSide = require('soundworks/client');
-var client = clientSide.client;
-var audioContext = clientSide.audioContext;
+const soundworks = require('soundworks/client');
+const client = soundworks.client;
+const audioContext = soundworks.audioContext;
 
 // Initiliaze the client with its type
 client.init('player');
 
-class MyPerformance extends clientSide.Performance {
+class MyPerformance extends soundworks.ClientPerformance {
   constructor(loader, options = {}) {
     super(options);
     this.loader = loader; // the loader module
@@ -22,7 +22,7 @@ class MyPerformance extends clientSide.Performance {
     src.start(audioContext.currentTime);
 
     // Play another sound when we receive the 'play' message from the server
-    client.receive('performance:play', () => {
+    this.receive('play', () => {
       setTimeout(() => {
         let src = audioContext.createBufferSource();
         src.buffer = this.loader.buffers[1]; // get the second audioBuffer from the loader
@@ -43,19 +43,19 @@ class MyPerformance extends clientSide.Performance {
   }
 }
 
-var files = ['sounds/sound-welcome.mp3', 'sounds/sound-others.mp3'];
+const files = ['sounds/sound-welcome.mp3', 'sounds/sound-others.mp3'];
 
 // Where the magic happens
 window.addEventListener('load', () => {
   // Instantiate the modules
-  var welcome = new clientSide.Dialog({
+  const welcome = new soundworks.Dialog({
     name: 'welcome',
     text: "<p>Welcome to <b>My Scenario</b>.</p> <p>Touch the screen to join!</p>",
     activateAudio: true
   });
-  var checkin = new clientSide.Checkin();
-  var loader = new clientSide.Loader({ files });
-  var performance = new MyPerformance(loader);
+  const checkin = new soundworks.ClientCheckin();
+  const loader = new soundworks.Loader({ files });
+  const performance = new MyPerformance(loader);
 
   // Start the scenario and link the modules
   client.start((seq, par) => {

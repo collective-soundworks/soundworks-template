@@ -1,19 +1,9 @@
 // Require the Soundworks library (server side)
-var serverSide = require('soundworks/server');
-var server = serverSide.server;
-
-// Setup the Express app
-var express = require('express');
-var app = express();
-
-// Start the server with a given public directory and port
-var path = require('path');
-var dir = path.join(process.cwd(), 'public');
-
-server.start(app, dir, 3000);
+const soundworks = require('soundworks/server');
+const server = soundworks.server;
 
 // Performance module
-class MyPerformance extends serverSide.Performance {
+class MyPerformance extends soundworks.ServerPerformance {
   constructor() {
     super();
   }
@@ -23,7 +13,6 @@ class MyPerformance extends serverSide.Performance {
    */
   // connect(client) {
   //   super.connect(client); // don't forget this
-
   //   ... // your code
   // }
 
@@ -32,7 +21,6 @@ class MyPerformance extends serverSide.Performance {
    */
   // disconnect(client) {
   //   super.disconnect(client); // don't forget this
-  //
   //   ... // your code
   // }
 
@@ -41,7 +29,7 @@ class MyPerformance extends serverSide.Performance {
    */
   enter(client) {
     super.enter(client);
-    client.broadcast('performance:play'); // send 'play' to all the other clients
+    this.sendPeers(client, 'play'); // send 'play' to all the other clients
   }
 
   /* If anything needs to happen when a client leaves the performance,
@@ -49,17 +37,18 @@ class MyPerformance extends serverSide.Performance {
    */
   // exit(client) {
   //   super.exit(client); // don't forget this
-  //
   //   ... // your code
   // }
 }
 
 // Instantiate of the modules
-var checkin = new serverSide.Checkin({
+const checkin = new soundworks.ServerCheckin({
   maxClients: 100, // we accept a maximum of 100 clients
 });
-var performance = new MyPerformance();
 
+const performance = new MyPerformance();
+
+server.start();
 // Map the server modules to the 'player' client type (and root URL)
 server.map('player', checkin, performance);
 
