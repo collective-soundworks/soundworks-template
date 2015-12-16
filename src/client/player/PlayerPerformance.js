@@ -1,5 +1,7 @@
 // Import Soundworks library (client side)
 import { client, audioContext, ClientPerformance } from 'soundworks/client';
+import soundworks from 'soundworks/client';
+const SegmentedView = soundworks.display.SegmentedView;
 
 /**
  * '`player`' performance module (client side).
@@ -11,6 +13,22 @@ export default class PlayerPerformance extends ClientPerformance {
     super(options);
 
     this._loader = loader; // the loader module
+    this._counter = 0;
+    // rename to this.content
+    this.content = {
+      top: `<p class="big">Let's go!</p>`,
+      center: `<p class="big">${this._counter}</p>`,
+      bottom: '',
+    };
+
+    this.events = { click: this.updateView.bind(this) };
+    this.view = new SegmentedView(null, this.content, this.events);
+  }
+
+  updateView() {
+    this._counter++;
+    this.content.center = `<p class="big">${this._counter}</p>`;
+    this.view.render();
   }
 
   start() {
@@ -33,7 +51,7 @@ export default class PlayerPerformance extends ClientPerformance {
     });
 
     // Display some feedback text in the view
-    this.setCenteredViewContent('Let’s go!');
+    // this.setCenteredViewContent('Let’s go!');
 
     // We would usually call the 'done' method when the module can hand over the
     // control to subsequent modules, however since the performance is the last
