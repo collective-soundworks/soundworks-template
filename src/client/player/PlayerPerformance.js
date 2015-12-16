@@ -1,7 +1,20 @@
 // Import Soundworks library (client side)
-import { client, audioContext, ClientPerformance } from 'soundworks/client';
 import soundworks from 'soundworks/client';
+
+const audioContext = soundworks.audioContext;
+const client = soundworks.client;
+const ClientPerformance = soundworks.ClientPerformance;
 const SegmentedView = soundworks.display.SegmentedView;
+
+const template = `
+  <div class="section-top flex-middle">
+    <p class="big"><%= go %></p>
+  </div>
+  <div class="section-center flex-center">
+    <p class="big"><%= counter %></p>
+  </div>
+  <div class="section-bottom"></div>
+`;
 
 /**
  * '`player`' performance module (client side).
@@ -13,29 +26,26 @@ export default class PlayerPerformance extends ClientPerformance {
     super(options);
 
     this._loader = loader; // the loader module
-    this._counter = 0;
-    // rename to this.content
-    this.content = {
-      top: `<p class="big">Let's go!</p>`,
-      center: `<p class="big">${this._counter}</p>`,
-      bottom: '',
-    };
 
+    // Define elements for the view
+    this.template = template;
+    this.content = { go: `Let's go!`,   counter: 0 };
     this.events = { click: this.updateView.bind(this) };
-    this.view = new SegmentedView(null, this.content, this.events);
+    // Create the view
+    this.view = new SegmentedView(this.template, this.content, this.events);
   }
 
   updateView() {
-    this._counter++;
-    this.content.center = `<p class="big">${this._counter}</p>`;
-    this.view.render();
+    this.content.counter++;
+    // partially update the view
+    this.view.render('.section-center');
   }
 
   start() {
     super.start(); // don't forget this
 
     // Play the welcome sound immediately
-    let src = audioContext.createBufferSource();
+    const src = audioContext.createBufferSource();
     src.buffer = this._loader.buffers[0]; // get first buffer from loader
     src.connect(audioContext.destination);
     src.start(audioContext.currentTime);
@@ -44,7 +54,7 @@ export default class PlayerPerformance extends ClientPerformance {
     // indicates that another client joined the performance)
     this.receive('play', () => {
       const delay = Math.random();
-      let src = audioContext.createBufferSource();
+      const src = audioContext.createBufferSource();
       src.buffer = this._loader.buffers[1]; // get second buffer from loader
       src.connect(audioContext.destination);
       src.start(audioContext.currentTime + delay);

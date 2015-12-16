@@ -3,7 +3,7 @@
  * ======================================================= */
 /**
  * The code in this file is inspired by:
- *   http://meyerweb.com/eric/tools/css/reset/
+ *   http://meyerweb.com/eric/tools/css/reset/ 
  *   v2.0 | 20110126
  *   License: none (public domain)
  */
@@ -265,7 +265,6 @@ p, .normal {
   font-size: 1.3rem;
   line-height: 3rem;
   height: 3rem;
-  flex-basis: 90%;
   margin: 0 auto; }
 
 /* =======================================================

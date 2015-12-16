@@ -2,20 +2,20 @@
  * SETUP
  * ======================================================= */
 
-.setup {
-  position: relative;
+// .setup {
+//   position: relative;
 
-  .position {
-    background-color: rgba($white, 0.1);
-    border-radius: 50%;
-    position: absolute;
+//   .position {
+//     background-color: rgba($white, 0.1);
+//     border-radius: 50%;
+//     position: absolute;
 
-    &.player {
-      background-color: $belize-hole;
-    }
+//     &.player {
+//       background-color: $belize-hole;
+//     }
 
-    &.soloist, &.me {
-      background-color: $pomegranate;
-    }
-  }
-}
+//     &.soloist, &.me {
+//       background-color: $pomegranate;
+//     }
+//   }
+// }
