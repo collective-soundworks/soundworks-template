@@ -1,13 +1,10 @@
 // Import Soundworks library modules (server side)
 import soundworks from 'soundworks/server';
-// Import matrix module
-import { generateMatrix } from 'soundworks/utils/setup';
 // Import server side performance module
 import PlayerPerformance from './PlayerPerformance';
 
 const server = soundworks.server;
 const ServerCheckin = soundworks.ServerCheckin;
-const setup = generateMatrix({ rows: 8, cols: 8 });
 
 // Launch server
 server.start();
