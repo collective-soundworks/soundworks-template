@@ -2,18 +2,31 @@
  * CHECKIN
  * ======================================================= */
 
-.checkin-label {
-  display: block;
-  font-size: 3em;
-  font-weight: 700;
-  height: 2em;
-  line-height: 2em;
-  margin: 0 auto;
-  text-align: center;
-  width: 2em;
-}
-.checkin-label.circled {
-  background-color: $belize-hole;
-  border-radius: 50%;
-  margin: 0 auto 0.5em;
+#checkin {
+  .checkin-label {
+    margin: 0 auto;
+    background-color: $belize-hole;
+    border-radius: 50%;
+  }
+
+  $portraitBoxSize: 160px;
+  $landscapeBoxSize: 120px;
+
+  &.portrait .checkin-label {
+    flex-basis: $portraitBoxSize;
+    height: $portraitBoxSize;
+
+    p {
+      line-height: $portraitBoxSize;
+    }
+  }
+
+  &.landscape .checkin-label {
+    flex-basis: $landscapeBoxSize;
+    height: $landscapeBoxSize;
+
+    p {
+      line-height: $landscapeBoxSize;
+    }
+  }
 }
