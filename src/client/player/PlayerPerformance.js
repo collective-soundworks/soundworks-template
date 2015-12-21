@@ -24,25 +24,22 @@ class PerformanceRenderer extends Renderer {
   }
 
   update(dt) {
-    if (this.x >= this.canvasWidth || this.x <= 0) {
-      this.velocityX *= -1;
-    }
-
-    if (this.y >= this.canvasHeight || this.y <= 0) {
-      this.velocityY *= -1;
-    }
+    if (this.x >= this.canvasWidth || this.x <= 0) { this.velocityX *= -1; }
+    if (this.y >= this.canvasHeight || this.y <= 0) { this.velocityY *= -1; }
 
     this.x += (this.velocityX * dt);
     this.y += (this.velocityY * dt);
   }
 
   render(ctx) {
+    ctx.save();
     ctx.beginPath();
     ctx.globalAlpha = 0.6;
     ctx.fillStyle = '#ffffff';
     ctx.arc(this.x, this.y, 4, 0, Math.PI * 2, false);
     ctx.fill();
     ctx.closePath();
+    ctx.restore();
   }
 }
 
