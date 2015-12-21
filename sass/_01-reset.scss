@@ -4,7 +4,7 @@
 
 /**
  * The code in this file is inspired by:
- *   http://meyerweb.com/eric/tools/css/reset/ 
+ *   http://meyerweb.com/eric/tools/css/reset/
  *   v2.0 | 20110126
  *   License: none (public domain)
  */
@@ -17,9 +17,11 @@ html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, button, input, option, sele
   font: inherit;
   vertical-align: baseline;
 }
+
 body {
   line-height: 1;
 }
+
 ol, ul {
   list-style: none;
 }

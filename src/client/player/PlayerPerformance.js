@@ -4,16 +4,57 @@ import soundworks from 'soundworks/client';
 const audioContext = soundworks.audioContext;
 const client = soundworks.client;
 const ClientPerformance = soundworks.ClientPerformance;
-const SegmentedView = soundworks.display.SegmentedView;
+const Renderer = soundworks.display.Renderer;
+const CanvasView = soundworks.display.CanvasView;
+
+
+class PerformanceRenderer extends Renderer {
+  constructor(vx, vy) {
+    super(0);
+
+    this.velocityX = vx; // px per seconds
+    this.velocityY = vy; // px per seconds
+  }
+
+  init() {
+    if (!this.x || !this.y) {
+      this.x = Math.random() * this.canvasWidth;
+      this.y = Math.random() * this.canvasHeight;
+    }
+  }
+
+  update(dt) {
+    if (this.x >= this.canvasWidth || this.x <= 0) {
+      this.velocityX *= -1;
+    }
+
+    if (this.y >= this.canvasHeight || this.y <= 0) {
+      this.velocityY *= -1;
+    }
+
+    this.x += (this.velocityX * dt);
+    this.y += (this.velocityY * dt);
+  }
+
+  render(ctx) {
+    ctx.beginPath();
+    ctx.globalAlpha = 0.6;
+    ctx.fillStyle = '#ffffff';
+    ctx.arc(this.x, this.y, 4, 0, Math.PI * 2, false);
+    ctx.fill();
+    ctx.closePath();
+  }
+}
 
 const template = `
-  <div class="section-top flex-middle">
-    <p class="big"><%= go %></p>
+  <canvas class="background"></canvas>
+  <div class="foreground">
+    <div class="section-top flex-middle">
+      <p class="big"><%= go %></p>
+    </div>
+    <div class="section-center flex-center"></div>
+    <div class="section-bottom flex-middle"></div>
   </div>
-  <div class="section-center flex-center">
-    <p class="big"><%= counter %></p>
-  </div>
-  <div class="section-bottom"></div>
 `;
 
 /**
@@ -27,18 +68,15 @@ export default class PlayerPerformance extends ClientPerformance {
 
     this._loader = loader; // the loader module
 
-    // Define elements for the view
-    this.template = template;
-    this.content = { go: `Let's go!`,   counter: 0 };
-    this.events = { click: this.updateView.bind(this) };
-    // Create the view
-    this.view = new SegmentedView(this.template, this.content, this.events);
+    this.init();
   }
 
-  updateView() {
-    this.content.counter++;
-    // partially update the view
-    this.view.render('.section-center');
+  init() {
+    // Define elements for the view
+    this.template = template;
+    this.content = { go: `Let's go!` };
+    this.viewCtor = CanvasView;
+    this.view = this.createDefaultView();
   }
 
   start() {
@@ -60,8 +98,17 @@ export default class PlayerPerformance extends ClientPerformance {
       src.start(audioContext.currentTime + delay);
     });
 
-    // Display some feedback text in the view
-    // this.setCenteredViewContent('Let’s go!');
+    // initialize rendering
+    this.view.setPreRender(function(ctx, dt) {
+      ctx.save();
+      ctx.globalAlpha = 0.05;
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, ctx.width, ctx.height);
+      ctx.restore();
+    });
+
+    this.renderer = new PerformanceRenderer(100, 100);
+    this.view.addRenderer(this.renderer);
 
     // We would usually call the 'done' method when the module can hand over the
     // control to subsequent modules, however since the performance is the last

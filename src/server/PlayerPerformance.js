@@ -40,8 +40,8 @@ export default class PlayerPerformance extends ServerPerformance {
   enter(client) {
     super.enter(client);
 
-    // Send a message to all the other clients
-    this.sendPeers(client, 'play');
+    // Send a message to all the other clients of the same type
+    this.broadcast(client.clientType, client, 'play');
   }
 
   /**

@@ -3,7 +3,7 @@
  * ======================================================= */
 /**
  * The code in this file is inspired by:
- *   http://meyerweb.com/eric/tools/css/reset/ 
+ *   http://meyerweb.com/eric/tools/css/reset/
  *   v2.0 | 20110126
  *   License: none (public domain)
  */
@@ -47,9 +47,6 @@ ol, ul {
  * found in Flat UI, by designmodo.
  * http://designmodo.com/flat-free/
  */
-/* =======================================================
- * GENERAL
- * ======================================================= */
 @-webkit-keyframes $animation-name {
   0% {
     opacity: 1.0; }
@@ -91,15 +88,13 @@ ol, ul {
     opacity: 1.0; } }
 
 html, body {
-  height: 100%; }
+  background-color: #000000; }
 
 body {
-  background-color: #000000;
   font-family: 'Quicksand', 'Lato', 'Helvetica Neue', 'Helvetica', sans-serif;
   font-size: 62.5%;
-  line-height: normal; }
-
-* {
+  line-height: normal;
+  overflow: hidden;
   color: rgba(255, 255, 255, 0.9); }
 
 h1, h2, h3, h4, h5, h6 {
@@ -174,9 +169,18 @@ h1, h2, h3, h4, h5, h6 {
 .white {
   background-color: #ffffff; }
 
+.foreground {
+  position: relative;
+  z-index: 1; }
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0; }
+
 p {
-  margin: 0 !important;
-  padding: 0 !important; }
+  margin: 0;
+  padding: 0; }
 
 .huge {
   font-size: 3rem; }
@@ -199,7 +203,7 @@ p, .normal {
 .btn {
   background-color: #000000;
   border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 4px;
+  border-radius: 2px;
   color: rgba(255, 255, 255, 0.9);
   padding: 6px 0;
   font-size: 1rem;
@@ -214,7 +218,7 @@ p, .normal {
     background-color: rgba(255, 255, 255, 0.9); }
   .btn:focus {
     outline: none; }
-  .btn.unselected, .btn.disabled {
+  .btn.unselected, .btn.disabled, .btn[disabled] {
     opacity: 0.5; }
   .btn.selected {
     opacity: 1; }
@@ -264,8 +268,7 @@ p, .normal {
   background-color: #ffffff;
   font-size: 1.3rem;
   line-height: 3rem;
-  height: 3rem;
-  margin: 0 auto; }
+  height: 3rem; }
 
 /* =======================================================
  * CHECKIN
@@ -302,3 +305,145 @@ p, .normal {
   background-color: white;
   height: 10px;
   width: 0; }
+
+#survey {
+  /* Special styling for WebKit/Blink */
+  /* All the same stuff for Firefox */ }
+  #survey .section-center {
+    padding: 10px;
+    box-sizing: border-box; }
+  #survey .question {
+    width: 100%;
+    height: 100%; }
+  #survey .label {
+    text-align: left;
+    padding-bottom: 6px;
+    font-style: italic;
+    font-size: 1.1rem; }
+  #survey .answer {
+    font-size: 1rem;
+    position: relative;
+    padding: 8px 0 6px 0;
+    margin-bottom: 1px;
+    border-radius: 2px;
+    -webkit-transition: background-color 0.2s;
+    -moz-transition: background-color 0.2s;
+    -ms-transition: background-color 0.2s;
+    -o-transition: background-color 0.2s;
+    transition: background-color 0.2s; }
+    #survey .answer.radio, #survey .answer.checkbox {
+      padding-left: 50px; }
+    #survey .answer.selected {
+      background-color: rgba(255, 255, 255, 0.2); }
+    #survey .answer.radio:before {
+      content: '';
+      display: block;
+      position: absolute;
+      left: 10px;
+      width: 16px;
+      height: 16px;
+      background-color: transparent;
+      border-radius: 50%;
+      border: 1px solid white;
+      -webkit-transition: background-color 0.2s;
+      -moz-transition: background-color 0.2s;
+      -ms-transition: background-color 0.2s;
+      -o-transition: background-color 0.2s;
+      transition: background-color 0.2s; }
+    #survey .answer.radio.selected:before {
+      background-color: white; }
+    #survey .answer.checkbox:before {
+      content: '';
+      display: block;
+      position: absolute;
+      left: 10px;
+      width: 16px;
+      height: 16px;
+      background-color: transparent;
+      border-radius: 2px;
+      border: 1px solid white;
+      -webkit-transition: background-color 0.2s;
+      -moz-transition: background-color 0.2s;
+      -ms-transition: background-color 0.2s;
+      -o-transition: background-color 0.2s;
+      transition: background-color 0.2s; }
+    #survey .answer.checkbox.selected:before {
+      background-color: white; }
+  #survey input[type=range] {
+    -webkit-appearance: none;
+    /* Hides the slider so that custom slider can be made */
+    width: 100%;
+    /* Specific width is required for Firefox. */
+    background-color: transparent; }
+  #survey input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; }
+  #survey input[type=range]:focus {
+    outline: none;
+    /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */ }
+  #survey input[type=range]::-ms-track {
+    width: 100%;
+    cursor: pointer;
+    background: transparent;
+    /* Hides the slider so custom styles can be added */
+    border-color: transparent;
+    color: transparent; }
+  #survey input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    margin-top: -17px;
+    /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */ }
+  #survey input[type=range]::-moz-range-thumb {
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer; }
+  #survey input[type=range]::-webkit-slider-runnable-track {
+    height: 8px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 3px;
+    border: 0.2px solid #010101; }
+  #survey input[type=range]:focus::-webkit-slider-runnable-track {
+    background: rgba(255, 255, 255, 0.9); }
+  #survey input[type=range]::-moz-range-track {
+    height: 8px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 3px;
+    border: 0.2px solid #010101; }
+  #survey input[type=range].slider {
+    width: 100%;
+    margin: 20px 0;
+    float: left; }
+  #survey .textarea {
+    color: #000000;
+    padding: 10px; }
+  #survey .feedback {
+    font-size: 2rem;
+    display: block;
+    text-align: center; }
+  #survey .counter {
+    font-size: 2rem;
+    font-style: italic;
+    position: absolute;
+    top: 20px;
+    right: 20px; }
+  #survey .thanks {
+    font-size: 2rem; }
+  @media (min-width: 10px) and (orientation: portrait) {
+    #survey {
+      position: relative; }
+    #survey .counter {
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      text-align: right; } }

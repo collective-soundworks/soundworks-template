@@ -13,7 +13,7 @@ const app = () => {
   client.init('player');
 
   // Instantiate the modules
-  const welcome = new Welcome();
+  const welcome = new Welcome({ fullScreen: false });
   const checkin = new ClientCheckin({ showDialog: false });
   const loader = new Loader({ files: audioFiles });
   const performance = new PlayerPerformance(loader);
