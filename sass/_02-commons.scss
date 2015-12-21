@@ -2,7 +2,7 @@
 // GLOBALS
 // -----------------------------------------------------------------
 
-$backgroundColor: #121212;
+$backgroundColor: #080808;
 $foregroundColor: $white;
 $textColor: rgba(255, 255, 255, 0.9);
 $borderRadius: 2px;
@@ -68,7 +68,8 @@ p {
 // LAYOUT HELPERS
 // -----------------------------------------------------------------
 
-.container {
+// default container of the application
+#container {
   position: relative;
 }
 
@@ -83,6 +84,7 @@ p {
   left: 0;
 }
 
+// center horizontally
 .flex-center {
   box-sizing: border-box;
   padding: 10px;
@@ -95,26 +97,10 @@ p {
   }
 }
 
+// center horizontally and vertically
 .flex-middle {
   @extend .flex-center;
   align-items: center;
-}
-
-.landscape .portrait-only {
-  display: none;
-}
-
-.landscape br.portrait-only {
-  content: ' ';
-  display: inline;
-
-  &:after {
-    content: ' ';
-  }
-}
-
-.soft-blink {
-  @include animation('soft-blink 3.6s ease-in-out infinite');
 }
 
 // -----------------------------------------------------------------
@@ -145,7 +131,6 @@ p, .normal {
   font-style: italic;
 }
 
-// common elements
 .btn {
   background-color: $backgroundColor;
   border: 1px solid $textColor;
@@ -171,6 +156,20 @@ p, .normal {
 
   &.selected {
     opacity: 1;
+  }
+}
+
+.landscape .portrait-only {
+  display: none;
+}
+
+// transform a <br> in ' ' in landscape mode
+.landscape br.portrait-only {
+  content: ' ';
+  display: inline;
+
+  &:after {
+    content: ' ';
   }
 }
 
