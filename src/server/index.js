@@ -13,6 +13,7 @@ server.start();
 const checkin = new ServerCheckin({ capacity: 100 });
 const performance = new PlayerPerformance();
 
+
 // Map modules to client types:
 // - the `'player'` clients (who take part in the scenario by connecting to the
 //   server through the root URL) need to communicate with the `checkin` and the
@@ -22,4 +23,4 @@ const performance = new PlayerPerformance();
 //   URL).
 server.map('player', checkin, performance);
 // server.map('soloist', soloistPerformance);
-// server.map('conductor', control, conductorPerformance);
+

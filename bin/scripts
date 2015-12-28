@@ -163,8 +163,7 @@ function processStyles(src) {
 
       sass.render({
         file: item.path,
-        // outFile: outFile,
-        // outputStyle: 'compressed',
+        outputStyle: 'compressed',
         sourceMap: true
       }, function(err, result) {
         if (err) { return console.error(err.message); }

@@ -47,7 +47,7 @@ const template = `
   <canvas class="background"></canvas>
   <div class="foreground">
     <div class="section-top flex-middle">
-      <p class="big"><%= go %></p>
+      <p class="big"><%= title %></p>
     </div>
     <div class="section-center flex-center"></div>
     <div class="section-bottom flex-middle"></div>
@@ -71,7 +71,7 @@ export default class PlayerPerformance extends ClientPerformance {
   init() {
     // Define elements for the view
     this.template = template;
-    this.content = { go: `Let's go!` };
+    this.content = { title: `Let's go!` };
     this.viewCtor = CanvasView;
     this.view = this.createDefaultView();
   }

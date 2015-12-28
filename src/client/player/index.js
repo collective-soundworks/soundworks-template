@@ -1,5 +1,5 @@
 // Import Soundworks library modules (client side)
-import { client, ClientCheckin, Welcome, Loader } from 'soundworks/client';
+import { client, ClientCheckin, Welcome, Loader, ClientControl } from 'soundworks/client';
 // Import Soundfield modules (client side)
 import PlayerPerformance from './PlayerPerformance.js';
 
@@ -9,7 +9,6 @@ const audioFiles = ['sounds/sound-welcome.mp3', 'sounds/sound-others.mp3'];
 const init = () => {
   // Initialize the client
   client.init('player');
-
   // Instantiate the modules
   const welcome = new Welcome({ fullScreen: false });
   const checkin = new ClientCheckin({ showDialog: false });
