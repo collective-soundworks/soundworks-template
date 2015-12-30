@@ -1,3 +1,5 @@
+// Handle sourceMaps in node
+import 'source-map-support/register';
 // Import Soundworks library modules (server side)
 import soundworks from 'soundworks/server';
 // Import server side performance module
