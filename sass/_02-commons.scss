@@ -89,10 +89,12 @@ p {
   box-sizing: border-box;
   padding: 10px;
   display: flex;
+  display: -webkit-flex; /* Safari */
 
   & > * {
     text-align: center;
     flex-basis: 100%;
+    -webkit-flex-basis: 100%;
     width: 100%;
   }
 }
@@ -101,6 +103,7 @@ p {
 .flex-middle {
   @extend .flex-center;
   align-items: center;
+  -webkit-align-items: center;
 }
 
 // -----------------------------------------------------------------
