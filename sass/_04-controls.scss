@@ -14,7 +14,7 @@
   $elmMargins: 4px auto;
   $innerHeight: $elmHeight - ($elmPadding * 2) - 2; /* 2 for borders */
 
-  $legendText: italic bold 14px $mainFont;
+  $legendText: italic normal 14px $mainFont;
   $inputText: normal normal 14px $mainFont;
   $unitText: italic normal 14px $mainFont;
   $textLegend: normal bold 15px $mainFont;

@@ -9,12 +9,11 @@ const server = soundworks.server;
 const ServerCheckin = soundworks.ServerCheckin;
 
 // Launch server
-server.start();
+server.start({ appName: 'Template' });
 
 // Instantiate the modules
 const checkin = new ServerCheckin({ capacity: 100 });
 const performance = new PlayerPerformance();
-
 
 // Map modules to client types:
 // - the `'player'` clients (who take part in the scenario by connecting to the
@@ -25,4 +24,3 @@ const performance = new PlayerPerformance();
 //   URL).
 server.map('player', checkin, performance);
 // server.map('soloist', soloistPerformance);
-
