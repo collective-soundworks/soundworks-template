@@ -96,10 +96,12 @@
     overflow: hidden;
     flex-basis: 80%;
   }
+
   .progress-bar {
     background-color: white;
     height: $loaderProgressBarHeight;
-    width: 0; // is updated from javascript
+    width: 0; // updated from javascript
+    @include transition(width 150ms);
   }
 }
 

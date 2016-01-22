@@ -69,7 +69,7 @@ export default class PlayerPerformance extends ClientPerformance {
   }
 
   init() {
-    // Define elements for the view
+    // Initialize the view
     this.template = template;
     this.content = { title: `Let's go!` };
     this.viewCtor = CanvasView;
