@@ -1,19 +1,19 @@
 // Handle sourceMaps in node
 import 'source-map-support/register';
 // Import Soundworks library modules (server side)
-import soundworks from 'soundworks/server';
-// Import server side performance module
-import PlayerPerformance from './PlayerPerformance';
+// import soundworks from 'soundworks/server';
+import server from 'soundworks/server/core/server';
+import ServerCheckin from 'soundworks/server/services/ServerCheckin';
 
-const server = soundworks.server;
-const ServerCheckin = soundworks.ServerCheckin;
+// Import server side performance module
+import PlayerExperience from './PlayerExperience';
 
 // Launch server
 server.start({ appName: 'Template' });
 
 // Instantiate the modules
 const checkin = new ServerCheckin({ capacity: 100 });
-const performance = new PlayerPerformance();
+const experience = new PlayerExperience();
 
 // Map modules to client types:
 // - the `'player'` clients (who take part in the scenario by connecting to the
@@ -22,5 +22,5 @@ const performance = new PlayerPerformance();
 // - we could also map other modules to additional client types (who would take
 //   part in the scenario by connecting to the server through the '/clientType'
 //   URL).
-server.map('player', checkin, performance);
+server.map('player', checkin, experience);
 // server.map('soloist', soloistPerformance);

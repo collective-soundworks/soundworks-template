@@ -1,15 +1,15 @@
 // Import Soundworks modules (server side)
-import { ServerPerformance } from 'soundworks/server';
+import { Experience } from 'soundworks/server';
 
 /**
  * '`player`' performance module (server side).
  */
-export default class PlayerPerformance extends ServerPerformance {
+export default class PlayerExperience extends Experience {
   /**
    * Constructor, to instantiate the class.
    */
   constructor(options = {}) {
-    super(options);
+    super();
   }
 
   /**

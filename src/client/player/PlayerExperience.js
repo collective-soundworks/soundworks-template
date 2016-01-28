@@ -3,10 +3,9 @@ import soundworks from 'soundworks/client';
 
 const audioContext = soundworks.audioContext;
 const client = soundworks.client;
-const ClientPerformance = soundworks.ClientPerformance;
+const Experience = soundworks.Experience;
 const Renderer = soundworks.display.Renderer;
 const CanvasView = soundworks.display.CanvasView;
-
 
 class PerformanceRenderer extends Renderer {
   constructor(vx, vy) {
@@ -59,11 +58,13 @@ const template = `
  * This performance plays a sound when it starts, and plays another sound when
  * other clients join the performance.
  */
-export default class PlayerPerformance extends ClientPerformance {
-  constructor(loader, options = {}) {
-    super(options);
+export default class PlayerExperience extends Experience {
+  constructor(audioFiles) {
+    super();
 
-    this._loader = loader; // the loader module
+    this.welcome = this.require('welcome', { fullScreen: false });
+    this.loader = this.require('loader', { files: audioFiles });
+    this.checkin = this.require('checkin', { showDialog: false });
 
     this.init();
   }
@@ -79,9 +80,13 @@ export default class PlayerPerformance extends ClientPerformance {
   start() {
     super.start(); // don't forget this
 
+    if (!this.hasStarted)
+      this.init();
+
+    this.show();
     // Play the welcome sound immediately
     const src = audioContext.createBufferSource();
-    src.buffer = this._loader.buffers[0]; // get first buffer from loader
+    src.buffer = this.loader.buffers[0]; // get first buffer from loader
     src.connect(audioContext.destination);
     src.start(audioContext.currentTime);
 
@@ -90,7 +95,7 @@ export default class PlayerPerformance extends ClientPerformance {
     this.receive('play', () => {
       const delay = Math.random();
       const src = audioContext.createBufferSource();
-      src.buffer = this._loader.buffers[1]; // get second buffer from loader
+      src.buffer = this.loader.buffers[1]; // get second buffer from loader
       src.connect(audioContext.destination);
       src.start(audioContext.currentTime + delay);
     });
