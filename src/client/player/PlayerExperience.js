@@ -54,9 +54,9 @@ const template = `
 `;
 
 /**
- * '`player`' performance module (client side).
- * This performance plays a sound when it starts, and plays another sound when
- * other clients join the performance.
+ * `player` experience.
+ * This experience plays a sound when it starts, and plays another sound when
+ * other clients join the experience.
  */
 export default class PlayerExperience extends Experience {
   constructor(audioFiles) {
@@ -84,23 +84,26 @@ export default class PlayerExperience extends Experience {
       this.init();
 
     this.show();
-    // Play the welcome sound immediately
+    // Play the first loaded buffer immediately
     const src = audioContext.createBufferSource();
-    src.buffer = this.loader.buffers[0]; // get first buffer from loader
+    src.buffer = this.loader.buffers[0];
     src.connect(audioContext.destination);
     src.start(audioContext.currentTime);
 
-    // Play another sound when we receive a message from the server (that
-    // indicates that another client joined the performance)
+    // Play the second loaded buffer when the message `play` is received from the server,
+    // the message is send when another player joins the experience.
     this.receive('play', () => {
       const delay = Math.random();
       const src = audioContext.createBufferSource();
-      src.buffer = this.loader.buffers[1]; // get second buffer from loader
+      src.buffer = this.loader.buffers[1];
       src.connect(audioContext.destination);
       src.start(audioContext.currentTime + delay);
     });
 
-    // initialize rendering
+    // Initialize rendering
+    this.renderer = new PerformanceRenderer(100, 100);
+    this.view.addRenderer(this.renderer);
+    // This given function is called before each update (`Renderer.render`) of the canvas
     this.view.setPreRender(function(ctx, dt) {
       ctx.save();
       ctx.globalAlpha = 0.05;
@@ -109,11 +112,8 @@ export default class PlayerExperience extends Experience {
       ctx.restore();
     });
 
-    this.renderer = new PerformanceRenderer(100, 100);
-    this.view.addRenderer(this.renderer);
-
     // We would usually call the 'done' method when the module can hand over the
-    // control to subsequent modules, however since the performance is the last
+    // control to subsequent modules, however since the experience is the last
     // module to be called in this scenario, we don't need it here.
     // this.done();
   }
