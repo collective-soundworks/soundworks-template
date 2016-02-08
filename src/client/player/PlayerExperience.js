@@ -65,8 +65,6 @@ export default class PlayerExperience extends Experience {
     this.welcome = this.require('welcome', { fullScreen: false });
     this.loader = this.require('loader', { files: audioFiles });
     this.checkin = this.require('checkin', { showDialog: false });
-
-    this.init();
   }
 
   init() {
@@ -84,6 +82,7 @@ export default class PlayerExperience extends Experience {
       this.init();
 
     this.show();
+
     // Play the first loaded buffer immediately
     const src = audioContext.createBufferSource();
     src.buffer = this.loader.buffers[0];
