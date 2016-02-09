@@ -53,8 +53,6 @@ const template = `
   </div>
 `;
 
-
-const config = '/config/pouet.json';
 /**
  * `player` experience.
  * This experience plays a sound when it starts, and plays another sound when
@@ -65,7 +63,7 @@ export default class PlayerExperience extends Experience {
     super();
 
     this.welcome = this.require('welcome', { fullScreen: false });
-    this.loader = this.require('loader', { files: config });
+    this.loader = this.require('loader', { files: audioFiles });
     this.checkin = this.require('checkin', { showDialog: false });
   }
 
@@ -82,8 +80,6 @@ export default class PlayerExperience extends Experience {
 
     if (!this.hasStarted)
       this.init();
-
-    this.createGraph(this.loader.config);
 
     this.show();
 
