@@ -1,2 +1,5 @@
 node_modules
 sass/_backup
+.DS_Store
+Thumbs.db
+npm-debug.log

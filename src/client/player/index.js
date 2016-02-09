@@ -12,7 +12,7 @@ const init = () => {
 
   // configure client application
   soundworks.client.init('player', { socketIO, appName });
-  const performance = new PlayerExperience(audioFiles);
+  const experience = new PlayerExperience(audioFiles);
 
   // start the application
   soundworks.client.start();

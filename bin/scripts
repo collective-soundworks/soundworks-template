@@ -8,9 +8,10 @@ var util = require('util');
 var babel = require('babel');
 var browserify = require('browserify');
 var fse = require('fs-extra');
-var nodeWatch = require('node-watch');
+// var nodeWatch = require('node-watch');
 var sass = require('node-sass');
 var watchify = require('watchify');
+var hound = require('hound');
 
 'use strict';
 
@@ -61,21 +62,14 @@ switch (command) {
   case '--watch':
     watch();
     break;
-  case '--bundle':
+  case '--transpile':
     bundleAll();
     break;
-  // case '--run':
-  //   runServer();
-  //   break;
 }
 
 // launch the server;
 var cwd = process.cwd();
 runServer();
-
-// remove boring .DS_Store files
-console.log(util.format('%s=> Delete ".DS_Store" files%s', green, NC));
-execSync("find . -name '*.DS_Store' -type f -delete");
 
 process.on('uncaughtException', function (err) {
   console.log('Caught exception: ' + err);
@@ -124,27 +118,48 @@ function killServer() {
 function watch() {
   var toMonitor = [serverSrcDir, viewsDir, clientSrcDir, styleSrcDir];
 
-  nodeWatch(toMonitor, function(filename) {
-    // if server file - transpile file and restart server
-    if (filename.match(serverSrcDir)) {
-      killServer();
-      transpile(filename, [], runServer);
+  // watch server js scripts (transpile file and restart server)
+  var serverWatcher = hound.watch(serverSrcDir);
+  serverWatcher.on('create', function(filename, stats) {
+    killServer();
+    transpile(filename, [], runServer);
+  });
 
-    // if a view - restart the server
-    } else if (filename.match(viewsDir)) {
-      killServer();
-      runServer();
+  serverWatcher.on('change', function(filename, stats) {
+    killServer();
+    transpile(filename, [], runServer);
+  });
 
-    // if client file - transpile file and rebundle client
-    } else if (filename.match(clientSrcDir)) {
-      // bundle(filename);
-      transpile(filename, [], function() {
-        bundle(filename);
-      });
-    // // sass file - bundle css file
-    } else if (filename.match(styleSrcDir)) {
-      processStyles(filename);
-    }
+  // watch client js files (transpile file and rebundle client)
+  var clientWatcher = hound.watch(clientSrcDir);
+  clientWatcher.on('create', function(filename, stats) {
+    transpile(filename, [], function() { bundle(filename); });
+  });
+
+  clientWatcher.on('change', function(filename, stats) {
+    transpile(filename, [], function() { bundle(filename); });
+  });
+
+  // watch template scripts (restart the server)
+  var viewsWatcher = hound.watch(viewsDir);
+  viewsWatcher.on('create', function(filename, stats) {
+    killServer();
+    runServer();
+  });
+
+  viewsWatcher.on('change', function(filename, stats) {
+    killServer();
+    runServer();
+  });
+
+  // watch sass files (bundle css file)
+  var sassWatcher = hound.watch(styleSrcDir);
+  sassWatcher.on('create', function(filename, stats) {
+    processStyles(filename);
+  });
+
+  sassWatcher.on('change', function(filename, stats) {
+    processStyles(filename);
   });
 }
 
@@ -178,9 +193,16 @@ function processStyles(src) {
 
 
 function transpile(src, stack, callback) {
-  if (src === undefined && stack && stack.length) {
-    return transpile(stack.shift(), stack, callback);
+  function next() {
+    if (stack && stack.length)
+      transpile(stack.shift(), stack, callback);
+    else if (!stack.length && callback)
+      callback();
   }
+
+  // console.log(src, path.extname(src));
+  if (src === undefined || path.extname(src) !== '.js')
+    return next();
 
   var target = getJsTargetName(src);
 
@@ -193,12 +215,7 @@ function transpile(src, stack, callback) {
       var msg = '%s=> "%s" successfully transpiled to "%s"%s';
       console.log(util.format(msg, green, src, target, NC));
 
-      // next
-      if (stack && stack.length) {
-        transpile(stack.shift(), stack, callback);
-      } else if (!stack.length && callback) {
-        callback();
-      }
+      next();
     });
   });
 }
