@@ -8,10 +8,9 @@ var util = require('util');
 var babel = require('babel');
 var browserify = require('browserify');
 var fse = require('fs-extra');
-// var nodeWatch = require('node-watch');
+var hound = require('hound');
 var sass = require('node-sass');
 var watchify = require('watchify');
-var hound = require('hound');
 
 'use strict';
 
