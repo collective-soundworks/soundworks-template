@@ -5,13 +5,14 @@
 .space {
   svg {
     overflow: hidden;
+    background-color: #121212;
   }
 
   .point {
     fill: $foregroundColor;
 
     &.selected {
-      fill: steelblue
+      fill: darken($foregroundColor, 70%);
     }
   }
 

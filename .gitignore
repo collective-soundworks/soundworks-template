@@ -1,5 +1,4 @@
 node_modules
-sass/_backup
+npm-debug.log
 .DS_Store
 Thumbs.db
-npm-debug.log

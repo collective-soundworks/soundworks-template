@@ -64,7 +64,7 @@ export default class PlayerExperience extends Experience {
 
     this.welcome = this.require('welcome', { fullScreen: false });
     this.loader = this.require('loader', { files: audioFiles });
-    this.checkin = this.require('checkin', { showDialog: false });
+    this.checkin = this.require('checkin', { showDialog: true });
   }
 
   init() {
