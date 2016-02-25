@@ -2,6 +2,7 @@
 // VIEW COMPONENTS
 // ------------------------------------------------------------
 
+// @todo - change to id
 .space {
   svg {
     overflow: hidden;
@@ -266,6 +267,7 @@
   .textarea {
     color: $backgroundColor;
     padding: 10px;
+    box-sizing: border-box;
   }
 
   .feedback {
