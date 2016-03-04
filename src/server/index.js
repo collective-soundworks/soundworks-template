@@ -9,7 +9,8 @@ const setup = {
   area: {
     width: 1,
     height: 1,
-  }
+  },
+  maxClientsPerPosition: 2,
 }
 
 for (let i = 0; i < 3; i++) {
@@ -20,7 +21,15 @@ for (let i = 0; i < 3; i++) {
   }
 }
 
-soundworks.server.init({ appName: 'Template', setup });
+const dummy = {
+  test: {
+    niap: true,
+    bidule: [0, 1, 2],
+  },
+  test2: 42,
+}
+
+soundworks.server.init({ appName: 'Template', setup, dummy });
 
 // Configure the services and create the experience.
 //
@@ -31,17 +40,8 @@ soundworks.server.init({ appName: 'Template', setup });
 // - we could also map activities to additional client types (thus defining a
 //   route (url) of the from: `'/' + clientType`
 
-const checkin = soundworks.server.require('checkin');
-checkin.addClientType('player');
-
-// const placer = soundworks.server.require('placer');
-// placer.addClientType('player');
-
-// const locator = soundworks.server.require('locator');
-// locator.addClientType('player');
-
-const experience = new PlayerExperience();
-experience.addClientType('player');
+const experience = new PlayerExperience('player');
+experience.require('shared-config');
 
 // Start the application with a given name.
 soundworks.server.start();

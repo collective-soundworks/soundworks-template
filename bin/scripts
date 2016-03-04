@@ -32,7 +32,7 @@ var stylePublicDir = 'public/css';
 var babelOptions = {
   sourceMap: 'inline',
   modules: 'common',
-  optional: ['runtime']
+  optional: ['runtime'],
 };
 
 // GLOBALS
@@ -289,7 +289,7 @@ function bundle(src) {
       packageCache: {}, // required for watchify
       plugin: [watchify],
       fullPaths: false,
-    });
+    }).transform('babelify');
 
     function rebundle() {
       var start = new Date().getTime();

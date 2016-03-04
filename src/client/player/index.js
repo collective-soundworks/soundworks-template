@@ -3,7 +3,7 @@ import soundworks from 'soundworks/client';
 import PlayerExperience from './PlayerExperience.js';
 // files to load
 const audioFiles = ['sounds/sound-welcome.mp3', 'sounds/sound-others.mp3'];
-window.localStorage.debug = '';
+// window.localStorage.debug = '';
 
 const init = () => {
   // configuration shared by the server (cf. `views/default.ejs`)

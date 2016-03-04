@@ -39,6 +39,7 @@ class PerformanceRenderer extends Renderer {
     ctx.fill();
     ctx.closePath();
     ctx.restore();
+    // console.log(this.canvasWidth, this.canvasHeight);
   }
 }
 
@@ -64,7 +65,7 @@ export default class PlayerExperience extends Experience {
 
     this.welcome = this.require('welcome', { fullScreen: false });
     this.loader = this.require('loader', { files: audioFiles });
-    this.checkin = this.require('checkin', { showDialog: true });
+    this.checkin = this.require('checkin', { showDialog: false });
   }
 
   init() {

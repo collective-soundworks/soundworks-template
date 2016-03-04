@@ -9,7 +9,7 @@
   "version": "0.4.0",
   "scripts": {
     "transpile": "node ./bin/scripts --transpile",
-    "start": "node dist/server/index.js",
+    "serve": "node server/index.js",
     "watch": "node ./bin/scripts --watch"
   },
   "dependencies": {

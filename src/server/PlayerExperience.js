@@ -8,8 +8,10 @@ export default class PlayerExperience extends ServerExperience {
   /**
    * Constructor, to instantiate the class.
    */
-  constructor(options = {}) {
-    super();
+  constructor(clientType) {
+    super(clientType);
+
+    this.checkin = this.require('checkin');
   }
 
   /**
