@@ -4,7 +4,7 @@ Use this template to start writing a [`soundworks`](https://github.com/collectiv
 
 You can find a tutorial in the [*Soundworks* documentation](http://collective-soundworks.github.io/soundworks/).
 
-## Starting a Project
+## Starting a New Project
 
 ```sh
 # clone the repo
