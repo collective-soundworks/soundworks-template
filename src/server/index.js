@@ -4,32 +4,7 @@ import 'source-map-support/register';
 import soundworks from 'soundworks/server';
 import PlayerExperience from './PlayerExperience';
 
-const setup = {
-  coordinates: [],
-  area: {
-    width: 1,
-    height: 1,
-  },
-  maxClientsPerPosition: 2,
-}
-
-for (let i = 0; i < 3; i++) {
-  for (let j = 0; j < 3; j++) {
-    const x = (i + 1) / 3 - (1/6);
-    const y = (j + 1) / 3 - (1/6);
-    setup.coordinates.push([x, y]);
-  }
-}
-
-const dummy = {
-  test: {
-    niap: true,
-    bidule: [0, 1, 2],
-  },
-  test2: 42,
-}
-
-soundworks.server.init({ appName: 'Template', setup, dummy });
+soundworks.server.init({ appName: 'Template' });
 
 // Configure the services and create the experience.
 //
