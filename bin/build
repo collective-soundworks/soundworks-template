@@ -85,13 +85,6 @@ function _getFileList(folder, callback) {
     });
 }
 
-console.log(isAllowed('niap/test.js', false));
-console.log(isAllowed('niap/.test.scss', false));
-console.log(isAllowed('niap/test.ejs', false));
-console.log(isAllowed('niap/test.js~', false));
-console.log(isAllowed('niap/sdflkj.scss~', false));
-return;
-
 const commands = {
   /**
    * Watch the file system and reinit the application accordingly
