@@ -69,6 +69,25 @@ function isAllowed(filename, ensureFile) {
   return isFile && hasAllowedExt && notExcludeFile;
 }
 
+/**
+ * Returns a list of the file in a given folder recursively.
+ */
+function _getFileList(folder, callback) {
+  var files = [];
+
+  fse.walk(folder)
+    .on('data', function(item) {
+      if (item.stats.isFile() && isAllowed(item.path))
+        files.push(item.path);
+    })
+    .on('end', function() {
+      console.log('filelist ---------------');
+      console.log(files);
+      console.log('------------------------');
+      callback(files);
+    });
+}
+
 // console.log(isAllowed('niap/test.js', false));
 // console.log(isAllowed('niap/.test.scss', false));
 // console.log(isAllowed('niap/test.ejs', false));
@@ -94,12 +113,14 @@ const commands = {
 
     server.start();
   },
+
   /**
    * Update all the files (css and js)
    */
   transpile: function() {
-    console.log('@todo - transpile');
+    transpile();
   },
+
   /**
    * Start the application
    */
@@ -238,65 +259,84 @@ function watchCommonJavascriptFiles(srcDirectories, distDirectories, isAllowed) 
   });
 }
 
-// function transpile() {
-//   console.log('bundleAll', path.join(cwd, clientSrcDir));
-
-//   var es6files = [];
-//   var sassDone = false;
-//   var sassFolder = path.join(cwd, styleSrcDir);
-
-//   // @NOTE exists is now deprecated
-//   if (!fse.existsSync(sassFolder)) {
-//     sassDone = true;
-//   } else {
-//     fse
-//       .walk(sassFolder)
-//       .on('data', function(item) {
-//         if (sassDone) { return; }
-//         processStyles(item.path);
-//         sassDone = true;
-//       });
-//   }
-
-//   // transpile all es6 files
-//   fse
-//     .walk(path.join(cwd, jsSrcDir))
-//     .on('data', function(item) {
-//       if (item.stats.isDirectory()) { return; }
-//       es6files.push(item.path);
-//     })
-//     .on('end', function() {
-//       transpile(es6files.shift(), es6files, function() {
-//         // restart server
-//         killServer();
-//         runServer();
-
-//         // rebundle clients
-//         fse
-//           .walk(path.join(cwd, clientSrcDir))
-//           .on('data', function(item) {
-//             // remove directories
-//             if (item.stats.isDirectory()) { return; }
-//             // remove non `index.js` files
-//             if (!/index\.js$/.test(item.path)) { return; }
-//             // remove `index.js` file in subfolders
-//             var filePath = item.path.replace(path.join(cwd, clientSrcDir), '');
-//             if (filePath.split('/').length !== 3) { return; }
-
-//             // prepare path for bundle signature
-//             var bundlePath = item.path.replace(cwd + '/', '');
-//             bundle(bundlePath);
-//           });
-//       });
-//     });
+// function getFolderList(folder) {
 // }
 
+function transpile() {
+  // 1. transpile common files
+  var length = commonSrcDirectories.length;
+  var commonJsIndex = 0;
+
+  function transpileCommonFiles() {
+    var srcDirectory = commonSrcDirectories[commonJsIndex];
+    var distDirectory = commonDistDirectories[commonJsIndex];
+
+    // define what to do next (transpile next common folder or server folder)
+    function next() {
+      commonJsIndex += 1;
+
+      if (commonJsIndex === length)
+        transpileServerFiles();
+      else
+        transpileCommonFiles();
+    }
+
+    fse.stat(srcDirectory, function(err, stat) {
+      if (err || !stat.isDirectory())
+        return next();
+
+      _getFileList(srcDirectory, function(files) {
+        var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
+        transpiler.transpile(undefined, files, next);
+      });
+    });
+  }
+
+  // 2. transpile server files
+  function transpileServerFiles() {
+    var next = transpileClientFiles;
+
+    _getFileList(serverSrcDirectory, function(files) {
+      var transpiler = javascripts.getTranspiler(serverSrcDirectory, serverDistDirectory, isAllowed, babelOptions);
+      transpiler.transpile(undefined, files, next);
+    });
+  }
+
+  // 3. transpile client files
+  function transpileClientFiles() {
+    var next = rebundleClientFiles;
+
+    _getFileList(clientSrcDirectory, function(files) {
+      var transpiler = javascripts.getTranspiler(clientSrcDirectory, clientDistDirectory, isAllowed, babelOptions);
+      transpiler.transpile(undefined, files, next);
+    });
+  }
+
+  // 4. rebundle client files
+  function rebundleClientFiles() {
+    // find all first level directories in clientDistDirectory
+    const clientIndexes = fse.readdirSync(clientSrcDirectory).filter(function(filename) {
+      return fse.statSync(path.join(clientSrcDirectory, filename)).isDirectory();
+    }).map(function(dirname) {
+      return path.join(clientSrcDirectory, dirname, 'index.js');
+    });
+
+    var transpiler = javascripts.getTranspiler(clientSrcDirectory, clientDistDirectory, isAllowed, babelOptions, browserifyOptions);
+
+    clientIndexes.forEach(function(filename, index) {
+      transpiler.bundle(filename, clientPublicDirectory, true, true);
+    });
+  }
+
+  // start the chain
+  transpileCommonFiles();
+}
 
 
 /**
- * -----------------------------------------------
+ * --------------------------------------------------------------------------
  * Process and execute the given command.
- * ----------------------------------------------- */
+ * -------------------------------------------------------------------------- */
 var command = process.argv[2];
 var args = process.argv.slice(3);
 var argv = {};
@@ -308,14 +348,14 @@ switch (command) {
   case '--watch':
     commands.watch();
     break;
-  // case '--transpile':
-  //   commands.transpile();
-  //   break;
-  // case '--start':
-  //   commands.start();
-  //   break;
+  case '--transpile':
+    commands.transpile();
+    break;
+  case '--start':
+    commands.start();
+    break;
 }
-/* ----------------------------------------------- */
+/* -------------------------------------------------------------------------- */
 
 
 

@@ -55,7 +55,7 @@ function getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, bro
   /**
    * returns the transpiler to be consumed.
    */
-  return {
+  var transpiler = {
     /**
      * Transpile the given file from es6 to es5. If the given stack is not empty
      * call the method recursively till its empty. When the stack is empty,
@@ -68,7 +68,7 @@ function getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, bro
        */
       function next() {
         if (stack && stack.length > 0)
-          transpile(stack.shift(), stack, callback);
+          transpiler.transpile(stack.shift(), stack, callback);
         else if (stack.length === 0 && callback)
           callback();
       }
@@ -105,7 +105,7 @@ function getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, bro
      * folder defines the entry point of the particular client. The browserified
      * file is name after the name of the folder.
      */
-    bundle: function(filename, bundleDistDirectory, ensureFile) {
+    bundle: function(filename, bundleDistDirectory, ensureFile, stopWhenDone) {
       if (filename === undefined || !isAllowed(filename, ensureFile))
         return;
 
@@ -129,6 +129,9 @@ function getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, bro
             .on('end', function() {
               var dt = (new Date().getTime() - start);
               console.log('=> "%s" successfully created (compiled in: %sms)'.green, outFilename, dt);
+
+              if (stopWhenDone)
+                bundler.close();
             })
             .pipe(fse.createWriteStream(outFilename));
         }
@@ -161,6 +164,8 @@ function getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, bro
       }
     },
   };
+
+  return transpiler;
 }
 
 module.exports = {

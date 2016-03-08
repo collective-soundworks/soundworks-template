@@ -8,7 +8,7 @@ var sass = require('node-sass');
  * Find all files recursively in `srcDirectory` that pass the allowed function
  * and are not prefixed by `_`. Transpile them to the `distDirectory`
  */
-function processSass() {
+function processSass(srcDirectory, distDirectory, isAllowed) {
   fse
     .walk(srcDirectory)
     .on('data', function(item) {
