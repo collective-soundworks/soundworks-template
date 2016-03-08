@@ -85,12 +85,12 @@ function _getFileList(folder, callback) {
     });
 }
 
-// console.log(isAllowed('niap/test.js', false));
-// console.log(isAllowed('niap/.test.scss', false));
-// console.log(isAllowed('niap/test.ejs', false));
-// console.log(isAllowed('niap/test.js~', false));
-// console.log(isAllowed('niap/sdflkj.scss~', false));
-// return;
+console.log(isAllowed('niap/test.js', false));
+console.log(isAllowed('niap/.test.scss', false));
+console.log(isAllowed('niap/test.ejs', false));
+console.log(isAllowed('niap/test.js~', false));
+console.log(isAllowed('niap/sdflkj.scss~', false));
+return;
 
 const commands = {
   /**

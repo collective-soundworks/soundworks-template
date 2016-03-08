@@ -6,6 +6,8 @@ var fse = require('fs-extra');
 var path = require('path');
 var watchify = require('watchify');
 
+'use strict';
+
 /**
  * Create a transpiler object binded to a `srcDirectory` and a `distDirectory`
  */
