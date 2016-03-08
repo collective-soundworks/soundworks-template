@@ -4,8 +4,27 @@ Use this template to start writing a [`soundworks`](https://github.com/collectiv
 
 You can find a tutorial in the [*Soundworks* documentation](http://collective-soundworks.github.io/soundworks/).
 
+## Starting a Project
 
-## Scripts
+```sh
+# clone the repo
+$ git clone https://github.com/collective-soundworks/soundworks-template.git my_app
+$ cd my_app
+
+# remove git history in order to make your own one
+$ rm -Rf .git
+
+# install dependencies
+$ npm install
+
+# bootstrap the project
+$ npm run transpile
+
+# start to hack
+$ npm run watch
+```
+
+## Available Commands
 
 ```shell
 $ npm run watch
