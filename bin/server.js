@@ -22,7 +22,7 @@ var server = null;
  */
 function start() {
   if (fse.statSync(serverIndex).isFile()) {
-    console.log('[START SERVER]'.cyan);
+    console.log('=> START SERVER'.cyan);
     server = childProcess.fork(serverIndex);
   }
 }
@@ -32,7 +32,7 @@ function start() {
  */
 function stop() {
   if (server) {
-    console.log('[STOP SERVER]'.cyan);
+    console.log('=> STOP SERVER'.cyan);
     server.kill();
     server = null;
   }

@@ -8,8 +8,8 @@
   "description": "This template allows you to bootstrap a Soundworks scenario. The example scenario of this template allows the connected clients to play a sound.",
   "version": "0.4.0",
   "scripts": {
+    "start": "node ./bin/scripts --start",
     "transpile": "node ./bin/scripts --transpile",
-    "serve": "node server/index.js",
     "watch": "node ./bin/scripts --watch"
   },
   "dependencies": {

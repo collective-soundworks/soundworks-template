@@ -330,6 +330,9 @@ function transpile() {
 
   // start the chain
   transpileCommonFiles();
+
+  // 5. rebundle css files
+  styles.process(cssSrcDirectory, cssPublicDirectory, isAllowed);
 }
 
 
