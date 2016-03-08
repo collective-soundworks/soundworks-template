@@ -26,8 +26,8 @@
     "browserify": "^13.0.0",
     "colors": "^1.1.2",
     "fs-extra": "^0.26.2",
-    "hound": "^1.0.4",
     "node-sass": "^3.4.1",
+    "watch": "^0.17.1",
     "watchify": "^3.7.0"
   }
 }
