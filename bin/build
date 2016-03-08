@@ -125,11 +125,11 @@ const commands = {
     // watch sass files
     watchSassFiles(cssSrcDirectory, cssPublicDirectory);
     // watch javascript server files
-    watchServerJavascriptFiles(serverSrcDirectory, serverDistDirectory, isAllowed);
+    watchServerJavascriptFiles(serverSrcDirectory, serverDistDirectory);
     // watch javascript client files
-    watchClientJavascriptFiles(clientSrcDirectory, clientDistDirectory, clientPublicDirectory, isAllowed);
+    watchClientJavascriptFiles(clientSrcDirectory, clientDistDirectory, clientPublicDirectory);
     // watch common javascript files
-    watchCommonJavascriptFiles(commonSrcDirectories, commonDistDirectories, isAllowed);
+    watchCommonJavascriptFiles(commonSrcDirectories, commonDistDirectories);
 
     server.start();
   },
@@ -192,7 +192,7 @@ function watchSassFiles(srcDirectory, distDirectory) {
 /**
  * Watch server js files.
  */
-function watchServerJavascriptFiles(srcDirectory, distDirectory, isAllowed) {
+function watchServerJavascriptFiles(srcDirectory, distDirectory) {
   watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
     var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
 
@@ -222,7 +222,7 @@ function watchServerJavascriptFiles(srcDirectory, distDirectory, isAllowed) {
 /**
  * Watch client js files.
  */
-function watchClientJavascriptFiles(srcDirectory, distDirectory, publicDirectory, isAllowed) {
+function watchClientJavascriptFiles(srcDirectory, distDirectory, publicDirectory) {
   watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
     var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, browserifyOptions);
 
@@ -247,7 +247,7 @@ function watchClientJavascriptFiles(srcDirectory, distDirectory, publicDirectory
  * Watch common javascript files. Restarts the server as these files can beused server side.
  * For client side, watchify should do the job.
  */
-function watchCommonJavascriptFiles(srcDirectories, distDirectories, isAllowed) {
+function watchCommonJavascriptFiles(srcDirectories, distDirectories) {
   srcDirectories.forEach(function(srcDirectory, index) {
     fse.stat(srcDirectory, function(err, stats) {
       if (err || !stats.isDirectory)
