@@ -5,12 +5,12 @@
     "Norbert Schnell",
     "Benjamin Matuszewski"
   ],
-  "description": "This template allows you to bootstrap a Soundworks scenario. The example scenario of this template allows the connected clients to play a sound.",
+  "description": "This template allows to bootstrap a Soundworks application. The example scenario allows the connected clients to play a sound.",
   "version": "0.4.0",
   "scripts": {
-    "start": "node ./bin/scripts --start",
-    "transpile": "node ./bin/scripts --transpile",
-    "watch": "node ./bin/scripts --watch"
+    "start": "node ./bin/build --start",
+    "transpile": "node ./bin/build --transpile",
+    "watch": "node ./bin/build --watch"
   },
   "dependencies": {
     "babel-runtime": "^5.8.34",

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var babel = require('babel');
 var browserify = require('browserify');
 var colors = require('colors');
