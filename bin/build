@@ -69,7 +69,17 @@ function isAllowed(filename, ensureFile) {
   ensureFile = ensureFile === undefined ? true : ensureFile;
 
   var basename = path.basename(filename);
-  var isFile = ensureFile ? fse.statSync(filename).isFile() : true;
+  var isFile = true;
+
+  if (ensureFile) {
+    try {
+      isFile = fse.lstatSync(filename).isFile() && !fse.lstatSync(filename).isSymbolic();
+    } catch(e) {
+      console.log(e.message);
+      isFile = false;
+    }
+  }
+
   var hasAllowedExt = allowedExtentions.test(basename);
   var notExcludeFile = !excludeFiles.test(basename);
 
@@ -256,8 +266,6 @@ function watchCommonJavascriptFiles(srcDirectories, distDirectories, isAllowed) 
   });
 }
 
-// function getFolderList(folder) {
-// }
 
 function transpile() {
   // 1. transpile common files
