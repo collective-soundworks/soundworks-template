@@ -16,8 +16,9 @@ var cwd = process.cwd();
  */
 var babelOptions = {
   sourceMap: 'inline',
-  modules: 'common',
-  optional: ['runtime'],
+  // modules: 'common',
+  presets: ['es2015'],
+  plugins: ['transform-runtime', 'transform-es2015-modules-commonjs'],
 };
 
 /**
