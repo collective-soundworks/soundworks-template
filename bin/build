@@ -28,6 +28,12 @@ var browserifyOptions = {
   fullPaths: false,
 };
 
+var sassOptions = {
+  outputStyle: 'compressed',
+  sourceMap: true,
+  sourceMapEmbed: true,
+};
+
 /**
  * Watched directories
  */
@@ -146,16 +152,16 @@ function watchSassFiles(srcDirectory, distDirectory, isAllowed) {
 
   watcher.on('create', function(filename, stats) {
     if (isAllowed(filename))
-      styles.process(srcDirectory, distDirectory, isAllowed);
+      styles.process(srcDirectory, distDirectory, isAllowed, sassOptions);
   });
 
   watcher.on('change', function(filename, stats) {
     if (isAllowed(filename))
-      styles.process(srcDirectory, distDirectory, isAllowed);
+      styles.process(srcDirectory, distDirectory, isAllowed, sassOptions);
   });
 
   watcher.on('delete', function(filename, stats) {
-    styles.process(srcDirectory, distDirectory, isAllowed);
+    styles.process(srcDirectory, distDirectory, isAllowed, sassOptions);
   });
 }
 
@@ -322,7 +328,7 @@ function transpile() {
   transpileCommonFiles();
 
   // 5. rebundle css files
-  styles.process(cssSrcDirectory, cssPublicDirectory, isAllowed);
+  styles.process(cssSrcDirectory, cssPublicDirectory, isAllowed, sassOptions);
 }
 
 

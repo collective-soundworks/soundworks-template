@@ -9,7 +9,7 @@ var sass = require('node-sass');
  * Find all files recursively in `srcDirectory` that pass the allowed function
  * and are not prefixed by `_`. Transpile them to the `distDirectory`
  */
-function processSass(srcDirectory, distDirectory, isAllowed) {
+function processSass(srcDirectory, distDirectory, isAllowed, sassOptions) {
   fse
     .walk(srcDirectory)
     .on('data', function(item) {
@@ -21,12 +21,12 @@ function processSass(srcDirectory, distDirectory, isAllowed) {
           .replace(new RegExp('^' + srcDirectory), distDirectory)
           .replace(/\.scss$/, '.css');
 
-        sass.render({
+        Object.assign(sassOptions, {
           file: filename,
-          outputStyle: 'compressed',
-          sourceMap: true,
-          outFile: outFile,
-        }, function(err, result) {
+          outFile: outFile
+        });
+
+        sass.render(sassOptions, function(err, result) {
           if (err) {
             console.log(('%s:%s').red, err.file, err.line);
             console.log(('=> Error: %s').red, err.message);
