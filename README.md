@@ -1,5 +1,6 @@
-# Soundworks template
+# Soundworks Template
 
-Use this template to start writing a [`soundworks`](https://github.com/collective-soundworks/soundworks) application.
+This is a template for a [*Soundworks*](https://github.com/collective-soundworks/soundworks/) application.
+The template includes comprehensive comments in the code.
 
-You can find a tutorial in the [*Soundworks* documentation](http://collective-soundworks.github.io/soundworks/).
+For a complete documentation of the *Soundworks* framework, please refer to http://collective-soundworks.github.io/soundworks/.
