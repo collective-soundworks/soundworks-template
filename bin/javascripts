@@ -123,6 +123,8 @@ function getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, bro
         function rebundle() {
           console.log('=> Start bundling "%s"'.yellow, outFilename);
           var start = new Date().getTime();
+          // ensure file exists or is created
+          fse.ensureFileSync(outFilename);
 
           bundler
             .bundle()
