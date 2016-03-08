@@ -81,9 +81,6 @@ function _getFileList(folder, callback) {
         files.push(item.path);
     })
     .on('end', function() {
-      console.log('filelist ---------------');
-      console.log(files);
-      console.log('------------------------');
       callback(files);
     });
 }
