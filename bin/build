@@ -196,21 +196,21 @@ function watchServerJavascriptFiles(srcDirectory, distDirectory) {
   watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
     var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
 
-    monitor.on('created', function(filename, stats) {
+    monitor.on('created', function(filename) {
       if (isAllowed(filename)) {
         server.stop();
         transpiler.transpile(filename, [], server.start);
       }
     });
 
-    monitor.on('changed', function(filename, stats) {
+    monitor.on('changed', function(filename) {
       if (isAllowed(filename)) {
         server.stop();
         transpiler.transpile(filename, [], server.start);
       }
     });
 
-    monitor.on('removed', function(filename, stats) {
+    monitor.on('removed', function(filename) {
       if (isAllowed(filename, false)) {
         server.stop();
         transpiler.delete(filename, server.start);
@@ -226,17 +226,17 @@ function watchClientJavascriptFiles(srcDirectory, distDirectory, publicDirectory
   watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
     var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, browserifyOptions);
 
-    monitor.on('created', function(filename, stats) {
+    monitor.on('created', function(filename) {
       if (isAllowed(filename))
         transpiler.transpile(filename, [], function() { transpiler.bundle(filename, publicDirectory, true); });
     });
 
-    monitor.on('changed', function(filename, stats) {
+    monitor.on('changed', function(filename) {
       if (isAllowed(filename))
         transpiler.transpile(filename, [], function() { transpiler.bundle(filename, publicDirectory, true); });
     });
 
-    monitor.on('removed', function(filename, stats) {
+    monitor.on('removed', function(filename) {
       if (isAllowed(filename, false))
         transpiler.delete(filename, function() { transpiler.bundle(filename, publicDirectory, false); });
     });
@@ -258,21 +258,21 @@ function watchCommonJavascriptFiles(srcDirectories, distDirectories) {
       watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
         var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
 
-        monitor.on('created', function(filename, stats) {
+        monitor.on('created', function(filename) {
           if (isAllowed(filename)) {
             server.stop();
             transpiler.transpile(filename, [], server.start);
           }
         });
 
-        monitor.on('changed', function(filename, stats) {
+        monitor.on('changed', function(filename) {
           if (isAllowed(filename)) {
             server.stop();
             transpiler.transpile(filename, [], server.start);
           }
         });
 
-        monitor.on('removed', function(filename, stats) {
+        monitor.on('removed', function(filename) {
           if (isAllowed(filename, false)) {
             server.stop();
             transpiler.delete(filename, server.start);
