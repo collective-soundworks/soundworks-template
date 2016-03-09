@@ -1,10 +1,12 @@
 // Import Soundworks modules (server side)
 import { ServerExperience } from 'soundworks/server';
 
+
 /**
  * '`player`' performance module (server side).
  */
 export default class PlayerExperience extends ServerExperience {
+
   /**
    * Constructor, to instantiate the class.
    */

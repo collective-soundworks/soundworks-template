@@ -1,11 +1,11 @@
 // Import Soundworks library (client side)
-import soundworks from 'soundworks/client';
+import * as soundworks from 'soundworks/client';
 
 const audioContext = soundworks.audioContext;
 const client = soundworks.client;
 const Experience = soundworks.Experience;
-const Renderer = soundworks.display.Renderer;
-const CanvasView = soundworks.display.CanvasView;
+const Renderer = soundworks.Renderer;
+const CanvasView = soundworks.CanvasView;
 
 class PerformanceRenderer extends Renderer {
   constructor(vx, vy) {
