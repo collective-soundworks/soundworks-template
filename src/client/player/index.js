@@ -6,7 +6,7 @@ import PlayerExperience from './PlayerExperience.js';
 const audioFiles = ['sounds/sound-welcome.mp3', 'sounds/sound-others.mp3'];
 
 const init = () => {
-  // configuration options shared by the server (cf. `views/default.ejs`)
+  // configuration options shared by the server (cf. `html/default.ejs`)
   const socketIO = window.CONFIG && window.CONFIG.SOCKET_CONFIG;
   const appName = window.CONFIG && window.CONFIG.APP_NAME;
 

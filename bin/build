@@ -51,7 +51,7 @@ var watchOptions = {
 /**
  * Watched directories
  */
-var ejsTemplatesDirectory = path.join(cwd, 'views');
+var ejsTemplatesDirectory = path.join(cwd, 'html');
 // style directories
 var cssSrcDirectory = path.join(cwd, 'sass');
 var cssPublicDirectory = path.join(cwd, 'public', 'css');
@@ -383,6 +383,3 @@ switch (command) {
 
 /* --------------------------------------------------------------------------
  * -------------------------------------------------------------------------- */
-
-
-

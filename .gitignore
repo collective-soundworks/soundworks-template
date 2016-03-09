@@ -1,14 +1,14 @@
 # Transpiled files and dependencies
-node_modules
-public/js
-public/css
-server
-client
-common
+/node_modules
+/public/js
+/public/css
+/server
+/client
+/common
 
 # Application instance specific
-logs
-db
+/logs
+/db
 
 # ignore junk files
 npm-debug.log
