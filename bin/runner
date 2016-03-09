@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 var fse = require('fs-extra');
-// var hound = require('hound');
 var watch = require('watch');
 var path = require('path');
 var util = require('util');

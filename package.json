@@ -8,9 +8,10 @@
   "description": "Soundworks application template.",
   "version": "1.0.0",
   "scripts": {
-    "start": "node ./bin/build --start",
-    "transpile": "node ./bin/build --transpile",
-    "watch": "node ./bin/build --watch"
+    "postinstall": "npm run transpile",
+    "start": "node ./bin/runner --start",
+    "transpile": "node ./bin/runner --transpile",
+    "watch": "node ./bin/runner --watch"
   },
   "license": "BSD 3-Clause",
   "repository": {

@@ -1,5 +1,5 @@
 // Import Soundworks library (client side)
-import soundworks from 'soundworks/client';
+import * as soundworks from 'soundworks/client';
 
 const audioContext = soundworks.audioContext;
 const client = soundworks.client;

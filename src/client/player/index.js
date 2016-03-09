@@ -1,5 +1,5 @@
 // import soundworks library (client side)
-import soundworks from 'soundworks/client';
+import * as soundworks from 'soundworks/client';
 
 // import player experience
 import PlayerExperience from './PlayerExperience.js';
