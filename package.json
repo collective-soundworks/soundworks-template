@@ -6,13 +6,13 @@
     "Norbert Schnell"
   ],
   "description": "Soundworks application template.",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "scripts": {
     "start": "node ./bin/build --start",
     "transpile": "node ./bin/build --transpile",
     "watch": "node ./bin/build --watch"
   },
-  "license": "BSD-3-Clause",
+  "license": "BSD 3-Clause",
   "repository": {
     "type": "git",
     "url": "https://github.com/collective-soundworks/soundworks-template"
