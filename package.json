@@ -3,7 +3,7 @@
   "authors": [
     "Benjamin Matuszewski",
     "Sébastien Robaszkiewicz",
-    "Norbert Schnell",
+    "Norbert Schnell"
   ],
   "description": "Soundworks application template.",
   "version": "0.4.0",
@@ -12,7 +12,7 @@
     "transpile": "node ./bin/build --transpile",
     "watch": "node ./bin/build --watch"
   },
-  "license": "BSD-3",
+  "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "https://github.com/collective-soundworks/soundworks-template"
