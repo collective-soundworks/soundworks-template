@@ -6,7 +6,7 @@ const client = soundworks.client;
 const Experience = soundworks.Experience;
 const CanvasView = soundworks.CanvasView;
 
-const template = `
+const viewTemplate = `
   <canvas class="background"></canvas>
   <div class="foreground">
     <div class="section-top flex-middle">
@@ -33,8 +33,8 @@ export default class PlayerExperience extends Experience {
 
   init() {
     // Initialize the view
-    this.template = template;
-    this.content = { title: `Let's go!` };
+    this.viewTemplate = viewTemplate;
+    this.viewContent = { title: `Let's go!` };
     this.viewCtor = CanvasView;
     this.view = this.createView();
   }
@@ -74,10 +74,5 @@ export default class PlayerExperience extends Experience {
       ctx.fillRect(0, 0, ctx.width, ctx.height);
       ctx.restore();
     });
-
-    // We would usually call the 'done' method when the module can hand over the
-    // control to subsequent modules, however since the experience is the last
-    // module to be called in this scenario, we don't need it here.
-    // this.done();
   }
 }
