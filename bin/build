@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var fse = require('fs-extra');
-var hound = require('hound');
+// var hound = require('hound');
+var watch = require('watch');
 var path = require('path');
 var util = require('util');
 
@@ -16,7 +17,6 @@ var cwd = process.cwd();
  */
 var babelOptions = {
   sourceMap: 'inline',
-  // modules: 'common',
   presets: ['es2015'],
   plugins: ['transform-runtime', 'transform-es2015-modules-commonjs'],
 };
@@ -29,11 +29,24 @@ var browserifyOptions = {
   fullPaths: false,
 };
 
+/**
+ * Options for sass.
+ */
 var sassOptions = {
   outputStyle: 'compressed',
   sourceMap: true,
   sourceMapEmbed: true,
 };
+
+/**
+ * Options for watch.
+ */
+var watchOptions = {
+  ignoreDotFiles: true,
+  ignoreUnreadableDir: true,
+  ignoreNotPermitted: true,
+  interval: 2000,
+}
 
 /**
  * Watched directories
@@ -73,7 +86,7 @@ function isAllowed(filename, ensureFile) {
 
   if (ensureFile) {
     try {
-      isFile = fse.lstatSync(filename).isFile() && !fse.lstatSync(filename).isSymbolic();
+      isFile = fse.lstatSync(filename).isFile() && !fse.lstatSync(filename).isSymbolicLink();
     } catch(e) {
       console.log(e.message);
       isFile = false;
@@ -110,13 +123,13 @@ const commands = {
     // watch ejs templates
     watchServerTemplates(ejsTemplatesDirectory);
     // watch sass files
-    watchSassFiles(cssSrcDirectory, cssPublicDirectory, isAllowed);
+    watchSassFiles(cssSrcDirectory, cssPublicDirectory);
     // watch javascript server files
-    watchServerJavascriptFiles(serverSrcDirectory, serverDistDirectory, isAllowed);
+    watchServerJavascriptFiles(serverSrcDirectory, serverDistDirectory);
     // watch javascript client files
-    watchClientJavascriptFiles(clientSrcDirectory, clientDistDirectory, clientPublicDirectory, isAllowed);
+    watchClientJavascriptFiles(clientSrcDirectory, clientDistDirectory, clientPublicDirectory);
     // watch common javascript files
-    watchCommonJavascriptFiles(commonSrcDirectories, commonDistDirectories, isAllowed);
+    watchCommonJavascriptFiles(commonSrcDirectories, commonDistDirectories);
 
     server.start();
   },
@@ -142,89 +155,91 @@ const commands = {
  * Restart the server when a template file (aka. `ejs` file) is modified.
  */
 function watchServerTemplates(srcDirectory) {
-  var watcher = hound.watch(srcDirectory);
+  watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
+    monitor.on('created', function(filename) {
+      if (isAllowed(filename))
+        server.restart();
+    });
 
-  watcher.on('create', function(filename, stats) {
-    if (isAllowed(filename))
-      server.restart();
-  });
-
-  watcher.on('change', function(filename, stats) {
-    if (isAllowed(filename))
-      server.restart();
+    monitor.on('changed', function(filename) {
+      if (isAllowed(filename))
+        server.restart();
+    });
   });
 }
 
 /**
  * Watch the sass files.
  */
-function watchSassFiles(srcDirectory, distDirectory, isAllowed) {
-  var watcher = hound.watch(srcDirectory);
+function watchSassFiles(srcDirectory, distDirectory) {
+  watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
+    monitor.on('created', function(filename) {
+      if (isAllowed(filename))
+        styles.process(srcDirectory, distDirectory, isAllowed, sassOptions);
+    });
 
-  watcher.on('create', function(filename, stats) {
-    if (isAllowed(filename))
+    monitor.on('changed', function(filename) {
+      if (isAllowed(filename))
+        styles.process(srcDirectory, distDirectory, isAllowed, sassOptions);
+    });
+
+    monitor.on('removed', function(filename) {
       styles.process(srcDirectory, distDirectory, isAllowed, sassOptions);
-  });
-
-  watcher.on('change', function(filename, stats) {
-    if (isAllowed(filename))
-      styles.process(srcDirectory, distDirectory, isAllowed, sassOptions);
-  });
-
-  watcher.on('delete', function(filename, stats) {
-    styles.process(srcDirectory, distDirectory, isAllowed, sassOptions);
+    });
   });
 }
 
 /**
  * Watch server js files.
  */
-function watchServerJavascriptFiles(srcDirectory, distDirectory, isAllowed) {
-  var watcher = hound.watch(srcDirectory);
-  var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
+function watchServerJavascriptFiles(srcDirectory, distDirectory) {
+  watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
+    var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
 
-  watcher.on('create', function(filename, stats) {
-    if (isAllowed(filename)) {
-      server.stop();
-      transpiler.transpile(filename, [], server.start);
-    }
-  });
+    monitor.on('created', function(filename) {
+      if (isAllowed(filename)) {
+        server.stop();
+        transpiler.transpile(filename, [], server.start);
+      }
+    });
 
-  watcher.on('change', function(filename, stats) {
-    if (isAllowed(filename)) {
-      server.stop();
-      transpiler.transpile(filename, [], server.start);
-    }
-  });
+    monitor.on('changed', function(filename) {
+      if (isAllowed(filename)) {
+        server.stop();
+        transpiler.transpile(filename, [], server.start);
+      }
+    });
 
-  watcher.on('delete', function(filename, stats) {
-    if (isAllowed(filename, false)) {
-      server.stop();
-      transpiler.delete(filename, server.start);
-    }
+    monitor.on('removed', function(filename) {
+      if (isAllowed(filename, false)) {
+        server.stop();
+        transpiler.delete(filename, server.start);
+      }
+    });
   });
 }
 
 /**
  * Watch client js files.
  */
-function watchClientJavascriptFiles(srcDirectory, distDirectory, publicDirectory, isAllowed) {
-  var watcher = hound.watch(srcDirectory);
-  var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, browserifyOptions);
+function watchClientJavascriptFiles(srcDirectory, distDirectory, publicDirectory) {
+  watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
+    var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, browserifyOptions);
 
-  watcher.on('create', function(filename, stats) {
-    if (isAllowed(filename))
-      transpiler.transpile(filename, [], function() { transpiler.bundle(filename, publicDirectory, true); });
-  });
+    monitor.on('created', function(filename) {
+      if (isAllowed(filename))
+        transpiler.transpile(filename, [], function() { transpiler.bundle(filename, publicDirectory, true); });
+    });
 
-  watcher.on('change', function(filename, stats) {
-    if (isAllowed(filename))
-      transpiler.transpile(filename, [], function() { transpiler.bundle(filename, publicDirectory, true); });
-  });
+    monitor.on('changed', function(filename) {
+      if (isAllowed(filename))
+        transpiler.transpile(filename, [], function() { transpiler.bundle(filename, publicDirectory, true); });
+    });
 
-  watcher.on('delete', function(filename, stats) {
-    if (isAllowed(filename, false))
-      transpiler.delete(filename, function() { transpiler.bundle(filename, publicDirectory, false); });
+    monitor.on('removed', function(filename) {
+      if (isAllowed(filename, false))
+        transpiler.delete(filename, function() { transpiler.bundle(filename, publicDirectory, false); });
+    });
   });
 }
 
@@ -232,35 +247,37 @@ function watchClientJavascriptFiles(srcDirectory, distDirectory, publicDirectory
  * Watch common javascript files. Restarts the server as these files can beused server side.
  * For client side, watchify should do the job.
  */
-function watchCommonJavascriptFiles(srcDirectories, distDirectories, isAllowed) {
+function watchCommonJavascriptFiles(srcDirectories, distDirectories) {
   srcDirectories.forEach(function(srcDirectory, index) {
     fse.stat(srcDirectory, function(err, stats) {
       if (err || !stats.isDirectory)
         return console.log('=> "%s" is not a directory, restart the script to watch it'.red, srcDirectory);
 
       var distDirectory = distDirectories[index];
-      var watcher = hound.watch(srcDirectory);
-      var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
 
-      watcher.on('create', function(filename, stats) {
-        if (isAllowed(filename)) {
-          server.stop();
-          transpiler.transpile(filename, [], server.start);
-        }
-      });
+      watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
+        var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
 
-      watcher.on('change', function(filename, stats) {
-        if (isAllowed(filename)) {
-          server.stop();
-          transpiler.transpile(filename, [], server.start);
-        }
-      });
+        monitor.on('created', function(filename) {
+          if (isAllowed(filename)) {
+            server.stop();
+            transpiler.transpile(filename, [], server.start);
+          }
+        });
 
-      watcher.on('delete', function(filename, stats) {
-        if (isAllowed(filename, false)) {
-          server.stop();
-          transpiler.delete(filename, server.start);
-        }
+        monitor.on('changed', function(filename) {
+          if (isAllowed(filename)) {
+            server.stop();
+            transpiler.transpile(filename, [], server.start);
+          }
+        });
+
+        monitor.on('removed', function(filename) {
+          if (isAllowed(filename, false)) {
+            server.stop();
+            transpiler.delete(filename, server.start);
+          }
+        });
       });
     });
   });
@@ -341,10 +358,10 @@ function transpile() {
 }
 
 
-/**
- * --------------------------------------------------------------------------
+/* --------------------------------------------------------------------------
  * Process and execute the given command.
  * -------------------------------------------------------------------------- */
+
 var command = process.argv[2];
 var args = process.argv.slice(3);
 var argv = {};
@@ -363,7 +380,9 @@ switch (command) {
     commands.start();
     break;
 }
-/* -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+ * -------------------------------------------------------------------------- */
 
 
 
