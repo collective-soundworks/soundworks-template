@@ -46,6 +46,7 @@ var watchOptions = {
   ignoreDotFiles: true,
   ignoreUnreadableDir: true,
   ignoreNotPermitted: true,
+  interval: 2000,
 }
 
 /**
