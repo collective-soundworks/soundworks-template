@@ -1,19 +1,19 @@
 {
   "name": "template",
   "authors": [
+    "Benjamin Matuszewski",
     "Sébastien Robaszkiewicz",
-    "Norbert Schnell",
-    "Benjamin Matuszewski"
+    "Norbert Schnell"
   ],
-  "description": "This template allows to bootstrap a Soundworks application. The example scenario allows the connected clients to play a sound.",
-  "version": "0.4.0",
+  "description": "Soundworks application template.",
+  "version": "1.0.0",
   "scripts": {
     "postinstall": "npm run transpile",
     "start": "node ./bin/runner --start",
     "transpile": "node ./bin/runner --transpile",
     "watch": "node ./bin/runner --watch"
   },
-  "license": "BSD-3",
+  "license": "BSD 3-Clause",
   "repository": {
     "type": "git",
     "url": "https://github.com/collective-soundworks/soundworks-template"
