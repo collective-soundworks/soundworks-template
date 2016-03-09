@@ -22,9 +22,13 @@ var server = null;
  * Run the `serverIndex` in a forked process
  */
 function start() {
-  if (fse.statSync(serverIndex).isFile()) {
-    console.log('=> START SERVER'.cyan);
-    server = childProcess.fork(serverIndex);
+  try {
+    if (fse.statSync(serverIndex).isFile()) {
+      console.log('=> START SERVER'.cyan);
+      server = childProcess.fork(serverIndex);
+    }
+  } catch(err) {
+    console.log('=> No "%s" found, run `npm run transpile`'.red);
   }
 }
 

@@ -8,9 +8,10 @@
   "description": "This template allows to bootstrap a Soundworks application. The example scenario allows the connected clients to play a sound.",
   "version": "0.4.0",
   "scripts": {
-    "start": "node ./bin/build --start",
-    "transpile": "node ./bin/build --transpile",
-    "watch": "node ./bin/build --watch"
+    "postinstall": "npm run transpile",
+    "start": "node ./bin/runner --start",
+    "transpile": "node ./bin/runner --transpile",
+    "watch": "node ./bin/runner --watch"
   },
   "license": "BSD-3",
   "repository": {
