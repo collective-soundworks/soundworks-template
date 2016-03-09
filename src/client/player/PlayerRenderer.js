@@ -1,4 +1,4 @@
-const Renderer = soundworks.display.Renderer;
+import { Renderer } from 'soundworks/client';
 
 /**
  * A simple canvas renderer.
