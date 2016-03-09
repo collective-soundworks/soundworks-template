@@ -1,14 +1,12 @@
-// Import Soundworks modules (server side)
+// Import Soundworks server side Experience
 import { Experience } from 'soundworks/server';
 
-
 /**
- * '`player`' performance module (server side).
+ * Server-side 'player' experience.
  */
 export default class PlayerExperience extends Experience {
-
   /**
-   * Constructor, to instantiate the class.
+   *
    */
   constructor(clientType) {
     super(clientType);
@@ -18,7 +16,7 @@ export default class PlayerExperience extends Experience {
 
   /**
    * If anything needs to happen when a client enters the performance (*i.e.*
-   * starts the performance module on the client side), write it in the `enter`
+   * starts the experience on the client side), write it in the `enter`
    * method.
    */
   enter(client) {
