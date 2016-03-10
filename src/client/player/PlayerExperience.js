@@ -10,10 +10,10 @@ const CanvasView = soundworks.CanvasView;
 const viewTemplate = `
   <canvas class="background"></canvas>
   <div class="foreground">
-    <div class="section-top flex-middle">
+    <div class="section-top flex-middle"></div>
+    <div class="section-center flex-center">
       <p class="big"><%= title %></p>
     </div>
-    <div class="section-center flex-center"></div>
     <div class="section-bottom flex-middle"></div>
   </div>
 `;

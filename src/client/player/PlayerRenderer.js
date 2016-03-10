@@ -2,7 +2,7 @@ import { Renderer } from 'soundworks/client';
 
 /**
  * A simple canvas renderer.
- * The class renders dots moving over the screen and rebouncing on the edges.
+ * The class renders a dot moving over the screen and rebouncing on the edges.
  */
 export default class PlayerRenderer extends Renderer {
   constructor(vx, vy) {
