@@ -3,9 +3,6 @@ import * as soundworks from 'soundworks/client';
 import PlayerRenderer from './PlayerRenderer';
 
 const audioContext = soundworks.audioContext;
-const client = soundworks.client;
-const Experience = soundworks.Experience;
-const CanvasView = soundworks.CanvasView;
 
 const viewTemplate = `
   <canvas class="background"></canvas>
@@ -23,7 +20,7 @@ const viewTemplate = `
  * This experience plays a sound when it starts, and plays another sound when
  * other clients join the experience.
  */
-export default class PlayerExperience extends Experience {
+export default class PlayerExperience extends soundworks.Experience {
   constructor(audioFiles) {
     super();
 
@@ -36,7 +33,7 @@ export default class PlayerExperience extends Experience {
     // Initialize the view
     this.viewTemplate = viewTemplate;
     this.viewContent = { title: `Let's go!` };
-    this.viewCtor = CanvasView;
+    this.viewCtor = soundworks.CanvasView;
     this.view = this.createView();
   }
 
