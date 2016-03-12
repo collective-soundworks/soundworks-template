@@ -24,13 +24,14 @@ export default class PlayerExperience extends soundworks.Experience {
   constructor(audioFiles) {
     super();
 
+    this.platform = this.require('platform', { features: ['web-audio'] });
     this.welcome = this.require('welcome', { fullScreen: false });
     this.loader = this.require('loader', { files: audioFiles });
     this.checkin = this.require('checkin', { showDialog: false });
   }
 
   init() {
-    // Initialize the view
+    // initialize the view
     this.viewTemplate = viewTemplate;
     this.viewContent = { title: `Let's go!` };
     this.viewCtor = soundworks.CanvasView;
@@ -45,14 +46,14 @@ export default class PlayerExperience extends soundworks.Experience {
 
     this.show();
 
-    // Play the first loaded buffer immediately
+    // play the first loaded buffer immediately
     const src = audioContext.createBufferSource();
     src.buffer = this.loader.buffers[0];
     src.connect(audioContext.destination);
     src.start(audioContext.currentTime);
 
-    // Play the second loaded buffer when the message `play` is received from the server,
-    // the message is send when another player joins the experience.
+    // play the second loaded buffer when the message `play` is received from
+    // the server, the message is send when another player joins the experience.
     this.receive('play', () => {
       const delay = Math.random();
       const src = audioContext.createBufferSource();
@@ -61,10 +62,10 @@ export default class PlayerExperience extends soundworks.Experience {
       src.start(audioContext.currentTime + delay);
     });
 
-    // Initialize rendering
+    // initialize rendering
     this.renderer = new PlayerRenderer(100, 100);
     this.view.addRenderer(this.renderer);
-    // This given function is called before each update (`Renderer.render`) of the canvas
+    // this given function is called before each update (`Renderer.render`) of the canvas
     this.view.setPreRender(function(ctx, dt) {
       ctx.save();
       ctx.globalAlpha = 0.05;

@@ -14,7 +14,6 @@ export default class PlayerRenderer extends Renderer {
 
   /**
    * Initialize rederer state.
-   *
    * @param {Number} dt - time since last update in seconds.
    */
   init() {
@@ -27,7 +26,6 @@ export default class PlayerRenderer extends Renderer {
 
   /**
    * Update rederer state.
-   *
    * @param {Number} dt - time since last update in seconds.
    */
   update(dt) {
@@ -46,7 +44,6 @@ export default class PlayerRenderer extends Renderer {
   /**
    * Draw into canvas.
    * Method is called by animation frame loop in current frame rate.
-   *
    * @param {CanvasRenderingContext2D} ctx - canvas 2D rendering context
    */
   render(ctx) {
