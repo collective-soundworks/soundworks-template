@@ -1,9 +1,9 @@
 # Soundworks Application Template
 
-This is a template for developing [*Soundworks*](https://github.com/collective-soundworks/soundworks/) applications.
-The template includes comprehensive comments in the source files.
+> This is a project template for developing [*Soundworks*](https://github.com/collective-soundworks/soundworks/) applications.  
+> The template also includes comprehensive comments in the source files.
 
-For a complete documentation of the *Soundworks* framework, please refer to http://collective-soundworks.github.io/soundworks/.
+[//]: # (For a complete documentation of the *Soundworks* framework, please refer to http://collective-soundworks.github.io/soundworks/.)
 
 ## Creating a New Application
 
@@ -14,7 +14,6 @@ $ git clone https://github.com/collective-soundworks/soundworks-template.git my-
 $ cd my-soundworks-application
 $ rm -Rf .git
 $ npm install
-$ npm run transpile
 $ npm run watch
 ```
 
@@ -48,27 +47,27 @@ The following operations may be performed by the `watch` script depending on the
 ## Files and Directories
 
 The template consists of the following files and directories you should know about:
- * `bin` - the Node.js scripts (no need to touch these)
+ * `bin` - the Node.js scripts *(no need to touch these)*
  * `public` - everything the clients need to run the application
-   * `fonts` - fonts used by the application template (this is your directory)
-   * `sounds` - sounds used by the application template (this is your directory)
-   * `js` - transpiled javascript files (do not touch)
-   * `css` - *CSS* stylesheets automatically created from *SASS* sources (do not touch)
+   * `fonts` - fonts used by the application template *(this is your directory)*
+   * `sounds` - sounds used by the application template *(this is your directory)*
+   * `js` - transpiled javascript files *(do not touch)*
+   * `css` - *CSS* stylesheets automatically created from *SASS* sources *(do not touch)*
    * . . . add here the assets (images, movies, etc.) used by the clients of your application
  * `sass` - *SASS* stylesheet sources
-   * `main.scss` - includes all other *SASS* files in the directory (the provided files are described in comments)
+   * `main.scss` - includes all other *SASS* files in the directory *(the provided files are described in comments)*
    * . . . add your styles here (as *SASS* files) and include them into the `main.scss` file
- * `src` - javascript (ES2015) sources (this is all yours)
-   * `client` - sources of the application's client side (contains one directory per client type)
+ * `src` - javascript (ES2015) sources *(this is all yours)*
+   * `client` - sources of the application's client side *(contains one directory per client type)*
      * `player` - sources of the *player* client
        * `index.js` - main file of the *player* client
        * . . . files imported by the `index.js` main file
    * `server` - sources of the application's server side
-     * `index.js` - server side main file (for all client types)
+     * `index.js` - server side main file *(for all client types)*
      * . . . files imported by the `index.js` server side main file
- * `html` - template files to generate the application's `index.html` files (no need to touch)
- * `package.json` - NPM package file (modify so that the description and dependencies match your application)
- * `README.md` - this file (you should replace by a file that informs about your application)
+ * `html` - template files to generate the application's `index.html` files *(no need to touch)*
+ * `package.json` - NPM package file *(modify so that the description and dependencies match your application)*
+ * `README.md` - this file *(that you should replace by a file that informs about your application)*
 
 This structure is required by the *Soundworks* framework and the helper scripts.
 The files that are part of the application's implementation (i.e. especially the files in the `src` directories) contain comprehensive explanatory comments.

@@ -21,7 +21,7 @@
   "dependencies": {
     "babel-runtime": "^6.6.1",
     "debug": "^2.1.2",
-    "soundworks": "collective-soundworks/soundworks.git#develop",
+    "soundworks": "collective-soundworks/soundworks.git#1.0.0",
     "source-map-support": "^0.4.0"
   },
   "devDependencies": {
@@ -33,6 +33,7 @@
     "colors": "^1.1.2",
     "fs-extra": "^0.26.2",
     "node-sass": "^3.4.1",
+    "ora": "^0.2.0",
     "watch": "^0.17.1",
     "watchify": "^3.7.0"
   }
