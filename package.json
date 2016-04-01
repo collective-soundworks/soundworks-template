@@ -7,7 +7,7 @@
   ],
   "description": "Soundworks application template.",
   "license": "BSD-3-Clause",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "postinstall": "npm run transpile",
     "start": "node ./bin/runner --start",
@@ -21,7 +21,7 @@
   "dependencies": {
     "babel-runtime": "^6.6.1",
     "debug": "^2.1.2",
-    "soundworks": "collective-soundworks/soundworks.git#v1.0.0",
+    "soundworks": "collective-soundworks/soundworks.git#v1.0.1",
     "source-map-support": "^0.4.0"
   },
   "devDependencies": {
