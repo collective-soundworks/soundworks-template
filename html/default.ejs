@@ -12,7 +12,7 @@
     </title>
 
     <!-- stylesheets -->
-    <link rel="stylesheet" href="<%= assetsDomain %>css/main.css">
+    <link rel="stylesheet" href="<%= assetsDomain %>css/main.css?<%= version %>">
   </head>
 
   <body>
@@ -23,8 +23,9 @@
     window.CONFIG = {};
     window.CONFIG.SOCKET_CONFIG = JSON.parse('<%- socketIO %>');
     window.CONFIG.APP_NAME = '<%- appName %>';
+    window.CONFIG.VERSION = '<%- version %>';
     </script>
 
-    <script src="<%= assetsDomain %>js/<%= clientType %>.js"></script>
+    <script src="<%= assetsDomain %>js/<%= clientType %>.js?<%= version %>"></script>
   </body>
 </html>

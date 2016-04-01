@@ -25,7 +25,6 @@ export default class PlayerExperience extends soundworks.Experience {
     super();
 
     this.platform = this.require('platform', { features: ['web-audio'] });
-    this.welcome = this.require('welcome', { fullScreen: false });
     this.loader = this.require('loader', { files: audioFiles });
     this.checkin = this.require('checkin', { showDialog: false });
   }
