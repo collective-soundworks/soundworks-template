@@ -4,8 +4,8 @@ import PlayerExperience from './PlayerExperience.js';
 
 // list of files to load (passed to the experience)
 const files = [
-  'sounds/sound-welcome.mp3',
-  'sounds/sound-others.mp3'
+  '/sounds/sound-welcome.mp3',
+  '/sounds/sound-others.mp3'
 ];
 
 // launch application when document is fully loaded
