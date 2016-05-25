@@ -1,4 +1,3 @@
-// Import Soundworks library (client side)
 import * as soundworks from 'soundworks/client';
 import PlayerRenderer from './PlayerRenderer';
 
@@ -15,11 +14,8 @@ const viewTemplate = `
   </div>
 `;
 
-/**
- * `player` experience.
- * This experience plays a sound when it starts, and plays another sound when
- * other clients join the experience.
- */
+// this experience plays a sound when it starts, and plays another sound when
+// other clients join the experience
 export default class PlayerExperience extends soundworks.Experience {
   constructor(audioFiles) {
     super();
