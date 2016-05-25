@@ -10,12 +10,12 @@ const files = [
 
 // launch application when document is fully loaded
 window.addEventListener('load', () => {
-  // mandatory configuration options received from the server through the html/default.ejs template
-  const socketIO = window.CONFIG && window.CONFIG.SOCKET_CONFIG;
-  const appName = window.CONFIG && window.CONFIG.APP_NAME;
-
+  // configuration received from the server through the `index.html`
+  // @see {~/src/server/index.js}
+  // @see {~/html/default.ejs}
+  const { appName, clientType, socketIO }  = window.soundworksConfig;
   // initialize the 'player' client
-  soundworks.client.init('player', { socketIO, appName });
+  soundworks.client.init(clientType, { socketIO, appName });
 
   // create client side (player) experience
   const experience = new PlayerExperience(files);

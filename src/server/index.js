@@ -1,11 +1,21 @@
-// enable sourcemaps in node
-import 'source-map-support/register';
-// import soundworks library (server side) and server side experience
+import 'source-map-support/register'; // enable sourcemaps in node
 import * as soundworks from 'soundworks/server';
 import PlayerExperience from './PlayerExperience';
 
 // initialize application with configuration options
 soundworks.server.init({ appName: 'Template' });
+
+// define the configuration object to be passed to the `.ejs` template
+soundworks.server.setClientConfigDefinition((clientType, config, httpRequest) => {
+  return {
+    clientType: clientType,
+    socketIO: config.socketIO,
+    appName: config.appName,
+    version: config.version,
+    defaultType: config.defaultClient,
+    assetsDomain: config.assetsDomain,
+  };
+});
 
 // create the experience
 // activities must be mapped to client types:
