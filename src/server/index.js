@@ -2,8 +2,14 @@ import 'source-map-support/register'; // enable sourcemaps in node
 import * as soundworks from 'soundworks/server';
 import PlayerExperience from './PlayerExperience';
 
+// name of the environement
+const envConfig = {
+  env: (process.env.ENV || 'DEV'),
+  gaId: '',
+};
+
 // initialize application with configuration options
-soundworks.server.init({ appName: 'Template' });
+soundworks.server.init({ appName: 'Template' }, envConfig);
 
 // define the configuration object to be passed to the `.ejs` template
 soundworks.server.setClientConfigDefinition((clientType, config, httpRequest) => {
@@ -14,6 +20,9 @@ soundworks.server.setClientConfigDefinition((clientType, config, httpRequest) =>
     version: config.version,
     defaultType: config.defaultClient,
     assetsDomain: config.assetsDomain,
+    // environment
+    env: config.env,
+    gaId: config.gaId,
   };
 });
 
