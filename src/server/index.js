@@ -6,8 +6,6 @@ const envConfig = {
   // name of the environement,
   // use NODE_ENV=production to configure express at the same time.
   env: (process.env.NODE_ENV || 'development'),
-  // id of the google analytics account, is used only if env='production'
-  gaId: '',
 };
 
 // initialize application with configuration options
@@ -17,14 +15,12 @@ soundworks.server.init({ appName: 'Template' }, envConfig);
 soundworks.server.setClientConfigDefinition((clientType, config, httpRequest) => {
   return {
     clientType: clientType,
-    socketIO: config.socketIO,
+    env: config.env,
     appName: config.appName,
+    socketIO: config.socketIO,
     version: config.version,
     defaultType: config.defaultClient,
     assetsDomain: config.assetsDomain,
-    // environment
-    env: config.env,
-    gaId: config.gaId,
   };
 });
 
