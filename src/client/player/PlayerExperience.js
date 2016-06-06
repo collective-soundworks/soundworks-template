@@ -17,12 +17,15 @@ const viewTemplate = `
 // this experience plays a sound when it starts, and plays another sound when
 // other clients join the experience
 export default class PlayerExperience extends soundworks.Experience {
-  constructor(audioFiles) {
+  constructor(assetsDomain, audioFiles) {
     super();
 
     this.platform = this.require('platform', { features: ['web-audio'] });
-    this.loader = this.require('loader', { files: audioFiles });
     this.checkin = this.require('checkin', { showDialog: false });
+    this.loader = this.require('loader', {
+      assetsDomain: assetsDomain,
+      files: audioFiles,
+    });
   }
 
   init() {
