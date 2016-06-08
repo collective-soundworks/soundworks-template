@@ -20,7 +20,7 @@ export default class PlayerExperience extends soundworks.Experience {
   constructor(assetsDomain, audioFiles) {
     super();
 
-    this.platform = this.require('platform', { features: ['web-audio'] });
+    this.platform = this.require('platform', { features: ['web-audio', 'wake-lock'] });
     this.checkin = this.require('checkin', { showDialog: false });
     this.loader = this.require('loader', {
       assetsDomain: assetsDomain,
