@@ -17,12 +17,15 @@ const viewTemplate = `
 // this experience plays a sound when it starts, and plays another sound when
 // other clients join the experience
 export default class PlayerExperience extends soundworks.Experience {
-  constructor(audioFiles) {
+  constructor(assetsDomain, audioFiles) {
     super();
 
-    this.platform = this.require('platform', { features: ['web-audio'] });
-    this.loader = this.require('loader', { files: audioFiles });
+    this.platform = this.require('platform', { features: ['web-audio', 'wake-lock'] });
     this.checkin = this.require('checkin', { showDialog: false });
+    this.loader = this.require('loader', {
+      assetsDomain: assetsDomain,
+      files: audioFiles,
+    });
   }
 
   init() {
@@ -30,6 +33,7 @@ export default class PlayerExperience extends soundworks.Experience {
     this.viewTemplate = viewTemplate;
     this.viewContent = { title: `Let's go!` };
     this.viewCtor = soundworks.CanvasView;
+    this.viewOptions = { preservePixelRatio: true };
     this.view = this.createView();
   }
 
@@ -60,12 +64,14 @@ export default class PlayerExperience extends soundworks.Experience {
     // initialize rendering
     this.renderer = new PlayerRenderer(100, 100);
     this.view.addRenderer(this.renderer);
-    // this given function is called before each update (`Renderer.render`) of the canvas
+
+    // this function is called before each update (`Renderer.render`) of the canvas
     this.view.setPreRender(function(ctx, dt) {
       ctx.save();
       ctx.globalAlpha = 0.05;
       ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, ctx.width, ctx.height);
+      ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.fill();
       ctx.restore();
     });
   }
