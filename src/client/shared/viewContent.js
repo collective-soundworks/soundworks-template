@@ -53,7 +53,7 @@ export default {
   // content of the `platform` service
   'service:platform': {
     isCompatible: null,
-    errorMessage: 'Sorry,<br />Your device is not compatible with the application.',
+    errorMessage: 'Sorry,<br />Your device is not compatible with this application.',
     intro: 'Welcome to',
     instructions: 'Touch the screen to join !',
   },
