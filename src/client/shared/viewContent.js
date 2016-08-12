@@ -16,7 +16,7 @@ export default {
     instructions: 'Login',
     send: 'Send',
     reset: 'Reset',
-    rejectMessage: `Sorry, you don't have access to this client`,
+    rejectMessage: `Sorry,<br/>you don't have access to this client`,
     rejected: false,
   },
 

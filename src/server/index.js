@@ -22,7 +22,7 @@ soundworks.server.setClientConfigDefinition((clientType, config, httpRequest) =>
     clientType: clientType,
     env: config.env,
     appName: config.appName,
-    socketIO: config.socketIO,
+    websockets: config.websockets,
     version: config.version,
     defaultType: config.defaultClient,
     assetsDomain: config.assetsDomain,
