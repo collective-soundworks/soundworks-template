@@ -1,0 +1,1 @@
+- [build] Fixed bundle bug when bundling empty file  
