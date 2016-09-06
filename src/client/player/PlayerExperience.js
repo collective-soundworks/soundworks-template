@@ -20,9 +20,9 @@ export default class PlayerExperience extends soundworks.Experience {
   constructor(assetsDomain, audioFiles) {
     super();
 
-    this.platform = this.require('platform', { features: ['web-audio', 'wake-lock'] });
+    this.platform = this.require('platform', { features: ['web-audio'] });
     this.checkin = this.require('checkin', { showDialog: false });
-    this.loader = this.require('loader', {
+    this.audioBufferManager = this.require('audio-buffer-manager', {
       assetsDomain: assetsDomain,
       files: audioFiles,
     });
@@ -47,7 +47,7 @@ export default class PlayerExperience extends soundworks.Experience {
 
     // play the first loaded buffer immediately
     const src = audioContext.createBufferSource();
-    src.buffer = this.loader.buffers[0];
+    src.buffer = this.audioBufferManager.buffers[0];
     src.connect(audioContext.destination);
     src.start(audioContext.currentTime);
 
@@ -56,7 +56,7 @@ export default class PlayerExperience extends soundworks.Experience {
     this.receive('play', () => {
       const delay = Math.random();
       const src = audioContext.createBufferSource();
-      src.buffer = this.loader.buffers[1];
+      src.buffer = this.audioBufferManager.buffers[1];
       src.connect(audioContext.destination);
       src.start(audioContext.currentTime + delay);
     });
