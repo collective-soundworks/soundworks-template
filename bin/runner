@@ -139,11 +139,23 @@ function isAllowed(filename, ensureFile) {
 function _getFileList(folder, excludeDirectories, callback) {
   var files = [];
 
+  excludeDirectories = excludeDirectories.map((v) => new RegExp('^' + v));
+
+  function isExcluded(path) {
+    for (var i = 0; i < excludeDirectories.length; i++) {
+      if (excludeDirectories[i].test(path))
+        return true;
+    }
+
+    return false;
+  }
+
   fse.walk(folder)
     .on('data', function(item) {
+      // console.log(excludeDirectories, item.path, iExcluded(item.path));
       if (item.stats.isFile() &&
           isAllowed(item.path) &&
-          (excludeDirectories.indexOf(item.path) === -1)
+          !isExcluded(item.path)
       ) {
         files.push(item.path);
       }
