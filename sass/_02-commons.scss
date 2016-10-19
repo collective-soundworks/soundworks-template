@@ -140,7 +140,9 @@ p, .normal {
   display: block;
   letter-spacing: 0.05em;
 
-  &:active {
+  &:active, &.active {
+    background-color: $textColor;
+    color: $backgroundColor;
   }
 
   &:focus {
