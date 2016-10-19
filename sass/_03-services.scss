@@ -104,10 +104,10 @@
 }
 
 // ------------------------------------------------------------
-// LOADER
+// AUDIO BUFFER MANAGER
 // ------------------------------------------------------------
 
-#service-loader {
+#service-audio-buffer-manager {
   .progress-wrap {
     margin: 12px auto 0;
     border: solid 1px white;
@@ -124,5 +124,3 @@
     @include transition(width 150ms);
   }
 }
-
-
