@@ -77,8 +77,14 @@ var watchOptions = {
   ignoreDotFiles: true,
   ignoreUnreadableDir: true,
   ignoreNotPermitted: true,
-  interval: 2000,
+  interval: 2,
 };
+
+// return a new instance instance because the object is modified when
+// a new monitor is created
+function getWatchOptions() {
+  return Object.assign({}, watchOptions);
+}
 
 /**
  * Watched directories
@@ -173,11 +179,20 @@ function _getFileList(folder, excludeDirectories, callback) {
     });
 }
 
-var commands = {
-  /**
-   * Watch the file system and reinit the application accordingly
-   */
-  watch: function () {
+/* --------------------------------------------------------------------------
+ * Process and execute the given command.
+ * -------------------------------------------------------------------------- */
+
+var command = process.argv[2];
+var args = process.argv.slice(3);
+var argv = {};
+
+for (var i = 0; i < args.length; i += 2) {
+  argv[args[i]] = args[i + 1];
+}
+
+switch (command) {
+  case '--watch':
     // watch ejs templates
     watchServerTemplates(ejsTemplatesDirectory);
     // watch sass files
@@ -190,29 +205,23 @@ var commands = {
     watchSharedJavascriptFiles(sharedSrcDirectories, sharedDistDirectories);
 
     server.start();
-  },
-
-  /**
-   * Update all the files (css and js)
-   */
-  transpile: function() {
+    break;
+  case '--transpile':
     transpile();
-  },
-
-  /**
-   * Start the application
-   */
-  start: function() {
+    break;
+  case '--start':
     server.start();
-  },
-
-  /**
-   * Minify all files in `clientPublicDirectory`
-   */
-  minify: function() {
+    break;
+  case '--minify':
     minify();
-  },
-};
+    break;
+}
+
+
+
+
+/* --------------------------------------------------------------------------
+ * -------------------------------------------------------------------------- */
 
 
 /**
@@ -220,7 +229,7 @@ var commands = {
  * Restart the server when a template file (aka. `ejs` file) is modified.
  */
 function watchServerTemplates(srcDirectory) {
-  watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
+  watch.createMonitor(srcDirectory, getWatchOptions(), function(monitor) {
     monitor.on('created', function(filename) {
       if (isAllowed(filename))
         server.restart();
@@ -237,7 +246,7 @@ function watchServerTemplates(srcDirectory) {
  * Watch the sass files.
  */
 function watchSassFiles(srcDirectory, distDirectory) {
-  watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
+  watch.createMonitor(srcDirectory, getWatchOptions(), function(monitor) {
     monitor.on('created', function(filename) {
       if (isAllowed(filename))
         styles.process(srcDirectory, distDirectory, isAllowed, sassOptions);
@@ -258,7 +267,7 @@ function watchSassFiles(srcDirectory, distDirectory) {
  * Watch server js files.
  */
 function watchServerJavascriptFiles(srcDirectory, distDirectory) {
-  watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
+  watch.createMonitor(srcDirectory, getWatchOptions(), function(monitor) {
     var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
 
     monitor.on('created', function(filename) {
@@ -288,12 +297,13 @@ function watchServerJavascriptFiles(srcDirectory, distDirectory) {
  * Watch client js files.
  */
 function watchClientJavascriptFiles(srcDirectory, distDirectory, publicDirectory, sharedSrcDirectories) {
-  watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
+  watch.createMonitor(srcDirectory, getWatchOptions(), function(monitor) {
     var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions, browserifyOptions);
 
-    const sharedRegExp = sharedSrcDirectories.map(function(dirname) {
+    // exclude shared files from this monitor
+    var sharedRegExp = sharedSrcDirectories.map(function(dirname) {
       dirname = dirname[dirname.length - 1] !== path.sep ? dirname + path.sep : dirname;
-      const pattern = escapeRegExp('^' + dirname);
+      var pattern = '^' + escapeRegExp(dirname);
       return new RegExp(pattern);
     });
 
@@ -307,28 +317,25 @@ function watchClientJavascriptFiles(srcDirectory, distDirectory, publicDirectory
     }
 
     monitor.on('created', function(filename) {
-      if (isAllowed(filename)) {
+      if (isAllowed(filename) && !isSharedFile(filename)) {
         transpiler.transpile(filename, [], function() {
-          if (!isSharedFile(filename))
             transpiler.bundle(filename, publicDirectory, true);
         });
       }
     });
 
     monitor.on('changed', function(filename) {
-      if (isAllowed(filename)) {
+      if (isAllowed(filename) && !isSharedFile(filename)) {
         transpiler.transpile(filename, [], function() {
-          if (!isSharedFile(filename))
-            transpiler.bundle(filename, publicDirectory, true);
+          transpiler.bundle(filename, publicDirectory, true);
         });
       }
     });
 
     monitor.on('removed', function(filename) {
-      if (isAllowed(filename, false)) {
+      if (isAllowed(filename, false) && !isSharedFile(filename)) {
         transpiler.delete(filename, function() {
-          if (!isSharedFile(filename))
-            transpiler.bundle(filename, publicDirectory, true);
+          transpiler.bundle(filename, publicDirectory, true);
         });
       }
     });
@@ -336,8 +343,7 @@ function watchClientJavascriptFiles(srcDirectory, distDirectory, publicDirectory
 }
 
 /**
- * Watch common javascript files. Restarts the server as these files can beused server side.
- * For client side, watchify should do the job.
+ * Watch common javascript files. Restarts the server as these files can be used server-side.
  */
 function watchSharedJavascriptFiles(srcDirectories, distDirectories) {
   srcDirectories.forEach(function(srcDirectory, index) {
@@ -347,7 +353,7 @@ function watchSharedJavascriptFiles(srcDirectories, distDirectories) {
 
       var distDirectory = distDirectories[index];
 
-      watch.createMonitor(srcDirectory, watchOptions, function(monitor) {
+      watch.createMonitor(srcDirectory, getWatchOptions(), function(monitor) {
         var transpiler = javascripts.getTranspiler(srcDirectory, distDirectory, isAllowed, babelOptions);
 
         monitor.on('created', function(filename) {
@@ -481,32 +487,3 @@ function minify() {
     });
   });
 }
-
-/* --------------------------------------------------------------------------
- * Process and execute the given command.
- * -------------------------------------------------------------------------- */
-
-var command = process.argv[2];
-var args = process.argv.slice(3);
-var argv = {};
-for (var i = 0; i < args.length; i += 2) {
-  argv[args[i]] = args[i + 1];
-}
-
-switch (command) {
-  case '--watch':
-    commands.watch();
-    break;
-  case '--transpile':
-    commands.transpile();
-    break;
-  case '--start':
-    commands.start();
-    break;
-  case '--minify':
-    commands.minify();
-    break;
-}
-
-/* --------------------------------------------------------------------------
- * -------------------------------------------------------------------------- */
