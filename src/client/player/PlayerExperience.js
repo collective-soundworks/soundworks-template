@@ -47,7 +47,7 @@ export default class PlayerExperience extends soundworks.Experience {
 
     // play the first loaded buffer immediately
     const src = audioContext.createBufferSource();
-    src.buffer = this.audioBufferManager.buffers[0];
+    src.buffer = this.audioBufferManager.getAudioBuffer('default', 0);
     src.connect(audioContext.destination);
     src.start(audioContext.currentTime);
 
@@ -56,7 +56,7 @@ export default class PlayerExperience extends soundworks.Experience {
     this.receive('play', () => {
       const delay = Math.random();
       const src = audioContext.createBufferSource();
-      src.buffer = this.audioBufferManager.buffers[1];
+      src.buffer = this.audioBufferManager.getAudioBuffer('default', 1);
       src.connect(audioContext.destination);
       src.start(audioContext.currentTime + delay);
     });
@@ -66,11 +66,11 @@ export default class PlayerExperience extends soundworks.Experience {
     this.view.addRenderer(this.renderer);
 
     // this function is called before each update (`Renderer.render`) of the canvas
-    this.view.setPreRender(function(ctx, dt) {
+    this.view.setPreRender(function(ctx, dt, canvasWidth, canvasHeight) {
       ctx.save();
       ctx.globalAlpha = 0.05;
       ctx.fillStyle = '#000000';
-      ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.rect(0, 0, canvasWidth, canvasHeight);
       ctx.fill();
       ctx.restore();
     });
