@@ -54,7 +54,8 @@ export default class PlayerExperience extends soundworks.Experience {
     // play the second loaded buffer when the message `play` is received from
     // the server, the message is send when another player joins the experience.
     this.receive('play', () => {
-      const delay = Math.random();
+    	//The delay has been modified so that the sounds may or may not overlap. Other plays may play up to 1.5 seconds after a new client joins. 
+      const delay = (Math.random() * 5.5);
       const src = audioContext.createBufferSource();
       src.buffer = this.loader.buffers[1];
       src.connect(audioContext.destination);
