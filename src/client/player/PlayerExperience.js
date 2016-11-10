@@ -1,7 +1,6 @@
 import * as soundworks from 'soundworks/client';
 import PlayerRenderer from './PlayerRenderer';
-
-import * as OscLib from './OSC';   //Import the osc.js library
+//  import osc from './OSC/src/osc';   //Import the osc.js library
 
 const audioContext = soundworks.audioContext;
 
@@ -37,6 +36,15 @@ export default class PlayerExperience extends soundworks.Experience {
     this.viewCtor = soundworks.CanvasView;
     this.viewOptions = { preservePixelRatio: true };
     this.view = this.createView();
+   /* 
+       //Create the OSC Web Socket port
+    const oscPort = new osc.WebSocketPort({
+    url: "http://127.0.0.1:8001" // URL to your Web Socket server.
+	});
+	
+	oscPort.open();
+	console.log('Created and opened a port!');
+*/
   }
 
   start() {
@@ -52,23 +60,31 @@ export default class PlayerExperience extends soundworks.Experience {
     src.buffer = this.loader.buffers[0];
     src.connect(audioContext.destination);
     src.start(audioContext.currentTime);
-    
-    //Create the OSC Web Socket port
-    var oscPort = new Osclib.osc.WebSocketPort({
-    url: "http://10.0.1.3:8002" // URL to your Web Socket server.
+  /*  
+          oscPort.send({
+    	address: "/carrier/frequency",
+    	args: 440
 	});
-	
-	oscPort.open();
+	console.log('Sent a message');
+*/ 
 
     // play the second loaded buffer when the message `play` is received from
     // the server, the message is send when another player joins the experience.
     this.receive('play', () => {
+    	console.log('New phone detected!');
     	//The delay has been modified so that the sounds may or may not overlap. Other plays may play up to 1.5 seconds after a new client joins. 
       const delay = (Math.random() * 5.5);
       const src = audioContext.createBufferSource();
       src.buffer = this.loader.buffers[1];
       src.connect(audioContext.destination);
       src.start(audioContext.currentTime + delay);
+  /*    
+      oscPort.send({
+    	address: "/carrier/frequency",
+    	args: 440
+	});
+	
+	*/
     });
 
     // initialize rendering
