@@ -1,6 +1,8 @@
 import * as soundworks from 'soundworks/client';
 import PlayerRenderer from './PlayerRenderer';
 
+import * as OscLib from './OSC';   //Import the osc.js library
+
 const audioContext = soundworks.audioContext;
 
 const viewTemplate = `
@@ -50,6 +52,13 @@ export default class PlayerExperience extends soundworks.Experience {
     src.buffer = this.loader.buffers[0];
     src.connect(audioContext.destination);
     src.start(audioContext.currentTime);
+    
+    //Create the OSC Web Socket port
+    var oscPort = new Osclib.osc.WebSocketPort({
+    url: "http://10.0.1.3:8002" // URL to your Web Socket server.
+	});
+	
+	oscPort.open();
 
     // play the second loaded buffer when the message `play` is received from
     // the server, the message is send when another player joins the experience.
