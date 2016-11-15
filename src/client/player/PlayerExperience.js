@@ -1,6 +1,6 @@
 import * as soundworks from 'soundworks/client';
 import PlayerRenderer from './PlayerRenderer';
-//  import osc from './OSC/src/osc';   //Import the osc.js library
+// const osc = require("OSC");
 
 const audioContext = soundworks.audioContext;
 
@@ -36,8 +36,8 @@ export default class PlayerExperience extends soundworks.Experience {
     this.viewCtor = soundworks.CanvasView;
     this.viewOptions = { preservePixelRatio: true };
     this.view = this.createView();
-   /* 
-       //Create the OSC Web Socket port
+    
+       /** Create the OSC Web Socket port
     const oscPort = new osc.WebSocketPort({
     url: "http://127.0.0.1:8001" // URL to your Web Socket server.
 	});
@@ -47,7 +47,8 @@ export default class PlayerExperience extends soundworks.Experience {
 */
   }
 
-  start() {
+
+  start(){
     super.start(); // don't forget this
 
     if (!this.hasStarted)
@@ -57,16 +58,17 @@ export default class PlayerExperience extends soundworks.Experience {
 
     // play the first loaded buffer immediately
     const src = audioContext.createBufferSource();
+    console.log('Hey, This works');
     src.buffer = this.loader.buffers[0];
     src.connect(audioContext.destination);
     src.start(audioContext.currentTime);
-  /*  
+ /*   
           oscPort.send({
     	address: "/carrier/frequency",
     	args: 440
 	});
 	console.log('Sent a message');
-*/ 
+ */
 
     // play the second loaded buffer when the message `play` is received from
     // the server, the message is send when another player joins the experience.
@@ -78,7 +80,7 @@ export default class PlayerExperience extends soundworks.Experience {
       src.buffer = this.loader.buffers[1];
       src.connect(audioContext.destination);
       src.start(audioContext.currentTime + delay);
-  /*    
+   /*   
       oscPort.send({
     	address: "/carrier/frequency",
     	args: 440
@@ -98,7 +100,10 @@ export default class PlayerExperience extends soundworks.Experience {
       ctx.fillStyle = '#000000';
       ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
       ctx.fill();
+      console.warn('Dot redrawn at ${dt}');
       ctx.restore();
     });
   }
+  
+  
 }
