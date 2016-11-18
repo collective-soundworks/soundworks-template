@@ -17,8 +17,19 @@ export default class PlayerExperience extends Experience {
   enter(client) {
     super.enter(client);
     // send a message to all the other clients of the same type
+
+    this.receive(client,'taptime', () =>
+  {
+    this.broadcast(client,client, 'tapplay');
+    this.send(client,'tapplay');
+  });
+
+
+
+
     this.broadcast(client.type, client, 'play');
   }
+
 
   exit(client) {
     super.exit(client);

@@ -36,8 +36,6 @@ export default class PlayerExperience extends soundworks.Experience {
     src.buffer = this.loader.buffers[0];
     src.connect(audioContext.destination);
     src.start(audioContext.currentTime);
-    alert('Sound test successful!');
-
   }
 
   init() {
@@ -70,12 +68,18 @@ export default class PlayerExperience extends soundworks.Experience {
     src.start(audioContext.currentTime);
     */
 
+    //Attempt to add touch functionality, as used in "Drops"
 
+    const surface = new soundworks.TouchSurface(this.view.$el);
+
+    surface.addListener('touchstart', () => {
+        alert('Touched!');
+        this.send('taptime');
+    })
 
     // play the second loaded buffer when the message `play` is received from
     // the server, the message is send when another player joins the experience.
     this.receive('play', () => {
-    	console.log('New device detected!');
     	//The delay has been modified so that the sounds may or may not overlap. Other plays may play up to 1.5 seconds after a new client joins.
       const delay = (Math.random() * 5.5);
       const src = audioContext.createBufferSource();
@@ -84,6 +88,18 @@ export default class PlayerExperience extends soundworks.Experience {
       src.start(audioContext.currentTime + delay);
 
     });
+
+    this.receive('tapplay',() => {
+      //Randomly play one of the sounds (except 0)
+      let soundtoplay = 0;
+      while (soundtoplay != 0) {
+        soundtoplay = (Math.floor(Math.random() * 5));
+      }
+      const src = audioContext.createBufferSource();
+      src.buffer = this.loader.buffers[soundtoplay];
+      src.connect(audioContext.destination);
+      src.start(audioContext.currentTime);
+    })
 
     // initialize rendering
     this.renderer = new PlayerRenderer(100, 100);
