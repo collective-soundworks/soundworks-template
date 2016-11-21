@@ -1,18 +1,17 @@
-# Soundworks Application Template
+#(Modified) Soundworks Application
 
-> This is a project template for developing [*Soundworks*](https://github.com/collective-soundworks/soundworks/) applications.  
-> The template also includes comprehensive comments in the source files.
+
+>The Soundworks framework is an amazing set of services and a great framework to build upon. This is an attempt to build upon that framework to create interesting experiences. 
+> This is derived from the template for developing [*Soundworks*](https://github.com/collective-soundworks/soundworks/) applications.  
+> Most of the original template code is intact, including comprehensive comments in the source files.
 
 [//]: # (For a complete documentation of the *Soundworks* framework, please refer to http://collective-soundworks.github.io/soundworks/.)
 
-## Creating a New Application
+## Running the Application
 
-To start the development of a new *Soundworks* application, we recommend the following sequence of commands:
+To start the *Soundworks* application, use these commands:
 
 ```sh
-$ git clone https://github.com/collective-soundworks/soundworks-template.git my-soundworks-application
-$ cd my-soundworks-application
-$ rm -Rf .git
 $ npm install
 $ npm run watch
 ```
