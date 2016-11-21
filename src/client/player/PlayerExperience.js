@@ -1,6 +1,7 @@
 import * as soundworks from 'soundworks/client';
 import PlayerRenderer from './PlayerRenderer';
 
+// import audiofile from './audiofile';
 const audioContext = soundworks.audioContext;
 
 const viewTemplate = `
@@ -73,7 +74,6 @@ export default class PlayerExperience extends soundworks.Experience {
     const surface = new soundworks.TouchSurface(this.view.$el);
 
     surface.addListener('touchstart', () => {
-        alert('Touched!');
         this.send('taptime');
     })
 
@@ -91,15 +91,24 @@ export default class PlayerExperience extends soundworks.Experience {
 
     this.receive('tapplay',() => {
       //Randomly play one of the sounds (except 0)
-      let soundtoplay = 0;
-      while (soundtoplay != 0) {
-        soundtoplay = (Math.floor(Math.random() * 5));
-      }
+
+      //Thanks to StackOverflow for the Random logic: http://stackoverflow.com/questions/1527803/generating-random-whole-numbers-in-javascript-in-a-specific-range
+      var soundtoplay = (Math.floor(Math.random() * (6 - 2 + 1)) + 2);
+
       const src = audioContext.createBufferSource();
       src.buffer = this.loader.buffers[soundtoplay];
       src.connect(audioContext.destination);
       src.start(audioContext.currentTime);
-    })
+    });
+
+    this.receive('gameover', () => {
+      const src = audioContext.createBufferSource();
+      src.buffer = this.loader.buffers[7];
+      src.connect(audioContext.destination);
+      src.start(audioContext.currentTime);
+    });
+
+    this.receive('tstmsg', () => { alert('Server sez say stuff'); });
 
     // initialize rendering
     this.renderer = new PlayerRenderer(100, 100);
