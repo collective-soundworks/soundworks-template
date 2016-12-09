@@ -1,7 +1,7 @@
 # CHANGELOG
 
 1.1.2
-- updated `auth` template and content:
+- updated `auth` template and content (commit e637fec2a681f89e1d9f41d71161b3e3aff7456c):
   + `client/shared/viewContent.js`
   + `client/shared/viewTemplates.js`
 

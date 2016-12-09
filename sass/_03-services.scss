@@ -124,3 +124,19 @@
     @include transition(width 150ms);
   }
 }
+
+// ------------------------------------------------------------
+// BASIC SHARED CONTROLLERS
+// ------------------------------------------------------------
+
+#basic-shared-controller {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 10px;
+  box-sizing: border-box;
+
+  h1 {
+    margin: 8px 0;
+  }
+}
+
