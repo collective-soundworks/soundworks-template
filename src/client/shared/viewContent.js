@@ -11,12 +11,12 @@ export default {
   // variables shared among all templates through the global namespace
   'globals': {},
 
-   // content of the `auth` service
+  // content of the `auth` service
   'service:auth': {
     instructions: 'Login',
     send: 'Send',
     reset: 'Reset',
-    rejectMessage: `Sorry,<br/>you don't have access to this client`,
+    rejectMessage: `Sorry, you don't have access to this client`,
     rejected: false,
   },
 
