@@ -1,7 +1,7 @@
 # CHANGELOG
 
 1.1.2
-- updated sass files (removed `basic-controllers` overrides) (92299b48fc5807db798f8679af1e39c6bcabc8d8)
+- updated sass files (removed `basic-controllers` overrides) (92299b48fc5807db798f8679af1e39c6bcabc8d8 and f0ba6980d48c32b6df52126cf0630c5cfe4ac3c8)
   + copy `sass/*` except `sass/_override.scss`
 
 - updated `auth` template and content (commit e637fec2a681f89e1d9f41d71161b3e3aff7456c):
