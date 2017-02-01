@@ -92,6 +92,12 @@ export default {
     sendPort: 57120,
   },
 
+  // configuration of the `raw-socket` service
+  rawSocket: {
+    // port used for socket connection
+    port: 8080
+  },
+
   // define if the server should use gzip compression for static files
   enableGZipCompression: true,
 
