@@ -5,11 +5,13 @@ import { Renderer } from 'soundworks/client';
  * The class renders a dot moving over the screen and rebouncing on the edges.
  */
 export default class PlayerRenderer extends Renderer {
-  constructor(vx, vy) {
+  constructor(vx, vy, collisionCallback = function() {}) {
     super(0); // update rate = 0: synchronize updates to frame rate
 
     this.velocityX = vx; // px per seconds
     this.velocityY = vy; // px per seconds
+
+    this.collisionCallback = collisionCallback;
   }
 
   /**
@@ -30,11 +32,25 @@ export default class PlayerRenderer extends Renderer {
    */
   update(dt) {
     // rebounce at the edges
-    if (this.x >= this.canvasWidth || this.x <= 0)
+    if (this.x <= 0) {
+      this.x = 0;
       this.velocityX *= -1;
+      this.collisionCallback('left');      
+    } else if (this.x >= this.canvasWidth) {
+      this.x = this.canvasWidth;
+      this.velocityX *= -1;
+      this.collisionCallback('right');      
+    } 
 
-    if (this.y >= this.canvasHeight || this.y <= 0)
+    if (this.y <= 0) {
+      this.y = 0;
       this.velocityY *= -1;
+      this.collisionCallback('top');
+    } else if (this.y >= this.canvasHeight) {
+      this.y = this.canvasHeight;
+      this.velocityY *= -1;
+      this.collisionCallback('bottom');
+    }
 
     // update position according to velocity
     this.x += (this.velocityX * dt);

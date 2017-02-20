@@ -32,7 +32,9 @@ export default {
 
   // content of the `audio-buffer-manager` service
   'service:audio-buffer-manager': {
-    loading: 'Loading sounds…',
+    status: null,
+    loading: 'Loading sounds...',
+    decoding: 'Decoding sounds...',
   },
 
   // content of the `locator` service

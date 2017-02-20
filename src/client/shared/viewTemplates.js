@@ -62,7 +62,7 @@ export default {
   // template of the `audio-buffer-manager` service
   'service:audio-buffer-manager': `
     <div class="section-top flex-middle">
-      <p><%= loading %></p>
+      <p><%= status %></p>
     </div>
     <div class="section-center flex-center">
       <% if (showProgress) { %>
