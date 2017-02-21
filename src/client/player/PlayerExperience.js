@@ -25,7 +25,7 @@ export default class PlayerExperience extends soundworks.Experience {
     this.checkin = this.require('checkin', { showDialog: false });
     this.audioBufferManager = this.require('audio-buffer-manager', {
       assetsDomain: assetsDomain,
-      directories: 'sounds', recursive: true,
+      directories: { path: 'sounds', recursive: true },
     });
   }
 
