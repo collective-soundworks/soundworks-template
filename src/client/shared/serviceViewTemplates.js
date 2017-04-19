@@ -62,7 +62,7 @@ export default {
   // template of the `audio-buffer-manager` service
   'service:audio-buffer-manager': `
     <div class="section-top flex-middle">
-      <p><%= status %></p>
+      <p><%= msg[status] %></p>
     </div>
     <div class="section-center flex-center">
       <% if (showProgress) { %>
@@ -88,7 +88,7 @@ export default {
 
   // template of the `placer` service
   'service:placer': `
-    <div class="section-square<%= mode === 'list' ? ' flex-middle' : '' %>">
+    <div class="section-square flex-middle">
       <% if (rejected) { %>
       <div class="fit-container flex-middle">
         <p><%= reject %></p>
@@ -97,23 +97,40 @@ export default {
     </div>
     <div class="section-float flex-middle">
       <% if (!rejected) { %>
-        <% if (mode === 'graphic') { %>
-          <p><%= instructions %></p>
-        <% } else if (mode === 'list') { %>
-          <% if (showBtn) { %>
-            <button class="btn"><%= send %></button>
-          <% } %>
+        <% if (showBtn) { %>
+          <button class="btn"><%= send %></button>
         <% } %>
       <% } %>
     </div>
   `,
 
+  // 'service:placer-graphic': `
+  //   <div class="section-square">
+  //     <% if (rejected) { %>
+  //     <div class="fit-container flex-middle">
+  //       <p><%= reject %></p>
+  //     </div>
+  //     <% } %>
+  //   </div>
+  //   <div class="section-float flex-middle">
+  //     <% if (!rejected) { %>
+  //       <p><%= instructions %></p>
+  //     <% } %>
+  //   </div>
+  // `,
+
   // template of the `platform` service
   'service:platform': `
-    <% if (!isCompatible) { %>
+    <% if (isCompatible === false) { %>
       <div class="section-top"></div>
       <div class="section-center flex-center">
-        <p><%= errorMessage %></p>
+        <p><%= errorCompatibleMessage %></p>
+      </div>
+      <div class="section-bottom"></div>
+    <% } else if (hasAuthorizations === false) { %>
+      <div class="section-top"></div>
+      <div class="section-center flex-center">
+        <p><%= errorHooksMessage %></p>
       </div>
       <div class="section-bottom"></div>
     <% } else { %>
@@ -126,9 +143,21 @@ export default {
           </p>
       </div>
       <div class="section-bottom flex-middle">
+        <% if (checking === true) { %>
+        <p class="small soft-blink"><%= checkingMessage %></p>
+        <% } else if (hasAuthorizations === true) { %>
         <p class="small soft-blink"><%= instructions %></p>
+        <% } %>
       </div>
     <% } %>
+  `,
+
+  'service:raw-socket': `
+    <div class="section-top"></div>
+    <div class="section-center flex-center">
+      <p class="soft-blink"><%= wait %></p>
+    </div>
+    <div class="section-bottom"></div>
   `,
 
   // template of the `sync` service

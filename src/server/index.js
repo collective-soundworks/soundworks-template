@@ -22,7 +22,6 @@ soundworks.server.init(config);
 
 // define the configuration object to be passed to the `.ejs` template
 soundworks.server.setClientConfigDefinition((clientType, config, httpRequest) => {
-
   return {
     clientType: clientType,
     env: config.env,

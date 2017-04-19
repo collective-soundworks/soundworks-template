@@ -33,6 +33,7 @@ export default {
   // content of the `audio-buffer-manager` service
   'service:audio-buffer-manager': {
     status: null,
+    showProgress: true,
     loading: 'Loading sounds...',
     decoding: 'Decoding sounds...',
   },
@@ -56,9 +57,17 @@ export default {
   // content of the `platform` service
   'service:platform': {
     isCompatible: null,
-    errorMessage: 'Sorry,<br />Your device is not compatible with this application.',
+    hasAuthorizations: null,
+    checking: false,
     intro: 'Welcome to',
-    instructions: 'Touch the screen to join !',
+    instructions: 'Touch the screen to join!',
+    checkingMessage: 'Please wait while checking compatiblity',
+    errorCompatibleMessage: 'Sorry,<br />Your device is not compatible with the application.',
+    errorHooksMessage: `Sorry,<br />The application didn't obtain the necessary authorizations.`,
+  },
+
+  'service:raw-socket': {
+    wait: `Opening socket,<br />stand by&hellip;`,
   },
 
   // content of the `sync` service
@@ -73,4 +82,11 @@ export default {
     thanks: 'Thanks!',
     length: '-',
   },
+
+  get(id, config) {
+    const content = this[id];
+    content.globals = Object.assign({}, this.globals, config);
+
+    return content;
+  }
 };

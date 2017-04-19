@@ -4,17 +4,6 @@ import PlayerRenderer from './PlayerRenderer';
 
 const audioContext = soundworks.audioContext;
 
-const viewTemplate = `
-  <canvas class="background"></canvas>
-  <div class="foreground">
-    <div class="section-top flex-middle"></div>
-    <div class="section-center flex-center">
-      <p class="big"><%= title %></p>
-    </div>
-    <div class="section-bottom flex-middle"></div>
-  </div>
-`;
-
 // this experience plays a sound when it starts, and plays another sound when
 // other clients join the experience
 export default class PlayerExperience extends soundworks.Experience {
@@ -29,28 +18,23 @@ export default class PlayerExperience extends soundworks.Experience {
     });
   }
 
-  init() {
-    // initialize the view
-    this.viewTemplate = viewTemplate;
-    this.viewContent = { title: `Let's go!` };
-    this.viewCtor = soundworks.CanvasView;
-    this.viewOptions = { preservePixelRatio: true };
-    this.view = this.createView();
-  }
-
-  playSound(buffer, randomPitchVar = 0) {
-    const src = audioContext.createBufferSource();
-    src.connect(audioContext.destination);
-    src.buffer = buffer;
-    src.start(audioContext.currentTime);
-    src.playbackRate.value = centToLinear((Math.random() * 2 - 1) * randomPitchVar);
-  }
-
   start() {
     super.start(); // don't forget this
 
-    if (!this.hasStarted)
-      this.init();
+    const template = `
+      <canvas class="background"></canvas>
+      <div class="foreground">
+        <div class="section-top flex-middle"></div>
+        <div class="section-center flex-center">
+          <p class="big"><%= title %></p>
+        </div>
+        <div class="section-bottom flex-middle"></div>
+      </div>
+    `;
+
+    const content = { title: `Let's go!` };
+    // initialize the view
+    this.view = new soundworks.CanvasView(template, content, {}, { preservePixelRatio: true });
 
     this.show();
 
@@ -84,5 +68,13 @@ export default class PlayerExperience extends soundworks.Experience {
       ctx.fill();
       ctx.restore();
     });
+  }
+
+  playSound(buffer, randomPitchVar = 0) {
+    const src = audioContext.createBufferSource();
+    src.connect(audioContext.destination);
+    src.buffer = buffer;
+    src.start(audioContext.currentTime);
+    src.playbackRate.value = centToLinear((Math.random() * 2 - 1) * randomPitchVar);
   }
 }
