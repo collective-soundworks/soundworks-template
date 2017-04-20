@@ -1,5 +1,6 @@
 import {
   SegmentedView,
+  SelectView,
   SpaceView,
   SquaredView,
   TouchSurface,
@@ -22,13 +23,17 @@ import {
  */
 // ------------------------------------
 
+const noop = () => {};
+
 const serviceViews = {
   // ------------------------------------------------
   // AudioBufferManager
   // ------------------------------------------------
   'service:audio-buffer-manager': class AudioBufferManagerView extends SegmentedView {
     constructor(...args) {
-      super(`
+      super();
+
+      this.template = `
         <div class="section-top flex-middle">
           <p><%= msg[status] %></p>
         </div>
@@ -40,14 +45,16 @@ const serviceViews = {
           <% } %>
         </div>
         <div class="section-bottom"></div>
-      `, {
+      `;
+
+      this.model = {
         status: 'loading',
         showProgress: true,
         msg: {
           loading: 'Loading sounds...',
           decoding: 'Decoding sounds...',
         }
-      });
+      };
     }
 
     onRender() {
@@ -55,13 +62,15 @@ const serviceViews = {
       this.$progressBar = this.$el.querySelector('.progress-bar');
     }
 
-    onProgress(percent) {
+    onProgress(ratio) {
+      const percent = Math.round(ratio * 100);
+
       if (percent === 100) {
-        this.content.status = 'decoding';
+        this.model.status = 'decoding';
         this.render('.section-top');
       }
 
-      if (this.content.showProgress)
+      if (this.model.showProgress)
         this.$progressBar.style.width = `${percent}%`;
     }
   },
@@ -70,11 +79,44 @@ const serviceViews = {
   // Auth
   // ------------------------------------------------
   'service:auth': class AuthView extends SegmentedView {
-    constructor(...args) {
-      super(...args);
+    constructor() {
+      super();
 
-      this._sendPasswordCallback = () => {};
-      this._resetCallback = () => {};
+      this.template = `
+        <% if (!rejected) { %>
+          <div class="section-top flex-middle">
+            <p><%= instructions %></p>
+          </div>
+          <div class="section-center flex-center">
+            <div>
+              <input type="password" id="password" />
+              <button class="btn" id="send"><%= send %></button>
+            </div>
+          </div>
+          <div class="section-bottom flex-middle">
+            <button id="reset" class="btn"><%= reset %></button>
+          </div>
+        <% } else { %>
+          <div class="section-top"></div>
+          <div class="section-center flex-center">
+            <p><%= rejectMessage %></p>
+          </div>
+          <div class="section-bottom flex-middle">
+            <button id="reset" class="btn"><%= reset %></button>
+          </div>
+        <% } %>
+      `;
+
+      this.model = {
+        instructions: 'Login',
+        send: 'Send',
+        reset: 'Reset',
+        rejectMessage: `Sorry, you don't have access to this client`,
+        rejected: false,
+      };
+
+      this._sendPasswordCallback = noop;
+      this._resetCallback = noop;
     }
 
     onRender() {
@@ -85,7 +127,7 @@ const serviceViews = {
           const password = this.$el.querySelector('#password').value;
 
           if (password !== '')
-            callback(password);
+            this._sendPasswordCallback(password);
         },
         'click #reset': () => this._resetCallback(),
       });
@@ -100,7 +142,7 @@ const serviceViews = {
     }
 
     updateRejectedStatus(value) {
-      this.content.rejected = value;
+      this.model.rejected = value;
     }
   },
 
@@ -108,8 +150,39 @@ const serviceViews = {
   // Checkin
   // ------------------------------------------------
   'service:checkin': class CheckinView extends SegmentedView {
-    constructor(...args) {
-      super(...args);
+    constructor() {
+      super();
+
+      this.template = `
+        <% if (label) { %>
+          <div class="section-top flex-middle">
+            <p class="big"><%= labelPrefix %></p>
+          </div>
+          <div class="section-center flex-center">
+            <div class="checkin-label">
+              <p class="huge bold"><%= label %></p>
+            </div>
+          </div>
+          <div class="section-bottom flex-middle">
+            <p class="small"><%= labelPostfix %></p>
+          </div>
+        <% } else { %>
+          <div class="section-top"></div>
+          <div class="section-center flex-center">
+            <p><%= error ? errorMessage : wait %></p>
+          </div>
+          <div class="section-bottom"></div>
+        <% } %>
+      `;
+
+      this.model = {
+        labelPrefix: 'Go to',
+        labelPostfix: 'Touch the screen<br class="portrait-only" />when you are ready.',
+        error: false,
+        errorMessage: 'Sorry,<br/>no place available',
+        wait: 'Please wait...',
+        label: '',
+      };
 
       this._readyCallback = null;
     }
@@ -120,7 +193,7 @@ const serviceViews = {
       const eventName = this.options.interaction === 'mouse' ? 'click' : 'touchstart';
 
       this.installEvents({
-        [eventName]: this._readyCallback,
+        [eventName]: () => this._readyCallback(),
       });
     }
 
@@ -129,11 +202,11 @@ const serviceViews = {
     }
 
     updateLabel(value) {
-      this.content.label = value;
+      this.model.label = value;
     }
 
     updateErrorStatus(value) {
-      this.content.error = value;
+      this.model.error = value;
     }
   },
 
@@ -141,14 +214,36 @@ const serviceViews = {
   // Locator
   // ------------------------------------------------
   'service:locator': class LocatorView extends SquaredView {
-    constructor(template, content, events, options) {
-      super(template, content, events, options);
+    constructor() {
+      super();
+
+      this.template = `
+        <div class="section-square"></div>
+        <div class="section-float flex-middle">
+          <% if (!showBtn) { %>
+            <p class="small"><%= instructions %></p>
+          <% } else { %>
+            <button class="btn"><%= send %></button>
+          <% } %>
+        </div>
+      `;
+
+      this.model = {
+        instructions: 'Define your position in the area',
+        send: 'Send',
+        showBtn: false,
+      };
 
       this.area = null;
-      this._selectCallback = () => {};
+      this._selectCallback = noop;
 
       this._onAreaTouchStart = this._onAreaTouchStart.bind(this);
       this._onAreaTouchMove = this._onAreaTouchMove.bind(this);
+    }
+
+    onRender() {
+      super.onRender();
+      this.$areaContainer = this.$el.querySelector('.section-square');
     }
 
     setArea(area) {
@@ -167,11 +262,19 @@ const serviceViews = {
       this.surface.removeListener('touchmove', this._onAreaTouchMove);
     }
 
+    onResize(viewportWidth, viewportHeight, orientation) {
+      super.onResize(viewportWidth, viewportHeight, orientation);
+      this.selector.onResize(viewportWidth, viewportHeight, orientation);
+    }
+
     _renderArea() {
       this.selector = new SpaceView();
       this.selector.setArea(this._area);
-      this.setViewComponent('.section-square', this.selector);
-      this.render('.section-square');
+
+      this.selector.render();
+      this.selector.appendTo(this.$areaContainer);
+      this.selector.onRender();
+      this.selector.show();
 
       this.surface = new TouchSurface(this.selector.$svgContainer);
       this.surface.addListener('touchstart', this._onAreaTouchStart);
@@ -182,7 +285,7 @@ const serviceViews = {
       if (!this.position) {
         this._createPosition(normX, normY);
 
-        this.content.showBtn = true;
+        this.model.showBtn = true;
         this.render('.section-float');
         this.installEvents({
           'click .btn': (e) => this._selectCallback(this.position.x, this.position.y),
@@ -215,18 +318,44 @@ const serviceViews = {
   },
 
   // ------------------------------------------------
-  // Platform
+  // Placer
   // ------------------------------------------------
   'service:placer': class PlacerViewList extends SquaredView {
-    constructor(...args) {
-      super(...args);
+    constructor() {
+      super();
+
+      this.template = `
+        <div class="section-square flex-middle">
+          <% if (rejected) { %>
+          <div class="fit-container flex-middle">
+            <p><%= reject %></p>
+          </div>
+          <% } %>
+        </div>
+        <div class="section-float flex-middle">
+          <% if (!rejected) { %>
+            <% if (showBtn) { %>
+              <button class="btn"><%= send %></button>
+            <% } %>
+          <% } %>
+        </div>
+      `;
+
+      this.model = {
+        instructions: 'Select your position',
+        send: 'Send',
+        reject: 'Sorry, no place is available',
+        showBtn: false,
+        rejected: false,
+      };
 
       this._onSelectionChange = this._onSelectionChange.bind(this);
     }
 
     _onSelectionChange(e) {
-      this.content.showBtn = true;
+      this.model.showBtn = true;
       this.render('.section-float');
+
       this.installEvents({
         'click .btn': (e) => {
           const position = this.selector.value;
@@ -238,6 +367,16 @@ const serviceViews = {
     }
 
     setArea(area) { /* no need for area */ }
+
+    onRender() {
+      super.onRender();
+      this.$selectorContainer = this.$el.querySelector('.section-square');
+    }
+
+    onResize(viewportWidth, viewportHeight, orientation) {
+      super.onResize(viewportWidth, viewportHeight, orientation);
+      this.selector.onResize(viewportWidth, viewportHeight, orientation);
+    }
 
     displayPositions(capacity, labels = null, coordinates = null, maxClientsPerPosition = 1) {
       this.positions = [];
@@ -254,12 +393,14 @@ const serviceViews = {
       }
 
       this.selector = new SelectView({
-        instructions: this.content.instructions,
+        instructions: this.model.instructions,
         entries: this.positions,
       });
 
-      this.setViewComponent('.section-square', this.selector);
-      this.render('.section-square');
+      this.selector.render();
+      this.selector.appendTo(this.$selectorContainer);
+      this.selector.onRender();
+      this.selector.show();
 
       this.selector.installEvents({
         'change': this._onSelectionChange,
@@ -280,23 +421,54 @@ const serviceViews = {
     }
 
     reject(disabledPositions) {
-      if (disabledPositions.length >= this.numberPositions) {
-        this.setViewComponent('.section-square');
-        this.content.rejected = true;
-        this.render();
-      } else {
-        this.disablePositions(disabledPositions);
-      }
+      this.model.rejected = true;
+      this.render();
     }
   },
 
-  // 'service:placer-graphic': class PlacerViewGraphic extends SquaredView {
-  //   constructor(...args) {
-  //     super(...args);
+  // graphic placer flavor for predetermined coordinates
+  // 'service:placer': class PlacerViewGraphic extends SquaredView {
+  //   constructor() {
+  //     super();
+
+  //     this.template = `
+  //       <div class="section-square flex-middle">
+  //         <% if (rejected) { %>
+  //         <div class="fit-container flex-middle">
+  //           <p><%= reject %></p>
+  //         </div>
+  //         <% } %>
+  //       </div>
+  //       <div class="section-float flex-middle">
+  //         <% if (!rejected) { %>
+  //           <% if (showBtn) { %>
+  //             <button class="btn"><%= send %></button>
+  //           <% } %>
+  //         <% } %>
+  //       </div>
+  //     `;
+
+  //     this.model = {
+  //       instructions: 'Select your position',
+  //       send: 'Send',
+  //       reject: 'Sorry, no place is available',
+  //       showBtn: false,
+  //       rejected: false,
+  //     };
 
   //     this._area = null;
   //     this._disabledPositions = [];
   //     this._onSelectionChange = this._onSelectionChange.bind(this);
+  //   }
+
+  //   onRender() {
+  //     super.onRender();
+  //     this.$selectorContainer = this.$el.querySelector('.section-square');
+  //   }
+
+  //   onResize(viewportWidth, viewportHeight, orientation) {
+  //     super.onResize(viewportWidth, viewportHeight, orientation);
+  //     this.selector.onResize(viewportWidth, viewportHeight, orientation);
   //   }
 
   //   _onSelectionChange(e) {
@@ -327,9 +499,10 @@ const serviceViews = {
 
   //     this.selector = new SpaceView();
   //     this.selector.setArea(this._area);
-  //     this.setViewComponent('.section-square', this.selector);
-  //     this.render('.section-square');
-
+  //     this.selector.render();
+  //     this.selector.appendTo(this.$selectorContainer);
+  //     this.selector.onRender();
+  //     this.selector.show();
   //     this.selector.setPoints(this.positions);
 
   //     this.selector.installEvents({
@@ -353,13 +526,8 @@ const serviceViews = {
   //   }
 
   //   reject(disabledPositions) {
-  //     if (disabledPositions.length >= this.numberPositions) {
-  //       this.setViewComponent('.section-square');
-  //       this.content.rejected = true;
-  //       this.render();
-  //     } else {
-  //       this.view.updateDisabledPositions(disabledPositions);
-  //     }
+  //     this.model.rejected = true;
+  //     this.render();
   //   }
   // },
 
@@ -367,11 +535,54 @@ const serviceViews = {
   // Platform
   // ------------------------------------------------
   'service:platform': class PlatformView extends SegmentedView {
-    constructor(...args) {
-      super(...args);
+    constructor() {
+      super();
 
-      this._touchstartCallback = () => {};
-      this._mousedownCallback = () => {};
+      this.template = `
+        <% if (isCompatible === false) { %>
+          <div class="section-top"></div>
+          <div class="section-center flex-center">
+            <p><%= errorCompatibleMessage %></p>
+          </div>
+          <div class="section-bottom"></div>
+        <% } else if (hasAuthorizations === false) { %>
+          <div class="section-top"></div>
+          <div class="section-center flex-center">
+            <p><%= errorHooksMessage %></p>
+          </div>
+          <div class="section-bottom"></div>
+        <% } else { %>
+          <div class="section-top flex-middle"></div>
+          <div class="section-center flex-center">
+              <p class="big">
+                <%= intro %>
+                <br />
+                <b><%= globals.appName %></b>
+              </p>
+          </div>
+          <div class="section-bottom flex-middle">
+            <% if (checking === true) { %>
+            <p class="small soft-blink"><%= checkingMessage %></p>
+            <% } else if (hasAuthorizations === true) { %>
+            <p class="small soft-blink"><%= instructions %></p>
+            <% } %>
+          </div>
+        <% } %>
+      `;
+
+      this.model = {
+        isCompatible: null,
+        hasAuthorizations: null,
+        checking: false,
+        intro: 'Welcome to',
+        instructions: 'Touch the screen to join!',
+        checkingMessage: 'Please wait while checking compatiblity',
+        errorCompatibleMessage: 'Sorry,<br />Your device is not compatible with the application.',
+        errorHooksMessage: `Sorry,<br />The application didn't obtain the necessary authorizations.`,
+      };
+
+      this._touchstartCallback = noop;
+      this._mousedownCallback = noop;
     }
 
     onRender() {
@@ -392,27 +603,75 @@ const serviceViews = {
     }
 
     updateCheckingStatus(value) {
-      this.content.checking = value;
+      this.model.checking = value;
     }
 
     updateIsCompatibleStatus(value) {
-      this.content.isCompatible = value;
+      this.model.isCompatible = value;
     }
 
     updateHasAuthorizationsStatus(value) {
-      this.content.hasAuthorizations = value;
+      this.model.hasAuthorizations = value;
     }
   },
 
   // ------------------------------------------------
   // Raw-Socket
   // ------------------------------------------------
-  'service:raw-socket': class RawSocketView extends SegmentedView {},
+  'service:raw-socket': class RawSocketView extends SegmentedView {
+    constructor() {
+      super();
+
+      this.template = `
+        <div class="section-top"></div>
+        <div class="section-center flex-center">
+          <p class="soft-blink"><%= wait %></p>
+        </div>
+        <div class="section-bottom"></div>
+      `;
+
+      this.model = {
+        wait: `Opening socket,<br />stand by&hellip;`,
+      };
+    }
+  },
 
   // ------------------------------------------------
   // Sync
   // ------------------------------------------------
-  'service:sync': class RawSocketView extends SegmentedView {},
+  'service:sync': class RawSocketView extends SegmentedView {
+    constructor() {
+      super();
+
+      this.template = `
+        <div class="section-top"></div>
+        <div class="section-center flex-center">
+          <p class="soft-blink"><%= wait %></p>
+        </div>
+        <div class="section-bottom"></div>
+      `;
+
+      this.model = {
+        wait: `Clock syncing,<br />stand by&hellip;`,
+      };
+    }
+  },
+
+
+  // public API
+  has(id) {
+    return !!this[id];
+  },
+
+  get(id, config) {
+    const ctor = this[id];
+    const view = new ctor();
+    // additionnal configuration
+    view.model.globals = Object.assign({}, config);
+    view.options.id = id.replace(/\:/g, '-');
+
+    return view;
+  },
 };
 
 export default serviceViews;
