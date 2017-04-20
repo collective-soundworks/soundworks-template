@@ -35,12 +35,12 @@ export default class PlayerRenderer extends Renderer {
     if (this.x <= 0) {
       this.x = 0;
       this.velocityX *= -1;
-      this.collisionCallback('left');      
+      this.collisionCallback('left');
     } else if (this.x >= this.canvasWidth) {
       this.x = this.canvasWidth;
       this.velocityX *= -1;
-      this.collisionCallback('right');      
-    } 
+      this.collisionCallback('right');
+    }
 
     if (this.y <= 0) {
       this.y = 0;

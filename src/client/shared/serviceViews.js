@@ -190,7 +190,9 @@ const serviceViews = {
     onRender() {
       super.onRender();
 
-      const eventName = this.options.interaction === 'mouse' ? 'click' : 'touchstart';
+      console.log('checkin: onRender');
+      // const eventName = this.options.interaction === 'mouse' ? 'click' : 'touchstart';
+      const eventName = 'click';
 
       this.installEvents({
         [eventName]: () => this._readyCallback(),
