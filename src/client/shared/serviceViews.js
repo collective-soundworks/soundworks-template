@@ -62,7 +62,7 @@ const serviceViews = {
       this.$progressBar = this.$el.querySelector('.progress-bar');
     }
 
-    onProgress(ratio) {
+    setProgressRatio(ratio) {
       const percent = Math.round(ratio * 100);
 
       if (percent === 100) {
@@ -116,7 +116,7 @@ const serviceViews = {
       };
 
       this._sendPasswordCallback = noop;
-      this._resetCallback = noop;
+      this._resetPasswordCallback = noop;
     }
 
     onRender() {
@@ -129,7 +129,7 @@ const serviceViews = {
           if (password !== '')
             this._sendPasswordCallback(password);
         },
-        'click #reset': () => this._resetCallback(),
+        'click #reset': () => this._resetPasswordCallback(),
       });
     }
 
@@ -137,12 +137,13 @@ const serviceViews = {
       this._sendPasswordCallback = callback;
     }
 
-    setResetCallback(callback) {
-      this._resetCallback = callback;
+    setResetPasswordCallback(callback) {
+      this._resetPasswordCallback = callback;
     }
 
     updateRejectedStatus(value) {
       this.model.rejected = value;
+      this.render();
     }
   },
 
@@ -190,8 +191,6 @@ const serviceViews = {
     onRender() {
       super.onRender();
 
-      console.log('checkin: onRender');
-      // const eventName = this.options.interaction === 'mouse' ? 'click' : 'touchstart';
       const eventName = 'click';
 
       this.installEvents({
@@ -205,10 +204,12 @@ const serviceViews = {
 
     updateLabel(value) {
       this.model.label = value;
+      this.render();
     }
 
     updateErrorStatus(value) {
       this.model.error = value;
+      this.render();
     }
   },
 
@@ -368,8 +369,6 @@ const serviceViews = {
       });
     }
 
-    setArea(area) { /* no need for area */ }
-
     onRender() {
       super.onRender();
       this.$selectorContainer = this.$el.querySelector('.section-square');
@@ -378,6 +377,12 @@ const serviceViews = {
     onResize(viewportWidth, viewportHeight, orientation) {
       super.onResize(viewportWidth, viewportHeight, orientation);
       this.selector.onResize(viewportWidth, viewportHeight, orientation);
+    }
+
+    setArea(area) { /* no need for area */ }
+
+    setSelectCallack(callback) {
+      this._onSelect = callback;
     }
 
     displayPositions(capacity, labels = null, coordinates = null, maxClientsPerPosition = 1) {
@@ -416,10 +421,6 @@ const serviceViews = {
         else
           this.selector.disableIndex(index);
       }
-    }
-
-    setSelectCallack(callback) {
-      this._onSelect = callback;
     }
 
     reject(disabledPositions) {
@@ -606,14 +607,17 @@ const serviceViews = {
 
     updateCheckingStatus(value) {
       this.model.checking = value;
+      this.view.render();
     }
 
     updateIsCompatibleStatus(value) {
       this.model.isCompatible = value;
+      this.view.render();
     }
 
     updateHasAuthorizationsStatus(value) {
       this.model.hasAuthorizations = value;
+      this.view.render();
     }
   },
 
