@@ -4,6 +4,7 @@ import {
   SpaceView,
   SquaredView,
   TouchSurface,
+  client,
 } from 'soundworks/client';
 
 // --------------------------- example
@@ -24,6 +25,19 @@ import {
 // ------------------------------------
 
 const noop = () => {};
+
+function getStartInteraction() {
+  let interaction = 'click';
+
+  if (client.interation !== null) {
+    if (client.interation === 'touch')
+      interaction = 'touchstart';
+    else
+      interaction = 'mousedown';
+  }
+
+  return interaction;
+}
 
 const serviceViews = {
   // ------------------------------------------------
@@ -122,14 +136,16 @@ const serviceViews = {
     onRender() {
       super.onRender();
 
+      const interaction = getStartInteraction();
+
       this.installEvents({
-        'click #send': () => {
+        [interaction + ' #send']: () => {
           const password = this.$el.querySelector('#password').value;
 
           if (password !== '')
             this._sendPasswordCallback(password);
         },
-        'click #reset': () => this._resetPasswordCallback(),
+        [interaction + ' #reset']: () => this._resetPasswordCallback(),
       });
     }
 
@@ -191,10 +207,10 @@ const serviceViews = {
     onRender() {
       super.onRender();
 
-      const eventName = 'click';
+      const interaction = getStartInteraction();
 
       this.installEvents({
-        [eventName]: () => this._readyCallback(),
+        [interaction]: () => this._readyCallback(),
       });
     }
 
@@ -607,17 +623,17 @@ const serviceViews = {
 
     updateCheckingStatus(value) {
       this.model.checking = value;
-      this.view.render();
+      this.render();
     }
 
     updateIsCompatibleStatus(value) {
       this.model.isCompatible = value;
-      this.view.render();
+      this.render();
     }
 
     updateHasAuthorizationsStatus(value) {
       this.model.hasAuthorizations = value;
-      this.view.render();
+      this.render();
     }
   },
 
@@ -675,6 +691,7 @@ const serviceViews = {
     // additionnal configuration
     view.model.globals = Object.assign({}, config);
     view.options.id = id.replace(/\:/g, '-');
+    view.options.className = client.type;
 
     return view;
   },
