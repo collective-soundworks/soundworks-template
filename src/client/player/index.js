@@ -1,29 +1,25 @@
 // import client side soundworks and player experience
 import * as soundworks from 'soundworks/client';
-import PlayerExperience from './PlayerExperience.js';
-import viewTemplates from '../shared/viewTemplates';
-import viewContent from '../shared/viewContent';
+import PlayerExperience from './PlayerExperience';
+import serviceViews from '../shared/serviceViews';
 
-// list of files to load (passed to the experience)
-const files = [
-  'sounds/sound-welcome.mp3',
-  'sounds/sound-others.mp3'
-];
-
-// launch application when document is fully loaded
-window.addEventListener('load', () => {
-  // configuration received from the server through the `index.html`
+function bootstrap() {
+  // initialize the client with configuration received
+  // from the server through the `index.html`
   // @see {~/src/server/index.js}
   // @see {~/html/default.ejs}
-  const { appName, clientType, socketIO, assetsDomain }  = window.soundworksConfig;
-  // initialize the 'player' client
-  soundworks.client.init(clientType, { appName, socketIO });
-  soundworks.client.setViewContentDefinitions(viewContent);
-  soundworks.client.setViewTemplateDefinitions(viewTemplates);
+  const config = Object.assign({ appContainer: '#container' }, window.soundworksConfig);
+  soundworks.client.init(config.clientType, config);
 
-  // create client side (player) experience
-  const experience = new PlayerExperience(assetsDomain, files);
+  // configure views for the services
+  soundworks.client.setServiceInstanciationHook((id, instance) => {
+    if (serviceViews.has(id))
+      instance.view = serviceViews.get(id, config);
+  });
 
-  // start the client
+  // create client side (player) experience and start the client
+  const experience = new PlayerExperience(config.assetsDomain);
   soundworks.client.start();
-});
+}
+
+window.addEventListener('load', bootstrap);

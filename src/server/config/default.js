@@ -15,6 +15,7 @@ export default {
   // name of the environnement ('production' enable cache in express application)
   env: 'development',
 
+  someArray: [0, 1, 2],
   // version of application, can be used to force reload css and js files
   // from server (cf. `html/default.ejs`)
   version: '0.0.1',
@@ -25,11 +26,47 @@ export default {
 
   // define from where the assets (static files) should be loaded, these value
   // could also refer to a separate server for scalability reasons. This value
-  // should also be used client-side to configure the `loader` service.
+  // should also be used client-side to configure the `audio-buffer-manager` service.
   assetsDomain: '/',
 
   // port used to open the http server, in production this value is typically 80
   port: 8000,
+
+
+  // define if the server should use gzip compression for static files
+  enableGZipCompression: true,
+
+  // location of the public directory (accessible through http(s) requests)
+  publicDirectory: path.join(cwd, 'public'),
+
+  // directory where the server templating system looks for the `ejs` templates
+  templateDirectory: path.join(cwd, 'html'),
+
+
+  // define if the HTTP server should be launched using secure connections.
+  // For development purposes when set to `true` and no certificates are given
+  // (cf. `httpsInfos`), a self-signed certificate is created.
+  useHttps: false,
+
+  // paths to the key and certificate to be used in order to launch the https
+  // server. Both entries are required otherwise a self-signed certificate
+  // is generated.
+  httpsInfos: {
+    key: null,
+    cert: null,
+  },
+
+  // socket.io configuration
+  websockets: {
+    url: '',
+    transports: ['websocket'],
+    path: '',
+    // @note: EngineIO defaults
+    // pingTimeout: 3000,
+    // pingInterval: 1000,
+    // upgradeTimeout: 10000,
+    // maxHttpBufferSize: 10E7,
+  },
 
   // describe the location where the experience takes places, theses values are
   // used by the `placer`, `checkin` and `locator` services.
@@ -52,30 +89,6 @@ export default {
     capacity: Infinity,
   },
 
-  // socket.io configuration
-  socketIO: {
-    url: '',
-    transports: ['websocket'],
-    // @note: EngineIO defaults
-    // pingTimeout: 3000,
-    // pingInterval: 1000,
-    // upgradeTimeout: 10000,
-    // maxHttpBufferSize: 10E7,
-  },
-
-  // define if the HTTP server should be launched using secure connections.
-  // For development purposes when set to `true` and no certificates are given
-  // (cf. `httpsInfos`), a self-signed certificate is created.
-  useHttps: false,
-
-  // paths to the key and certificate to be used in order to launch the https
-  // server. Both entries are required otherwise a self-signed certificate
-  // is generated.
-  httpsInfos: {
-    key: null,
-    cert: null,
-  },
-
   // password to be used by the `auth` service
   password: '',
 
@@ -91,14 +104,11 @@ export default {
     sendPort: 57120,
   },
 
-  // define if the server should use gzip compression for static files
-  enableGZipCompression: true,
-
-  // location of the public directory (accessible through http(s) requests)
-  publicDirectory: path.join(cwd, 'public'),
-
-  // directory where the server templating system looks for the `ejs` templates
-  templateDirectory: path.join(cwd, 'html'),
+  // configuration of the `raw-socket` service
+  rawSocket: {
+    // port used for socket connection
+    port: 8080
+  },
 
   // bunyan configuration
   logger: {
