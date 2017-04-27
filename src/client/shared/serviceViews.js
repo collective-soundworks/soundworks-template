@@ -143,6 +143,7 @@ const serviceViews = {
 
     updateRejectedStatus(value) {
       this.model.rejected = value;
+      this.render();
     }
   },
 
@@ -203,10 +204,12 @@ const serviceViews = {
 
     updateLabel(value) {
       this.model.label = value;
+      this.render();
     }
 
     updateErrorStatus(value) {
       this.model.error = value;
+      this.render();
     }
   },
 
@@ -659,14 +662,17 @@ const serviceViews = {
 
     updateCheckingStatus(value) {
       this.model.checking = value;
+      this.render();
     }
 
     updateIsCompatibleStatus(value) {
       this.model.isCompatible = value;
+      this.render();
     }
 
     updateHasAuthorizationsStatus(value) {
       this.model.hasAuthorizations = value;
+      this.render();
     }
   },
 
