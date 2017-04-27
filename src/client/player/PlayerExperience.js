@@ -85,4 +85,4 @@ class PlayerExperience extends soundworks.Experience {
   }
 }
 
-export default playerExperience;
+export default PlayerExperience;
