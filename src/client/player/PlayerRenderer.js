@@ -1,10 +1,10 @@
-import { Renderer } from 'soundworks/client';
+import { Canvas2dRenderer } from 'soundworks/client';
 
 /**
  * A simple canvas renderer.
  * The class renders a dot moving over the screen and rebouncing on the edges.
  */
-export default class PlayerRenderer extends Renderer {
+class PlayerRenderer extends Canvas2dRenderer {
   constructor(vx, vy, collisionCallback = function() {}) {
     super(0); // update rate = 0: synchronize updates to frame rate
 
@@ -74,3 +74,5 @@ export default class PlayerRenderer extends Renderer {
     ctx.restore();
   }
 }
+
+export default PlayerRenderer;

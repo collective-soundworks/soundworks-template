@@ -7,7 +7,7 @@ const configName = process.env.ENV || 'default';
 const configPath = path.join(__dirname, 'config', configName);
 let config = null;
 
-// rely on node require because is synchronous
+// rely on node `require` for synchronicity
 try {
   config = require(configPath).default;
 } catch(err) {
