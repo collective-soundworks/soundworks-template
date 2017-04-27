@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 var fse = require('fs-extra');
-var watch = require('watch');
+var klaw = require('klaw');
 var path = require('path');
 var uglifyJS = require('uglifyjs');
 var util = require('util');
+var watch = require('watch');
 
 var javascripts = require('./javascripts');
 var log = require('./log');
@@ -45,13 +46,10 @@ function escapeRegExp(str) {
 }
 
 /**
- * Options for babel transpiling.
+ * Options for babel transpiling (cf .babelrc).
  */
-var babelOptions = {
-  sourceMap: 'inline',
-  presets: ['es2015'],
-  plugins: ['transform-runtime', 'transform-es2015-modules-commonjs'],
-};
+var babelrc = fse.readFileSync(path.join(cwd, '.babelrc'));
+var babelOptions = JSON.parse(babelrc);
 
 /**
  * Options for browserify.
@@ -187,7 +185,7 @@ function _getFileList(folder, excludeDirectories, callback) {
     return false;
   }
 
-  fse.walk(folder)
+  klaw(folder)
     .on('data', function(item) {
       // console.log(excludeDirectories, item.path, iExcluded(item.path));
       if (item.stats.isFile() &&
