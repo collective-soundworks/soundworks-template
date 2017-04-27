@@ -24,7 +24,7 @@ class PlayerExperience extends soundworks.Experience {
     super();
 
     this.platform = this.require('platform', { features: ['web-audio'] });
-    this.checkin = this.require('checkin', { showDialog: true });
+    this.checkin = this.require('checkin', { showDialog: false });
     this.audioBufferManager = this.require('audio-buffer-manager', {
       assetsDomain: assetsDomain,
       directories: { path: 'sounds', recursive: true },
