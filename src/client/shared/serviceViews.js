@@ -210,6 +210,43 @@ const serviceViews = {
     }
   },
 
+  'service:language': class LanguageView extends SegmentedView {
+    constructor() {
+      super();
+
+      this.template = `
+        <div class="section-top"></div>
+        <div class="section-center">
+          <% for (let key in options) { %>
+            <button class="btn" data-id="<%= key %>"><%= options[key] %></button>
+          <% } %>
+        </div>
+        <div class="section-bottom"></div>
+      `;
+
+      this.model = {};
+
+      this._selectionCallback = noop;
+    }
+
+    onRender() {
+      super.onRender();
+
+      const eventName = this.options.interaction === 'mouse' ? 'click' : 'touchstart';
+      this.installEvents({
+        [`${eventName} .btn`]: (e) => {
+          const target = e.target;
+          const id = target.getAttribute('data-id');
+          this._selectionCallback(id);
+        },
+      })
+    }
+
+    setSelectionCallback(callback) {
+      this._selectionCallback = callback;
+    }
+  },
+
   // ------------------------------------------------
   // Locator
   // ------------------------------------------------
