@@ -4,7 +4,6 @@ import {
   SpaceView,
   SquaredView,
   TouchSurface,
-  client,
 } from 'soundworks/client';
 
 // --------------------------- example
@@ -25,19 +24,6 @@ import {
 // ------------------------------------
 
 const noop = () => {};
-
-function getStartInteraction() {
-  let interaction = 'click';
-
-  if (client.interation !== null) {
-    if (client.interation === 'touch')
-      interaction = 'touchstart';
-    else
-      interaction = 'mousedown';
-  }
-
-  return interaction;
-}
 
 const serviceViews = {
   // ------------------------------------------------
@@ -76,7 +62,7 @@ const serviceViews = {
       this.$progressBar = this.$el.querySelector('.progress-bar');
     }
 
-    setProgressRatio(ratio) {
+    onProgress(ratio) {
       const percent = Math.round(ratio * 100);
 
       if (percent === 100) {
@@ -130,22 +116,20 @@ const serviceViews = {
       };
 
       this._sendPasswordCallback = noop;
-      this._resetPasswordCallback = noop;
+      this._resetCallback = noop;
     }
 
     onRender() {
       super.onRender();
 
-      const interaction = getStartInteraction();
-
       this.installEvents({
-        [interaction + ' #send']: () => {
+        'click #send': () => {
           const password = this.$el.querySelector('#password').value;
 
           if (password !== '')
             this._sendPasswordCallback(password);
         },
-        [interaction + ' #reset']: () => this._resetPasswordCallback(),
+        'click #reset': () => this._resetCallback(),
       });
     }
 
@@ -153,13 +137,12 @@ const serviceViews = {
       this._sendPasswordCallback = callback;
     }
 
-    setResetPasswordCallback(callback) {
-      this._resetPasswordCallback = callback;
+    setResetCallback(callback) {
+      this._resetCallback = callback;
     }
 
     updateRejectedStatus(value) {
       this.model.rejected = value;
-      this.render();
     }
   },
 
@@ -207,10 +190,10 @@ const serviceViews = {
     onRender() {
       super.onRender();
 
-      const interaction = getStartInteraction();
+      const eventName = this.options.interaction === 'mouse' ? 'click' : 'touchstart';
 
       this.installEvents({
-        [interaction]: () => this._readyCallback(),
+        [eventName]: () => this._readyCallback(),
       });
     }
 
@@ -220,12 +203,10 @@ const serviceViews = {
 
     updateLabel(value) {
       this.model.label = value;
-      this.render();
     }
 
     updateErrorStatus(value) {
       this.model.error = value;
-      this.render();
     }
   },
 
@@ -260,6 +241,11 @@ const serviceViews = {
       this._onAreaTouchMove = this._onAreaTouchMove.bind(this);
     }
 
+    show() {
+      super.show();
+      this.selector.show();
+    }
+
     onRender() {
       super.onRender();
       this.$areaContainer = this.$el.querySelector('.section-square');
@@ -283,7 +269,9 @@ const serviceViews = {
 
     onResize(viewportWidth, viewportHeight, orientation) {
       super.onResize(viewportWidth, viewportHeight, orientation);
-      this.selector.onResize(viewportWidth, viewportHeight, orientation);
+
+      if (this.selector)
+        this.selector.onResize(viewportWidth, viewportHeight, orientation);
     }
 
     _renderArea() {
@@ -293,7 +281,6 @@ const serviceViews = {
       this.selector.render();
       this.selector.appendTo(this.$areaContainer);
       this.selector.onRender();
-      this.selector.show();
 
       this.surface = new TouchSurface(this.selector.$svgContainer);
       this.surface.addListener('touchstart', this._onAreaTouchStart);
@@ -371,6 +358,11 @@ const serviceViews = {
       this._onSelectionChange = this._onSelectionChange.bind(this);
     }
 
+    show() {
+      super.show();
+      this.selector.show();
+    }
+
     _onSelectionChange(e) {
       this.model.showBtn = true;
       this.render('.section-float');
@@ -385,6 +377,8 @@ const serviceViews = {
       });
     }
 
+    setArea(area) { /* no need for area */ }
+
     onRender() {
       super.onRender();
       this.$selectorContainer = this.$el.querySelector('.section-square');
@@ -392,13 +386,9 @@ const serviceViews = {
 
     onResize(viewportWidth, viewportHeight, orientation) {
       super.onResize(viewportWidth, viewportHeight, orientation);
-      this.selector.onResize(viewportWidth, viewportHeight, orientation);
-    }
 
-    setArea(area) { /* no need for area */ }
-
-    setSelectCallack(callback) {
-      this._onSelect = callback;
+      if (this.selector)
+        this.selector.onResize(viewportWidth, viewportHeight, orientation);
     }
 
     displayPositions(capacity, labels = null, coordinates = null, maxClientsPerPosition = 1) {
@@ -423,7 +413,6 @@ const serviceViews = {
       this.selector.render();
       this.selector.appendTo(this.$selectorContainer);
       this.selector.onRender();
-      this.selector.show();
 
       this.selector.installEvents({
         'change': this._onSelectionChange,
@@ -437,6 +426,10 @@ const serviceViews = {
         else
           this.selector.disableIndex(index);
       }
+    }
+
+    setSelectCallack(callback) {
+      this._onSelect = callback;
     }
 
     reject(disabledPositions) {
@@ -480,6 +473,11 @@ const serviceViews = {
   //     this._onSelectionChange = this._onSelectionChange.bind(this);
   //   }
 
+  //   show() {
+  //     super.show();
+  //     this.selector.show();
+  //   }
+
   //   onRender() {
   //     super.onRender();
   //     this.$selectorContainer = this.$el.querySelector('.section-square');
@@ -487,7 +485,9 @@ const serviceViews = {
 
   //   onResize(viewportWidth, viewportHeight, orientation) {
   //     super.onResize(viewportWidth, viewportHeight, orientation);
-  //     this.selector.onResize(viewportWidth, viewportHeight, orientation);
+
+  //     if (this.selector)
+  //       this.selector.onResize(viewportWidth, viewportHeight, orientation);
   //   }
 
   //   _onSelectionChange(e) {
@@ -521,7 +521,6 @@ const serviceViews = {
   //     this.selector.render();
   //     this.selector.appendTo(this.$selectorContainer);
   //     this.selector.onRender();
-  //     this.selector.show();
   //     this.selector.setPoints(this.positions);
 
   //     this.selector.installEvents({
@@ -623,17 +622,14 @@ const serviceViews = {
 
     updateCheckingStatus(value) {
       this.model.checking = value;
-      this.render();
     }
 
     updateIsCompatibleStatus(value) {
       this.model.isCompatible = value;
-      this.render();
     }
 
     updateHasAuthorizationsStatus(value) {
       this.model.hasAuthorizations = value;
-      this.render();
     }
   },
 
@@ -691,7 +687,6 @@ const serviceViews = {
     // additionnal configuration
     view.model.globals = Object.assign({}, config);
     view.options.id = id.replace(/\:/g, '-');
-    view.options.className = client.type;
 
     return view;
   },
