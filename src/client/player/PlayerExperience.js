@@ -19,7 +19,7 @@ const model = { title: `Let's go!` };
 
 // this experience plays a sound when it starts, and plays another sound when
 // other clients join the experience
-export default class PlayerExperience extends soundworks.Experience {
+class PlayerExperience extends soundworks.Experience {
   constructor(assetsDomain) {
     super();
 
@@ -84,3 +84,5 @@ export default class PlayerExperience extends soundworks.Experience {
     src.playbackRate.value = centToLinear((Math.random() * 2 - 1) * randomPitchVar);
   }
 }
+
+export default playerExperience;
