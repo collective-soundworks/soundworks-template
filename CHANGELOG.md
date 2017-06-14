@@ -4,7 +4,8 @@
 
 - copy `bin` directory
   + transpiled files are now transpiled into `dist/client` and `dist/server` directories
-  + the existing `client` and `server` can be safely deleted
+  + existing `client` and `server` directories can be safely deleted
+- copy sass directory
 - copy `.babelrc` file
 - update `dependencies` and `devDependencies` in `package.json`
 - copy `src/client/shared` directory
