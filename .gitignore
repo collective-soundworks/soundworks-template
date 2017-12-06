@@ -1,4 +1,4 @@
-# Transpiled files and dependencies
+# transpiled files and dependencies
 /node_modules
 /public/js
 /public/css
@@ -8,7 +8,7 @@
 /src/server/config/*
 !/src/server/config/default.js
 
-# Application instance specific
+# application instance specific
 /logs
 /db
 
