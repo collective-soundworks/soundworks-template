@@ -2,6 +2,7 @@
 
 ## Migating From 1.1.1 to 2.0.0
 
+- copy `.babelrc` file
 - copy `bin` directory
   + transpiled files are now transpiled into `dist/client` and `dist/server` directories
   + the existing `client` and `server` directories can be safely deleted
@@ -82,6 +83,10 @@ soundworks.server.setClientConfigDefinition((clientType, config, httpRequest) =>
 - `soundworks.Experience.createView` removed, views must be created manually 
 - `view.content` renamed to `view.model`
 - `Activity.removeListener` (for sockets messages) renamed to `Activity.stopReceiving`
+- view priority is now an option of the Activity (i.e. `this.options.viewPriority = 7`)
+- initialization order between `Services` and `Experiences` has been introduced server-side, every service must now call `this.ready()` when fully initialized. 
+
+- `Signal` and `SignalAll` moved from `soundworks/client` to `soundworks/utils`
 
 ## 1.1.2
 

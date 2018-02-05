@@ -15,8 +15,12 @@ try {
   process.exit(1);
 }
 
-// configure express environment ('production' enables cache systems)
+// configure express environment ('production' enables express cache for static files)
 process.env.NODE_ENV = config.env;
+// override config if port has been defined from the command line
+if (process.env.PORT)
+  config.port = process.env.PORT;
+
 // initialize application with configuration options
 soundworks.server.init(config);
 
