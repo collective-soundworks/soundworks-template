@@ -72,7 +72,7 @@ const cssPublicDirectory = path.join(cwd, 'public', 'css');
 const htmlTemplatesDirectory = path.join(cwd, 'html');
 
 /* --------------------------------------------------------------------------
- * High-Level logic
+ * Reusable logic
  * -------------------------------------------------------------------------- */
 
 /**
@@ -291,7 +291,10 @@ function watchHtmlSources(serverFile) {
   });
 }
 
-// watch
+// -------------------------------------------------------------
+// Commands
+// -------------------------------------------------------------
+
 function __watch() {
   watchHtmlSources();
   watchCssSources();
