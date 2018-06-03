@@ -223,8 +223,6 @@ function watchJsSources() {
     fileStore.get(filename)
       .then(transpileFile)
       .then(([src, dist]) => {
-        // transpiler forget(src)
-
         if (isSharedFile(src)) {
           if (isClientFile(src))
             return bundleClients();
@@ -233,7 +231,12 @@ function watchJsSources() {
           else
             return bundleClients().then(restartServer);
         } else if (isClientFile(src)) {
-          const clientName = dist.abs.match(clientsSearch)[1];
+          const matches = dist.abs.match(clientsSearch);
+
+          if (matches === null) // is directory (probably...)
+            return Promise.resolve();
+
+          const clientName = matches[1];
           const index = path.join(distDirectory, 'client', clientName, 'index.js');
 
           return fse.pathExists(index)
