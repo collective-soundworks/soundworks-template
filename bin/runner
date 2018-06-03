@@ -358,7 +358,6 @@ const cmd = process.argv[2];
 
 switch (cmd) {
   case '--watch':
-    // add watch on soundworks folder `node_module/soundworks`
     __transpile().then(__watch);
     break;
   case '--transpile':
