@@ -12,6 +12,8 @@
 /logs
 /db
 
+/bin/.browserify-cache.json
+
 # ignore junk files
 npm-debug.log
 .DS_Store

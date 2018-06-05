@@ -1,9 +1,8 @@
 # Soundworks Application Template
 
-> This is a project template for developing [*Soundworks*](https://github.com/collective-soundworks/soundworks/) applications.  
-> The template also includes comprehensive comments in the source files.
+> Project template for developing [*Soundworks*](https://github.com/collective-soundworks/soundworks/) applications.  
 
-[//]: # (For a complete documentation of the *Soundworks* framework, please refer to http://collective-soundworks.github.io/soundworks/.)
+_For a complete documentation of the *Soundworks* framework, please refer to [http://collective-soundworks.github.io/soundworks/](http://collective-soundworks.github.io/soundworks/)_
 
 ## Creating a New Application
 
@@ -24,25 +23,27 @@ If you succeeded to execute all commands without errors, you can start connectin
 The template includes a set of scripts to support the development of an application.
 The scripts can be invoked through the `npm run` command:
  * `transpile` - creates an executable application from the ES2015 (ES6) sources
- * `start` - starts the application (i.e. its server).
  * `watch` - starts the server and watches the file system to do the necessary operations while developing
+ * `minify` - creates an uglified version of every clients, for production purpose
+ * * `start` - starts the server.
 
 ```shell
 $ npm run transpile
 $ npm run start
 $ npm run watch
+$ npm run minify
 ```
 
 In detail, the `transpile` script implies the following operations:
- * *transpile* javascript source files from ES2015 to ES5
+ * transpile javascript source files from ES2015 to ES5
  * rebundle (i.e. *browserify*) the client Javascript (ES5) sources
  * recreate the *CSS* files from their *SASS* sources
 
 The following operations may be performed by the `watch` script depending on the modification of source files:
  * recreate a *CSS* file when a corresponding *SASS* file in the `sass` directory is modified
- * re-*transpile* a modified server source file in the `src/server` directory
- * re-*transpile* and *browserify* a modified client source file in the `src/client` directory
- * re-*transpile* a modified source file used on both, client and server, in the `src/common` directory
+ * re-transpile a modified server source file in the `src/server` directory
+ * re-transpile and *browserify* a modified client source file in the `src/client` directory
+ * re-transpile a modified source file in the `src/shared`, `src/client/shared` and `src/server/shared` directories, and rebuild and/or restart the server according to the file location
 
 ## Files and Directories
 
@@ -70,4 +71,4 @@ The template consists of the following files and directories you should know abo
  * `README.md` - this file *(that you should replace by a file that informs about your application)*
 
 This structure is required by the *Soundworks* framework and the helper scripts.
-The files that are part of the application's implementation (i.e. especially the files in the `src` directories) contain comprehensive explanatory comments.
+The files that are part of the application's implementation (i.e. principally  files located in the `src` directory) contain comprehensive explanatory comments.
