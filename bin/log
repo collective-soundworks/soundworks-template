@@ -28,7 +28,7 @@ module.exports.copyFileSuccess = (file, dist, dt) => {
 }
 
 module.exports.copyFileError = (file, err) => {
-  const msg = prefix + chalk.red('error comying %s');
+  const msg = prefix + chalk.red('error copying %s');
   console.log(msg, file.rel);
   console.error(err.stack);
   return Promise.reject(file);
@@ -67,9 +67,9 @@ module.exports.sassSuccess = (src, dist, dt) => {
 }
 
 module.exports.sassError = (src, err) => {
-  const msg = prefix + chalk.red(`${err.message}`);
+  const msg = prefix + chalk.red(`error processing sass file: "${src.rel}"`);
   console.log(msg);
-  console.error(err.stack);
+  console.error(err.formatted);
   return Promise.reject(src);
 }
 
