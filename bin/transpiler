@@ -54,7 +54,7 @@ module.exports.bundle = (src, dist, browserifyOptions) => {
 
     writeStream.on('finish', () => resolve([src, dist]));
   });
-}
+};
 
 /**
  * Uglify `scr` into `dist`.
@@ -62,13 +62,19 @@ module.exports.bundle = (src, dist, browserifyOptions) => {
  */
 module.exports.minify = (src, dist) => {
   return new Promise((resolve, reject) => {
-    const result = uglify.minify(src.abs);
-
-    fse.outputFile(dist.abs, result.code, (err) => {
+    fse.readFile(src.abs, (err, buf) => {
       if (err)
-        reject(err);
+        return reject(err);
 
-      resolve([src, dist])
+      const result = uglify.minify(buf.toString());
+
+      fse.outputFile(dist.abs, result.code, (err) => {
+        if (err)
+          reject(err);
+
+        resolve([src, dist])
+      });
     });
   });
-}
+};
+

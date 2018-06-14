@@ -375,8 +375,9 @@ switch (cmd) {
     break;
   case '--start':
     __start().catch(err => console.error('Unhandled Error', err));
+    break;
   case '--minify':
-    __minify();
+    __minify().catch(err => console.error('Unhandled Error', err));;
     break;
   case '--clear':
     __clear().catch(err => console.error('Unhandled Error', err));;
