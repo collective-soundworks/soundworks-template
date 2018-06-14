@@ -61,8 +61,13 @@ const clientsSearch = new RegExp(escapedClientsSearchStr);
 const clientPublicDirectory = path.join(cwd, 'public', 'js');
 const serverIndex = path.join(distDirectory, 'server', 'index.js');
 
-const soundworksClientDirectory = path.join(cwd, 'node_modules', 'soundworks', 'client');
-const soundworksServerDirectory = path.join(cwd, 'node_modules', 'soundworks', 'server');
+const additionnalClientDirectories = [
+  path.join(cwd, 'node_modules', 'soundworks', 'client'),
+];
+
+const additionnalServerDirectories = [
+  path.join(cwd, 'node_modules', 'soundworks', 'server'),
+];
 
 // CSS Stuff
 const sassSrcDirectory = path.join(cwd, 'sass');
@@ -258,17 +263,21 @@ function watchJsSources() {
   });
 }
 
-function watchSoundworksSources() {
-  watch.createMonitor(soundworksClientDirectory, Object.assign({}, watchOptions), monitor => {
-    monitor.on('created', bundleClients);
-    monitor.on('changed', bundleClients);
-    monitor.on('removed', bundleClients);
+function watchAdditionnalSources() {
+  additionnalClientDirectories.forEach(dir => {
+    watch.createMonitor(dir, Object.assign({}, watchOptions), monitor => {
+      monitor.on('created', bundleClients);
+      monitor.on('changed', bundleClients);
+      monitor.on('removed', bundleClients);
+    });
   });
 
-  watch.createMonitor(soundworksServerDirectory, Object.assign({}, watchOptions), monitor => {
-    monitor.on('created', restartServer);
-    monitor.on('changed', restartServer);
-    monitor.on('removed', restartServer);
+  additionnalServerDirectories.forEach(dir => {
+    watch.createMonitor(dir, Object.assign({}, watchOptions), monitor => {
+      monitor.on('created', restartServer);
+      monitor.on('changed', restartServer);
+      monitor.on('removed', restartServer);
+    });
   });
 }
 
@@ -296,7 +305,7 @@ function __watch() {
   watchHtmlSources();
   watchCssSources();
   watchJsSources();
-  watchSoundworksSources();
+  watchAdditionnalSources();
 
   return fileStore.get(serverIndex).then(server.start);
 }

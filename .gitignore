@@ -10,7 +10,7 @@
 
 # application instance specific
 /logs
-/db
+.soundworks
 
 /bin/.browserify-cache.json
 
