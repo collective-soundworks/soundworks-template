@@ -1,5 +1,4 @@
 import * as soundworks from 'soundworks/client';
-import { centToLinear } from 'soundworks/utils/math';
 import PlayerRenderer from './PlayerRenderer';
 
 const audioContext = soundworks.audioContext;
@@ -15,10 +14,9 @@ const template = `
   </div>
 `;
 
-const model = { title: `Let's go!` };
+const model = { title: `ok` };
 
-// this experience plays a sound when it starts, and plays another sound when
-// other clients join the experience
+
 class PlayerExperience extends soundworks.Experience {
   constructor(assetsDomain) {
     super();
@@ -27,61 +25,29 @@ class PlayerExperience extends soundworks.Experience {
     this.checkin = this.require('checkin', { showDialog: false });
     this.audioBufferManager = this.require('audio-buffer-manager', {
       assetsDomain: assetsDomain,
-      directories: { path: 'sounds', recursive: true },
+      files: [ /* ... */ ],
     });
   }
 
   start() {
-    super.start(); // don't forget this
+    super.start();
 
-    // initialize the view
-    this.view = new soundworks.CanvasView(template, model, {}, {
+    let counter = 0;
+
+    this.view = new soundworks.CanvasView(template, model, {
+      'click': () => { throw new Error('error n° ' + (counter++)); },
+    }, {
       id: this.id,
       preservePixelRatio: true,
     });
 
-    // as show can be async, we make sure that the view is actually rendered
     this.show().then(() => {
-      // play a sound
-      this.playSound(this.audioBufferManager.data.tones[0]);
-
-      // play a sound when the message `hello` is received from the server
-      // (the message is send when another player joins the experience)
-      this.receive('hello', () => this.playSound(this.audioBufferManager.data.tones[1]));
-
-      // play a sound when the message `goodbye` is received from the server
-      // (the message is send when another player joins the experience)
-      this.receive('goodbye', () => this.playSound(this.audioBufferManager.data.tones[2]));
-
-      // initialize rendering
-      const vx = 200 + Math.floor(Math.random() * 200);
-      const vy = 200 + Math.floor(Math.random() * 200);
-
-      this.renderer = new PlayerRenderer(vx, vy, (edge) => {
-        const idx = (edge === 'top') ? 0 : (edge === 'left' || edge === 'right') ? 1 : 2;
-        this.playSound(this.audioBufferManager.data.clicks[idx], 300);
-      });
-
+      this.renderer = new PlayerRenderer();
       this.view.addRenderer(this.renderer);
-
-      // this function is called before each update (`Renderer.render`) of the canvas
       this.view.setPreRender(function(ctx, dt, canvasWidth, canvasHeight) {
-        ctx.save();
-        ctx.globalAlpha = 0.1;
-        ctx.fillStyle = '#000000';
-        ctx.rect(0, 0, canvasWidth, canvasHeight);
-        ctx.fill();
-        ctx.restore();
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       });
     });
-  }
-
-  playSound(buffer, randomPitchVar = 0) {
-    const src = audioContext.createBufferSource();
-    src.connect(audioContext.destination);
-    src.buffer = buffer;
-    src.start(audioContext.currentTime);
-    src.playbackRate.value = centToLinear((Math.random() * 2 - 1) * randomPitchVar);
   }
 }
 
