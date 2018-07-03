@@ -11,7 +11,6 @@
 # application instance specific
 /logs
 .soundworks
-
 /bin/.browserify-cache.json
 
 # ignore junk files
