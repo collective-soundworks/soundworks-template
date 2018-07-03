@@ -1,1 +1,29 @@
-// entry point for application specific styles
+#controller {
+  #shared-params {
+    padding: 10px;
+    box-sizing: border-box;
+
+    h1 {
+      margin: 8px 0;
+    }
+  }
+
+  #log {
+    margin: 10px;
+    padding: 8px;
+    height: 400px;
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: #202020;
+    border-radius: 2px;
+
+    .error {
+      font-size: 10px;
+    }
+  }
+}
+
+
+#player {
+
+}
