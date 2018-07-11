@@ -63,6 +63,9 @@ export default {
     // maxHttpBufferSize: 10E7,
   },
 
+  // password to be used by the `auth` service
+  password: '',
+
   // describe the location where the experience takes places, theses values are
   // used by the `placer`, `checkin` and `locator` services.
   // if one of these service is required, this entry shouldn't be removed.
@@ -83,9 +86,6 @@ export default {
     // labels and/or coordinates)
     capacity: Infinity,
   },
-
-  // password to be used by the `auth` service
-  password: '',
 
   // configuration of the `osc` service
   osc: {

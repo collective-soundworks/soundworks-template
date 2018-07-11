@@ -27,9 +27,8 @@ class LogComponent {
   }
 
   error(file, line, col, msg, userAgent) {
-    // if (this.stack.length == this.stackSize)
-    //   this.stack.shift();
-
+    // @todo - check ousrcemap support
+    // https://stackoverflow.com/questions/24637356/javascript-debug-stack-trace-with-source-maps
     const logView = `
 ${userAgent}
 ${file}:${line}:${col}  ${msg}

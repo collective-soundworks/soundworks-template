@@ -1,6 +1,5 @@
 import { Experience } from 'soundworks/server';
 
-
 class ControllerExperience extends Experience {
   constructor(clientTypes, options = {}) {
     super(clientTypes);

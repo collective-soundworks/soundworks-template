@@ -23,8 +23,6 @@ if (process.env.PORT) {
 }
 
 
-
-
 soundworks.server.init(config);
 
 soundworks.server.setClientConfigDefinition((clientType, config, httpRequest) => {
