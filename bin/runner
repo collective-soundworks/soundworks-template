@@ -5,7 +5,7 @@ const fs = require('fs');
 const fse = require('fs-extra');
 const log = require('./log');
 const path = require('path');
-const server = require('./server');
+const forkProcess = require('./forkProcess');
 const styles = require('./styles');
 const transpiler = require('./transpiler');
 const watch = require('watch');
@@ -52,6 +52,8 @@ const srcRegExp = new RegExp('^' + escapeRegExp(srcDirectory));
 const distDirectory = path.join(cwd, 'dist');
 const distRegExp = new RegExp('^' + escapeRegExp(distDirectory));
 
+const thingDistDirectory = path.join(cwd, 'dist', 'thing');
+
 const escapedClientsMatchStr = '^' + escapeRegExp(distDirectory + path.sep + 'client' + path.sep) + '([a-zA-Z\-_]+)' + escapeRegExp(path.sep + 'index.js');
 const clientsMatch = new RegExp(escapedClientsMatchStr);
 
@@ -59,6 +61,7 @@ const escapedClientsSearchStr = '^' + escapeRegExp(distDirectory + path.sep + 'c
 const clientsSearch = new RegExp(escapedClientsSearchStr);
 
 const clientPublicDirectory = path.join(cwd, 'public', 'js');
+const thingIndex = path.join(distDirectory, 'thing', 'index.js');
 const serverIndex = path.join(distDirectory, 'server', 'index.js');
 
 const additionnalClientDirectories = [
@@ -67,6 +70,12 @@ const additionnalClientDirectories = [
 
 const additionnalServerDirectories = [
   path.join(cwd, 'node_modules', 'soundworks', 'server'),
+];
+
+const additionnalThingDirectories = [
+  path.join(distDirectory, 'server'), // restart when server restarts
+  path.join(cwd, 'node_modules', 'soundworks', 'thing'),
+  path.join(cwd, 'node_modules', 'soundworks', 'client'), // some abstractions are in the client
 ];
 
 // CSS Stuff
@@ -194,9 +203,9 @@ const processSass = () => {
 const restartServer = () => {
   return fileStore.get(serverIndex)
     .then(serverFile => {
-      return server.stop()
+      return forkProcess.stop(serverFile)
         .then(() => log.serverStop())
-        .then(() => server.start(serverFile))
+        .then(() => forkProcess.start(serverFile))
         .then(() => log.serverStart())
         .catch(err => log.serverError());
     })
@@ -289,11 +298,39 @@ function watchCssSources() {
   });
 }
 
-function watchHtmlSources(serverFile) {
+function watchHtmlSources() {
   watch.createMonitor(htmlTemplatesDirectory, Object.assign({}, watchOptions), monitor => {
     monitor.on('created', restartServer);
     monitor.on('changed', restartServer);
     monitor.on('removed', restartServer);
+  });
+}
+
+function watchThing() {
+  const restartThing = () => {
+    fileStore.get(thingIndex)
+      .then(thingFile => {
+        return forkProcess.stop(thingFile)
+          .then(() => log.thingStop())
+          .then(() => forkProcess.start(thingFile))
+          .then(() => log.thingStart())
+          .catch(err => log.thingError());
+      })
+      .catch(err => log.thingError());
+  };
+
+  watch.createMonitor(thingDistDirectory, Object.assign({}, watchOptions), monitor => {
+    monitor.on('created', restartThing);
+    monitor.on('changed', restartThing);
+    monitor.on('removed', restartThing);
+  });
+
+  additionnalThingDirectories.forEach(dir => {
+    watch.createMonitor(dir, Object.assign({}, watchOptions), monitor => {
+      monitor.on('created', restartThing);
+      monitor.on('changed', restartThing);
+      monitor.on('removed', restartThing);
+    });
   });
 }
 
@@ -307,7 +344,14 @@ function __watch() {
   watchJsSources();
   watchAdditionnalSources();
 
-  return fileStore.get(serverIndex).then(server.start);
+  return fileStore.get(serverIndex).then(forkProcess.start);
+}
+
+// run a thing client and restart it each time a file in ./dist/thing is changed
+function __watchThing() {
+  watchThing();
+
+  return fileStore.get(thingIndex).then(forkProcess.start);
 }
 
 function __transpile() {
@@ -378,6 +422,9 @@ const cmd = process.argv[2];
 switch (cmd) {
   case '--watch':
     __transpile().then(__watch).catch(err => console.error('Unhandled Error', err));
+    break;
+  case '--watch-thing':
+    __transpile().then(__watchThing).catch(err => console.error('Unhandled Error', err));
     break;
   case '--transpile':
     __transpile().catch(err => console.error('Unhandled Error', err));

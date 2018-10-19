@@ -24,19 +24,11 @@ export default {
   // should also be used client-side to configure the `audio-buffer-manager` service.
   assetsDomain: '/',
 
+  // mandatory for `things` clients
+  ip: '127.0.0.1',
+
   // port used to open the http server, in production this value is typically 80
   port: 8000,
-
-
-  // define if the server should use gzip compression for static files
-  enableGZipCompression: true,
-
-  // location of the public directory (accessible through http(s) requests)
-  publicDirectory: path.join(cwd, 'public'),
-
-  // directory where the server templating system looks for the `ejs` templates
-  templateDirectory: path.join(cwd, 'html'),
-
 
   // define if the HTTP server should be launched using secure connections.
   // For development purposes when set to `true` and no certificates are given
@@ -51,11 +43,20 @@ export default {
     cert: null,
   },
 
+  // define if the server should use gzip compression for static files
+  enableGZipCompression: true,
+
+  // location of the public directory (accessible through http(s) requests)
+  publicDirectory: path.join(cwd, 'public'),
+
+  // directory where the server templating system looks for the `ejs` templates
+  templateDirectory: path.join(cwd, 'html'),
+
   // socket.io configuration
   websockets: {
     url: '',
     transports: ['websocket'],
-    path: '',
+    path: '/socket.io',
     // @note: EngineIO defaults
     // pingTimeout: 3000,
     // pingInterval: 1000,

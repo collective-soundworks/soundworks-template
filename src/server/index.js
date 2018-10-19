@@ -3,9 +3,10 @@ import path from 'path';
 import * as soundworks from 'soundworks/server';
 import PlayerExperience from './PlayerExperience';
 import ControllerExperience from './ControllerExperience';
+import ThingExperience from './ThingExperience';
 
 const configName = process.env.ENV || 'default';
-const configPath = path.join(__dirname, 'config', configName);
+const configPath = path.join(process.cwd(), 'dist', 'shared', 'config', configName);
 let config = null;
 
 // rely on node `require` as the path is dynamic
@@ -38,9 +39,10 @@ soundworks.server.setClientConfigDefinition((clientType, config, httpRequest) =>
 
 const sharedParams = soundworks.server.require('shared-params');
 sharedParams.addText('numPlayers', '# players', '0');
-
+sharedParams.addText('numThings', '# things', '0');
 
 const experience = new PlayerExperience('player');
 const controller = new ControllerExperience('controller');
+const thing = new ThingExperience('thing');
 
 soundworks.server.start();

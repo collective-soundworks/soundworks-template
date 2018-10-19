@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+const fse = require('fs-extra');
+const terminate = require('terminate');
+const { fork } = require('child_process');
+
+// Process hosting the proc
+let proc = null;
+const processes = new Map();
+
+// run the `procIndex` in a forked process
+const start = module.exports.start = function(src) {
+  return new Promise((resolve, reject) => {
+    fse.stat(src.abs, (err, stats) => {
+      if (err)
+        reject(src);
+
+      stop(src).then(() => {
+        proc = fork(src.abs);
+        processes.set(src.abs, proc);
+        resolve(src);
+      });
+    });
+  });
+}
+
+// kill the forked process hosting the proc
+const stop = module.exports.stop = function(src) {
+  return new Promise((resolve, reject) => {
+    const proc = processes.get(src.abs);
+
+    if (proc)
+      terminate(proc.pid);
+
+    processes.delete(src.abs)
+    resolve();
+  });
+}
+
+// Kill proc on uncaughtException
+// process.on('uncaughtException', function (err) {
+//   console.error(`Uncaught Exception: ${err.code}`);
+//   console.error(err.stack);
+
+//   stop().then(() => process.exit());
+// });

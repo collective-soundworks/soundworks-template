@@ -1,7 +1,6 @@
 import { Experience } from 'soundworks/server';
 
-// server-side 'player' experience.
-export default class PlayerExperience extends Experience {
+class PlayerExperience extends Experience {
   constructor(clientType) {
     super(clientType);
 
@@ -27,3 +26,5 @@ export default class PlayerExperience extends Experience {
     this.sharedParams.update('numPlayers', this.clients.length);
   }
 }
+
+export default PlayerExperience;

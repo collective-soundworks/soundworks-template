@@ -88,6 +88,21 @@ module.exports.serverError = function() {
   return Promise.resolve();
 }
 
+module.exports.thingStart = function() {
+  console.log(prefix + chalk.cyan('thing start'));
+  return Promise.resolve();
+}
+
+module.exports.thingStop = function() {
+  console.log(prefix + chalk.cyan('thing stop'));
+  return Promise.resolve();
+}
+
+module.exports.thingError = function() {
+  console.log(prefix + chalk.red('unable to start thing, run `npm run transpile`'));
+  return Promise.resolve();
+}
+
 // @note - fixme
 module.exports.minifySuccess = (src, dist, dt) => {
   const msg = prefix + chalk.green('%s: successfully minified to "%s" (%sms)');
