@@ -6,9 +6,7 @@ class ThingExperience extends Experience {
     super(clientTypes);
 
     this.sharedParams = this.require('shared-params');
-    // this.sync = this.require('sync');
-    // this.syncScheduler = this.require('sync-scheduler');
-    // this.checkin = this.require('checkin');
+    this.sync = this.require('sync');
   }
 
   start() {
