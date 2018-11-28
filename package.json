@@ -9,11 +9,11 @@
   "license": "BSD-3-Clause",
   "version": "2.2.0",
   "scripts": {
-    "clear": "node ./bin/runner --clear",
-    "minify": "node ./bin/runner --minify",
-    "start": "node ./bin/runner --start",
-    "transpile": "node ./bin/runner --transpile",
-    "watch": "node ./bin/runner --watch"
+    "clear": "node bin/runner --clear",
+    "minify": "node bin/runner --minify",
+    "start": "node bin/runner --start",
+    "transpile": "node bin/runner --transpile",
+    "watch": "node bin/runner --watch"
   },
   "repository": {
     "type": "git",
