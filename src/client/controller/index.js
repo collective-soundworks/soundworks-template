@@ -1,12 +1,10 @@
-// import client side soundworks and player experience
 import * as soundworks from 'soundworks/client';
 import ControllerExperience from './ControllerExperience';
 import serviceViews from '../shared/serviceViews';
 
-function bootstrap() {
 
+function init() {
   document.body.classList.remove('loading');
-
 
   const config = Object.assign({ appContainer: '#container' }, window.soundworksConfig);
   soundworks.client.init(config.clientType, config);
@@ -16,8 +14,8 @@ function bootstrap() {
       instance.view = serviceViews.get(id, config);
   });
 
-  const controller = new ControllerExperience(config.assetsDomain);
+  const controller = new ControllerExperience({ auth: false });
   soundworks.client.start();
 }
 
-window.addEventListener('load', bootstrap);
+window.addEventListener('load', init);

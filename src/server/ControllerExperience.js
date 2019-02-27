@@ -7,8 +7,9 @@ class ControllerExperience extends Experience {
     this.sharedParams = this.require('shared-params');
     this.errorReporter = this.require('error-reporter');
 
-    if (options.auth)
+    if (options.auth) {
       this.auth = this.require('auth');
+    }
   }
 
   start() {

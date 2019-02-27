@@ -1,6 +1,6 @@
 import { Experience, View } from 'soundworks/client';
-import SharedParamsComponent from './SharedParamsComponent';
-import LogComponent from './LogComponent';
+import SharedParamsComponent from './components/SharedParamsComponent';
+import LogComponent from './components/LogComponent';
 
 const template = `
   <div id="shared-params"></div>
@@ -12,13 +12,15 @@ class ControllerExperience extends Experience {
     super();
 
     this.sharedParams = this.require('shared-params');
-    this.sharedParamsComponent = new SharedParamsComponent(this, this.sharedParams);
-    this.logComponent = new LogComponent(this);
+
+    this.sharedParamsComponent = new SharedParamsComponent('#shared-params', this, this.sharedParams);
+    this.logComponent = new LogComponent('#log', this);
 
     this.setGuiOptions('numPlayers', { readonly: true });
 
-    if (options.auth)
+    if (options.auth) {
       this.auth = this.require('auth');
+    }
   }
 
   start() {
