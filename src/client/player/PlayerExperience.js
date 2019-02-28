@@ -25,14 +25,13 @@ class PlayerExperience extends soundworks.Experience {
     });
   }
 
-  start() {
+  async start() {
     super.start();
 
     this.view = new soundworks.SegmentedView(template, model, {}, { id: 'player' });
+    await this.show();
 
-    this.show().then(() => {
-      // do things
-    });
+    // do things
   }
 }
 
