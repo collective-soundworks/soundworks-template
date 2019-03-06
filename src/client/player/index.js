@@ -23,6 +23,13 @@ function bootstrap() {
   // create client side (player) experience and start the client
   const experience = new PlayerExperience(config.assetsDomain);
   soundworks.client.start();
+
+  // reload client if server is down...
+  soundworks.client.socket.addStateListener(eventName => {
+    if (eventName === 'disconnect') {
+      setTimeout(() => window.location.reload(true), 2000);
+    }
+  });
 }
 
 window.addEventListener('load', bootstrap);
