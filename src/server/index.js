@@ -5,8 +5,9 @@ import PlayerExperience from './PlayerExperience';
 import ControllerExperience from './ControllerExperience';
 import ThingExperience from './ThingExperience';
 
+const cwd = process.cwd();
 const configName = process.env.ENV || 'default';
-const configPath = path.join(process.cwd(), 'dist', 'shared', 'config', configName);
+const configPath = path.join(cwd, 'dist', 'shared', 'config', configName);
 let config = null;
 
 // rely on node `require` as the path is dynamic
@@ -22,7 +23,6 @@ process.env.NODE_ENV = config.env;
 if (process.env.PORT) {
   config.port = process.env.PORT;
 }
-
 
 soundworks.server.init(config);
 

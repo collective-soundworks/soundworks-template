@@ -10,6 +10,7 @@
   "version": "2.2.0",
   "scripts": {
     "clear": "node bin/runner --clear",
+    "help": "node bin/runner --help",
     "minify": "node bin/runner --minify",
     "start": "node bin/runner --start",
     "transpile": "node bin/runner --transpile",
@@ -41,9 +42,10 @@
     "chalk": "^2.4.1",
     "fs-extra": "^6.0.1",
     "klaw": "^2.1.1",
+    "lodash.debounce": "^4.0.8",
     "node-sass": "^4.9.0",
-    "uglify-js": "^3.3.28",
     "terminate": "^2.1.0",
+    "uglify-js": "^3.3.28",
     "watch": "^1.0.1"
   }
 }

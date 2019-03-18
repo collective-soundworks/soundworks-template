@@ -10,7 +10,6 @@ const getDeltaTime = time => new Date().getTime() - time;
 module.exports.transpileSuccess = (src, dist, dt) => {
   const msg = prefix + chalk.green('%s: successfully transpiled to "%s" (%sms)');
   console.log(msg, src.rel, dist.rel, dt);
-  return Promise.resolve([src, dist]);
 }
 
 module.exports.transpileError = (src, err) => {
@@ -18,101 +17,72 @@ module.exports.transpileError = (src, err) => {
   const content = err.message.replace(src.abs, src.rel);
   console.log(msg, content);
   console.log(err.codeFrame);
-  return Promise.reject(src);
 }
 
 module.exports.copyFileSuccess = (file, dist, dt) => {
   const msg = prefix + chalk.green('%s: successfully copied to "%s" (%sms)');
   console.log(msg, file.rel, dist.rel, dt);
-  return Promise.resolve([file, dist]);
 }
 
 module.exports.copyFileError = (file, err) => {
   const msg = prefix + chalk.red('error copying %s');
   console.log(msg, file.rel);
   console.error(err.stack);
-  return Promise.reject(file);
 }
 
 module.exports.deleteFileSuccess = (file) => {
   const msg = prefix + chalk.yellow('%s: successfully deleted');
   console.log(msg, file.rel);
-  return Promise.resolve(file);
 }
 
 module.exports.deleteFileError = (file, err) => {
   const msg = prefix + chalk.red('error deleting %s');
   console.log(msg, file.rel);
   console.error(err.stack);
-  return Promise.resolve(file);
 }
 
 module.exports.bundleSuccess = (src, dist, dt) => {
   const msg = prefix + chalk.green('%s: successfully created (%sms)');
   console.log(msg, dist.rel, dt);
-  return Promise.resolve([src, dist]);
 }
 
 module.exports.bundleError = (src, err) => {
   const msg = prefix + chalk.red(`${err.message}`);
   console.log(msg);
   console.error(err.stack);
-  return Promise.reject(src);
 }
 
 module.exports.sassSuccess = (src, dist, dt) => {
   const msg = prefix + chalk.green('%s: successfully created (%sms)');
   console.log(msg, dist.rel, dt);
-  return Promise.resolve([src, dist]);
 }
 
 module.exports.sassError = (src, err) => {
   const msg = prefix + chalk.red(`error processing sass file: "${src.rel}"`);
   console.log(msg);
   console.error(err.formatted);
-  return Promise.reject(src);
 }
 
-module.exports.serverStart = function() {
-  console.log(prefix + chalk.cyan('server start'));
-  return Promise.resolve();
-}
-
-module.exports.serverStop = function() {
-  console.log(prefix + chalk.cyan('server stop'));
-  return Promise.resolve();
-}
-
-module.exports.serverError = function() {
-  console.log(prefix + chalk.red('unable to start server, run `npm run transpile`'));
-  return Promise.resolve();
-}
-
-module.exports.thingStart = function() {
-  console.log(prefix + chalk.cyan('thing start'));
-  return Promise.resolve();
-}
-
-module.exports.thingStop = function() {
-  console.log(prefix + chalk.cyan('thing stop'));
-  return Promise.resolve();
-}
-
-module.exports.thingError = function() {
-  console.log(prefix + chalk.red('unable to start thing, run `npm run transpile`'));
-  return Promise.resolve();
-}
-
-// @note - fixme
 module.exports.minifySuccess = (src, dist, dt) => {
   const msg = prefix + chalk.green('%s: successfully minified to "%s" (%sms)');
   console.log(msg, src.rel, dist.rel, dt);
-  return Promise.resolve();
 }
 
 module.exports.minifyError = (src, err) => {
   const msg = prefix + chalk.red(`${err.message}`);
   console.log(msg);
   console.error(err.stack);
-  return Promise.reject(src);
+}
+
+module.exports.processStart = function(name) {
+  console.log(prefix + chalk.cyan(`${name} start`));
+}
+
+module.exports.processStop = function(name) {
+  console.log(prefix + chalk.cyan(`${name} stop`));
+}
+
+module.exports.processError = function(name, err) {
+  console.log(prefix + chalk.red(`${name} error`));
+  console.error(err.stack);
 }

@@ -9,14 +9,16 @@ const uglify = require('uglify-js');
 module.exports.transpile = (src, dist, babelOptions) => {
   return new Promise((resolve, reject) => {
     babel.transformFile(src.abs, babelOptions, (err, result) => {
-      if (err)
+      if (err) {
         return reject(err);
+      }
 
       fse.outputFile(dist.abs, result.code, err => {
-        if (err)
+        if (err) {
           reject(err);
-        else
+        } else {
           resolve([src, dist]);
+        }
       });
     });
   });

@@ -6,10 +6,24 @@ const fse = require('fs-extra');
 const cwd = process.cwd();
 
 /**
- * return a file entity { abs, rel } from an absolute filename
+ * return a file entity { abs, rel } from an absolute or relative filename
  */
-const get = module.exports.get = abs => {
-  const rel = path.relative(cwd, abs);
+const get = module.exports.get = filename => {
+  if (filename.abs && filename.rel) {
+    return filename;
+  }
+
+  let abs;
+  let rel;
+
+  if (path.isAbsolute(filename)) {
+    abs = filename;
+    rel = path.relative(cwd, abs);
+  } else {
+    rel = filename;
+    abs = path.join(cwd, rel);
+  }
+
   const file = { abs, rel };
 
   return Promise.resolve(file);

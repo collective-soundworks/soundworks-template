@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 const pkg = require('../package.json');
 const fileStore = require('./fileStore');
 const fs = require('fs');
@@ -9,13 +10,10 @@ const forkProcess = require('./forkProcess');
 const styles = require('./styles');
 const transpiler = require('./transpiler');
 const watch = require('watch');
-const { escapeRegExp, isJS, isServerFile, isClientFile, isSharedFile } = require('./utils');
+const { escapeRegExp, isJs, isServerFile, isClientFile, getClientEnv, isSharedFile, getTime } = require('./utils');
+const debounce = require('lodash.debounce');
 
 const cwd = process.cwd();
-
-/* --------------------------------------------------------------------------
- * Configuration
- * -------------------------------------------------------------------------- */
 
 // --------------------------------------------------------------------------
 // Tools configuration
@@ -27,7 +25,7 @@ const watchOptions = {
   ignoreDotFiles: true,
   ignoreUnreadableDir: true,
   ignoreNotPermitted: true,
-  interval: 1,
+  interval: 0.25,
 };
 
 const browserifyOptions = {
@@ -42,255 +40,239 @@ const sassOptions = {
 };
 
 // --------------------------------------------------------------------------
-// Paths
+// config / paths
 // --------------------------------------------------------------------------
 
-// JS Stuff
+// js stuff
 const srcDirectory = path.join(cwd, 'src');
 const srcRegExp = new RegExp('^' + escapeRegExp(srcDirectory));
 
 const distDirectory = path.join(cwd, 'dist');
 const distRegExp = new RegExp('^' + escapeRegExp(distDirectory));
 
-const thingDistDirectory = path.join(cwd, 'dist', 'thing');
-
-const escapedClientsMatchStr = '^' + escapeRegExp(distDirectory + path.sep + 'client' + path.sep) + '([a-zA-Z\-_]+)' + escapeRegExp(path.sep + 'index.js');
-const clientsMatch = new RegExp(escapedClientsMatchStr);
-
-const escapedClientsSearchStr = '^' + escapeRegExp(distDirectory + path.sep + 'client' + path.sep) + '([a-zA-Z\-_]+)' + escapeRegExp(path.sep) + '.*';
-const clientsSearch = new RegExp(escapedClientsSearchStr);
+// this file define the env in which the clients should run ('node' or 'browser')
+const clientEnvFile = path.join(distDirectory, 'client', 'env.json');
 
 const clientPublicDirectory = path.join(cwd, 'public', 'js');
-const thingIndex = path.join(distDirectory, 'thing', 'index.js');
-const serverIndex = path.join(distDirectory, 'server', 'index.js');
-
-const additionnalClientDirectories = [
-  path.join(cwd, 'node_modules', 'soundworks', 'client'),
-];
-
-const additionnalServerDirectories = [
-  path.join(cwd, 'node_modules', 'soundworks', 'server'),
-];
-
-const additionnalThingDirectories = [
-  path.join(distDirectory, 'server'), // restart when server restarts
-  path.join(cwd, 'node_modules', 'soundworks', 'thing'),
-  path.join(cwd, 'node_modules', 'soundworks', 'client'), // some abstractions are in the client
-];
-
-// CSS Stuff
 const sassSrcDirectory = path.join(cwd, 'sass');
 const cssPublicDirectory = path.join(cwd, 'public', 'css');
 
-// HTML Stuff
-const htmlTemplatesDirectory = path.join(cwd, 'html');
+const additionnalWatchDirectories = [
+  path.join(cwd, 'node_modules', 'soundworks', 'client'),
+  path.join(cwd, 'node_modules', 'soundworks', 'server'),
+  path.join(cwd, 'node_modules', 'soundworks', 'thing'),
+];
 
-/* --------------------------------------------------------------------------
- * Reusable logic
- * -------------------------------------------------------------------------- */
 
-/**
- * Transpile a single file, if the given file is not a js file (extention != .js)
- * the file is simply copied to the dist folder.
- * @param File file - file to transpile in the `src` folder
- */
-const transpileFile = file => {
-  return fileStore.get(file.abs.replace(srcRegExp, distDirectory))
-    .then(dist => {
-      const startTime = new Date().getTime();
+// match and test client names
+const escapedClientsMatchStr = '^' + escapeRegExp(distDirectory + path.sep + 'client' + path.sep) + '([a-zA-Z\-_]+)' + escapeRegExp(path.sep + 'index.js');
+const clientIndexesMatch = new RegExp(escapedClientsMatchStr);
 
-      if (!isJS(file)) {
-        return new Promise((resolve, reject) => {
-          fse.copy(file.abs, dist.abs, err => {
-            if (err)
-              return reject(log.copyFileError(file, err));
+const escapedClientsSearchStr = '^' + escapeRegExp(distDirectory + path.sep + 'client' + path.sep) + '([a-zA-Z\-_]+)' + escapeRegExp(path.sep) + '.*';
+const clientNameSearch = new RegExp(escapedClientsSearchStr);
 
-            const dt = new Date().getTime() - startTime;
-            return resolve(log.copyFileSuccess(file, dist, dt));
-          });
-        });
-      } else {
-        return transpiler.transpile(file, dist, babelOptions)
-          .then(([file, dist]) => {
-            const dt = new Date().getTime() - startTime;
-            return log.transpileSuccess(file, dist, dt);
-          })
-          .catch(err => log.transpileError(file, err));
-      }
-    });
-};
+// --------------------------------------------------------------------------
+// reusable logic
+// --------------------------------------------------------------------------
 
 /**
- * Bundle a single file
- * @param File file - client entry point in the `dist` folder (transpiled version)
+ * transpile files (babel)
  */
-const bundleClient = file => {
-  const clientName = file.abs.match(clientsMatch)[1];
+async function transpileOrCopy(filename) {
+  const src = await fileStore.get(filename);
+  const distFilename = src.abs.replace(srcRegExp, distDirectory);
+  const dist = await fileStore.get(distFilename);
+  const startTime = getTime();
+
+  if (!isJs(src)) {
+    try {
+      fse.copySync(src.abs, dist.abs);
+      log.copyFileSuccess(src, dist, getTime(startTime));
+
+      return Promise.resolve([src, dist]);
+    } catch(err) {
+      log.copyFileError(src, err);
+      return Promise.reject([src, dist]);
+    }
+  } else {
+    try {
+      await transpiler.transpile(src, dist, babelOptions);
+      log.transpileSuccess(src, dist, getTime(startTime));
+
+      return Promise.resolve([src, dist]);
+    } catch(err) {
+      log.transpileError(src, err);
+      return Promise.reject([src, dist]);
+    }
+  }
+}
+
+async function transpileOrCopyAll() {
+  const files = await fileStore.getAll(srcDirectory);
+  const pairs = [];
+
+  for (let i = 0; i < files.length; i++) {
+    try {
+      const src = files[i];
+      const pair = await transpileOrCopy(src);
+      pairs.push(pair);
+    } catch(err) {
+      console.log(err.stack);
+    }
+  }
+
+  return pairs;
+}
+
+/**
+ * bundle files (browserify)
+ */
+async function bundle(src) {
+  const clientName = src.abs.match(clientIndexesMatch)[1];
   const bundleTarget = path.join(clientPublicDirectory, `${clientName}.js`);
+  const dist = await fileStore.get(bundleTarget);
+  const startTime = getTime();
 
-  return fileStore.get(bundleTarget)
-    .then(dist => {
-      const startTime = new Date().getTime();
+  try {
+    await transpiler.bundle(src, dist, browserifyOptions);
+    log.bundleSuccess(src, dist, getTime(startTime));
+    return Promise.resolve([src, dist]);
+  } catch(err) {
+    log.bundleError(src, getTime(startTime));
+    return Promise.reject([src, dist]);
+  }
+}
 
-      return transpiler.bundle(file, dist, browserifyOptions)
-        .then(([file, dist]) => {
-          const dt = new Date().getTime() - startTime;
-          return log.bundleSuccess(file, dist, dt);
-        })
-        .catch(err => log.bundleError(file, err));
+async function bundleAll() {
+  try {
+    const files = await fileStore.getAll(distDirectory);
+    const indexes = files.filter(file => {
+      const matches = file.abs.match(clientIndexesMatch);
+      let isBrowserClient = false;
+
+      if (matches !== null) {
+        const clientName = matches[1];
+
+        if (getClientEnv(clientName, clientEnvFile) === 'browser') {
+          isBrowserClient = true;
+        }
+      }
+
+      return isBrowserClient;
     });
-};
 
-const bundleClients = () => {
-  return fileStore.getAll(distDirectory)
-    .then(files => files.filter(file => file.abs.match(clientsMatch)))
-    .then(indexes => Promise.all(indexes.map(bundleClient)));
-};
+    return Promise.all(indexes.map(bundle));
+  } catch(err) {
+    return Promise.reject();
+  }
+}
 
 /**
- * minify a given bundle file
+ * proces sass
  */
-const minifyClient = file => {
-  const minifyTarget = file.abs.replace(/\.js$/, '.min.js');
+async function processSass() {
+  const sassFiles = await fileStore.getAll(sassSrcDirectory);
+  const sassEntryPoints = sassFiles.filter(src => !/^_/.test(path.basename(src.abs)))
 
-  return fileStore.get(minifyTarget)
-    .then(dist => {
-      const startTime = new Date().getTime();
+  const pairs = await Promise.all(sassEntryPoints.map(async function(src) {
+    const basename = path.basename(src.abs, '.scss');
+    const cssFilename = path.join(cssPublicDirectory, basename + '.css');
+    const dist = await fileStore.get(cssFilename);
+    return [src, dist];
+  }));
 
-      return transpiler.minify(file, dist)
-        .then(([file, dist]) => {
-          const dt = new Date().getTime() - startTime;
-          return log.minifySuccess(file, dist, dt);
-        })
-        .catch(err => log.minifyError(file, err));
-    });
-};
+  return Promise.all(pairs.map(async function([src, dist]) {
+    const startTime = getTime();
 
-/**
- * process all sass files
- */
-const processSass = () => {
-  return fileStore.getAll(sassSrcDirectory)
-    .then(sources => {
-      const pairs = sources
-        .filter(src => !/^_/.test(path.basename(src.abs)))
-        .map(src => {
-          const basename = path.basename(src.abs, '.scss');
-          const cssFilename = path.join(cssPublicDirectory, basename + '.css');
+    try {
+      await styles.process(src, dist, sassOptions);
+      log.sassSuccess(src, dist, getTime(startTime));
+      return Promise.resolve([src, dist]);
+    } catch(err) {
+      log.sassError(src, err);
+      return Promise.reject(src);
+    }
+  }));
+}
 
-          return Promise.all([src, fileStore.get(cssFilename)])
-        });
+async function restartProcess(processName) {
+  const filename = path.join(distDirectory, processName, 'index.js');
+  const file = await fileStore.get(filename);
 
-      return Promise.all(pairs)
-        .then(pairs => {
-          const promises = pairs.map(([src, dist]) => {
-            const startTime = new Date().getTime();
+  try {
+    const stopped = await forkProcess.stop(file);
+    if (stopped) {
+      log.processStop(processName);
+    }
 
-            return styles.process(src, dist, sassOptions)
-              .then(([src, dist]) => {
-                const dt = new Date().getTime() - startTime;
-                return log.sassSuccess(src, dist, dt);
-              })
-              .catch(err => log.sassError(src, err));
-          });
+    await forkProcess.start(file);
+    log.processStart(processName);
+    return Promise.resolve(file);
+  } catch(err) {
+    log.processError(processName, err);
+    return Promise.reject(file);
+  }
+}
 
-          return Promise.all(promises);
-        })
-        .catch(err => {});
-    });
-};
+async function deleteFile(file) {
+  try {
+    fileStore.delete(file);
+    log.deleteFileSuccess(file);
+    return Promise.resolve(file);
+  } catch(err) {
+    log.deleteFileError(file, err)
+    return Promise.reject(file);
+  }
+}
 
-const restartServer = () => {
-  return fileStore.get(serverIndex)
-    .then(serverFile => {
-      return forkProcess.stop(serverFile)
-        .then(() => log.serverStop())
-        .then(() => forkProcess.start(serverFile))
-        .then(() => log.serverStart())
-        .catch(err => log.serverError());
-    })
-    .catch(err => log.serverError());
-};
+async function handleWatchDistChange(filename) {
+  const dist = await fileStore.get(filename);
 
-const deleteEntry = file => {
-  return fileStore
-    .delete(file)
-    .then(log.deleteFileSuccess)
-    .catch(err => log.deleteFileError(file, err));
-};
+  try {
+    if (isSharedFile(dist)) {
+      if (isClientFile(dist)) {
+        await bundleAll();
+      } else if (isServerFile(dist)) {
+        await restartProcess('server');
+      } else {
+        await bundleAll();
+        await restartProcess('server');
+      }
+    } else if (isClientFile(dist)) {
+      const matches = dist.abs.match(clientNameSearch);
+
+      if (matches !== null) {
+        const clientName = matches[1];
+        const clientEnv = getClientEnv(clientName, clientEnvFile);
+
+        if (clientEnv === 'browser') {
+          const index = path.join(distDirectory, 'client', clientName, 'index.js');
+          const dist = await fileStore.get(index);
+          await bundle(dist);
+        } else if (clientEnv === 'node') {
+          // do nothing
+        }
+      }
+    } else if (isServerFile(dist)) {
+      await restartProcess('server');
+    }
+  } catch (err) {
+    console.error(err.stack);
+  }
+}
+
+// const deleteFile = file => {
+//   return fileStore
+//     .delete(file)
+//     .then(log.deleteFileSuccess)
+//     .catch(err => log.deleteFileError(file, err));
+// };
 
 // -------------------------------------------------------------
 // Watch functions
 // -------------------------------------------------------------
 
-function watchJsSources() {
-  const deleteFile = (filename, stats) => {
-    const distFilename = filename.replace(srcRegExp, distDirectory);
-
-    fileStore.get(distFilename).then(deleteEntry);
-  };
-
-  const processFile = (filename, stats) => {
-    fileStore.get(filename)
-      .then(transpileFile)
-      .then(([src, dist]) => {
-        if (isSharedFile(src)) {
-          if (isClientFile(src))
-            return bundleClients();
-          else if (isServerFile(src))
-            return restartServer();
-          else
-            return bundleClients().then(restartServer);
-        } else if (isClientFile(src)) {
-          const matches = dist.abs.match(clientsSearch);
-
-          if (matches === null) // is directory (probably...)
-            return Promise.resolve();
-
-          const clientName = matches[1];
-          const index = path.join(distDirectory, 'client', clientName, 'index.js');
-
-          return fse.pathExists(index)
-            .then(exists => {
-              if (exists)
-                return fileStore.get(index).then(bundleClient);
-              else
-                return Promise.resolve();
-            });
-        } else if (isServerFile(src)) {
-          return restartServer();
-        }
-      })
-      .catch(err => {});
-  }
-
-  // watch file system
-  watch.createMonitor(srcDirectory, Object.assign({}, watchOptions), monitor => {
-    monitor.on('created', processFile);
-    monitor.on('changed', processFile);
-    monitor.on('removed', deleteFile);
-  });
-}
-
-function watchAdditionnalSources() {
-  additionnalClientDirectories.forEach(dir => {
-    watch.createMonitor(dir, Object.assign({}, watchOptions), monitor => {
-      monitor.on('created', bundleClients);
-      monitor.on('changed', bundleClients);
-      monitor.on('removed', bundleClients);
-    });
-  });
-
-  additionnalServerDirectories.forEach(dir => {
-    watch.createMonitor(dir, Object.assign({}, watchOptions), monitor => {
-      monitor.on('created', restartServer);
-      monitor.on('changed', restartServer);
-      monitor.on('removed', restartServer);
-    });
-  });
-}
-
-function watchCssSources() {
+function watchCss() {
   watch.createMonitor(sassSrcDirectory, Object.assign({}, watchOptions), monitor => {
     monitor.on('created', processSass);
     monitor.on('changed', processSass);
@@ -298,38 +280,59 @@ function watchCssSources() {
   });
 }
 
-function watchHtmlSources() {
-  watch.createMonitor(htmlTemplatesDirectory, Object.assign({}, watchOptions), monitor => {
-    monitor.on('created', restartServer);
-    monitor.on('changed', restartServer);
-    monitor.on('removed', restartServer);
+function watchSrc() {
+  watch.createMonitor(srcDirectory, Object.assign({}, watchOptions), monitor => {
+    monitor.on('created', transpileOrCopy);
+    monitor.on('changed', transpileOrCopy);
+    // delete dist file
+    monitor.on('removed', async (filename, stats) => {
+      const distFilename = filename.replace(srcRegExp, distDirectory);
+      const dist = await fileStore.get(distFilename).then();
+      await deleteFile(dist);
+    });
   });
 }
 
-function watchThing() {
-  const restartThing = () => {
-    fileStore.get(thingIndex)
-      .then(thingFile => {
-        return forkProcess.stop(thingFile)
-          .then(() => log.thingStop())
-          .then(() => forkProcess.start(thingFile))
-          .then(() => log.thingStart())
-          .catch(err => log.thingError());
-      })
-      .catch(err => log.thingError());
-  };
-
-  watch.createMonitor(thingDistDirectory, Object.assign({}, watchOptions), monitor => {
-    monitor.on('created', restartThing);
-    monitor.on('changed', restartThing);
-    monitor.on('removed', restartThing);
+function watchDist() {
+  watch.createMonitor(distDirectory, Object.assign({}, watchOptions), monitor => {
+    monitor.on('created', handleWatchDistChange);
+    monitor.on('changed', handleWatchDistChange);
+    monitor.on('removed', handleWatchDistChange);
   });
 
-  additionnalThingDirectories.forEach(dir => {
+  async function onAdditionnalChange() {
+    try {
+      await bundleAll();
+      await restartProcess('server');
+    } catch(err) {
+      console.error(err.stack);
+    }
+  }
+
+  additionnalWatchDirectories.forEach(dir => {
     watch.createMonitor(dir, Object.assign({}, watchOptions), monitor => {
-      monitor.on('created', restartThing);
-      monitor.on('changed', restartThing);
-      monitor.on('removed', restartThing);
+      monitor.on('created', onAdditionnalChange);
+      monitor.on('changed', onAdditionnalChange);
+      monitor.on('removed', onAdditionnalChange);
+    });
+  });
+}
+
+function watchDistClientProcess(processName) {
+  const watchDir = path.join(distDirectory, 'client', processName);
+  async function restart() { await restartProcess(`client/${processName}`); }
+
+  watch.createMonitor(watchDir, Object.assign({}, watchOptions), monitor => {
+    monitor.on('created', restart);
+    monitor.on('changed', restart);
+    monitor.on('removed', restart);
+  });
+
+  additionnalWatchDirectories.forEach(dir => {
+    watch.createMonitor(dir, Object.assign({}, watchOptions), monitor => {
+      monitor.on('created', restart);
+      monitor.on('changed', restart);
+      monitor.on('removed', restart);
     });
   });
 }
@@ -339,78 +342,99 @@ function watchThing() {
 // -------------------------------------------------------------
 
 function __watch() {
-  watchHtmlSources();
-  watchCssSources();
-  watchJsSources();
-  watchAdditionnalSources();
+  try {
+    watchSrc();
+    watchCss();
+    watchDist();
+    restartProcess('server');
 
-  return fileStore.get(serverIndex).then(forkProcess.start);
+    return Promise.resolve();
+  } catch(err) {
+    return Promise.reject(err);
+  }
 }
 
-// run a thing client and restart it each time a file in ./dist/thing is changed
-function __watchThing() {
-  watchThing();
-
-  return fileStore.get(thingIndex).then(forkProcess.start);
+function __watchThing(processName = 'thing') {
+  try {
+    watchDistClientProcess(processName);
+    restartProcess(`client/${processName}`);
+    return Promise.resolve();
+  } catch(err) {
+    return Promise.reject(err);
+  }
 }
 
-function __transpile() {
-  const transpileSass = processSass();
+async function __transpile() {
+  try {
+    const transpiledSass = await processSass();
+    const transpiledJS = await transpileOrCopyAll();
+    const bundleFiles = await bundleAll();
 
-  const transpileJS = fileStore.getAll(srcDirectory)
-    .then(sources => { // 1. transpile all js files (if json, just copy)
-      return sources.reduce((promise, src) => {
-        return promise.then(all => {
-          return transpileFile(src).then(pair => {
-            all.push(pair);
-            return all;
-          });
-        }).catch(err => {});
-      }, Promise.resolve([]));
-    })
-    .then(pairs => { // 2. bundle clients
-      const clients = pairs.filter(([src, dist]) => dist.abs.match(clientsMatch));
-      return Promise.all(clients.map(([src, dist]) => bundleClient(dist)));
-    })
-    .catch(err => {});
-
-  return Promise
-    .all([transpileSass, transpileJS])
-    .catch(err => {});
+    return Promise.resolve();
+  } catch(err) {
+    return Promise.reject(err);
+  }
 }
 
 function __start() {
-  return fileStore
-    .get(serverIndex)
-    .then(server.start)
-    .catch(err => {});
+  try {
+    restartProcess('server');
+    return Promise.resolve();
+  } catch(err) {
+    return Promise.reject(err);
+  }
 }
 
-function __minify() {
-  return fileStore.getAll(clientPublicDirectory)
-    .then(files => {
-      const minFiles = files.filter(file => /\.min\.js$/.test(file.abs));
-      deletePromises = minFiles.map(fileStore.delete)
+/**
+ * minify all client files (uglify.js)
+ */
+async function __minify(file) {
+  async function minifyClient(src) {
+    const minifyTarget = src.abs.replace(/\.js$/, '.min.js');
+    const dist = await fileStore.get(minifyTarget);
+    const startTime = getTime();
 
-      return Promise
-        .all(deletePromises)
-        .then(() => fileStore.getAll(clientPublicDirectory))
-        .then(files => Promise.all(files.map(minifyClient)))
-        .catch(err => {});
-    });
+    try {
+      await transpiler.minify(src, dist);
+      log.minifySuccess(src, dist, getTime(startTime));
+      return Promise.resolve();
+    } catch(err) {
+      log.minifyError(src, err);
+      return Promise.reject(src, err);
+    }
+  }
+
+  try {
+    const files = await fileStore.getAll(clientPublicDirectory);
+    const minFiles = files.filter(file => /\.min\.js$/.test(file.abs));
+    await Promise.all(minFiles.map(fileStore.delete));
+
+    const jsFiles = files.filter(file => !/\.min\.js$/.test(file.abs) && /\.js$/.test(file.abs));
+    await Promise.all(jsFiles.map(minifyClient));
+    return Promise.resolve();
+  } catch(err) {
+    return Promise.reject(err);
+  }
 }
 
-function __clear() {
+/**
+ * clean project
+ */
+async function __clear() {
   const directories = [
-    fileStore.get(distDirectory),
-    fileStore.get(clientPublicDirectory),
-    fileStore.get(cssPublicDirectory),
+    await fileStore.get(distDirectory),
+    await fileStore.get(clientPublicDirectory),
+    await fileStore.get(cssPublicDirectory),
   ];
 
-  return Promise
-    .all(directories)
-    .then(handles => Promise.all(handles.map(deleteEntry)))
-    .catch(err => {});
+  directories.forEach(async function(dir) {
+    try {
+      await deleteFile(dir);
+      return Promise.resolve();
+    } catch(err) {
+      return Promise.reject();
+    }
+  });
 }
 
 /* --------------------------------------------------------------------------
@@ -424,10 +448,11 @@ switch (cmd) {
     __transpile().then(__watch).catch(err => console.error('Unhandled Error', err));
     break;
   case '--watch-thing':
-    __transpile().then(__watchThing).catch(err => console.error('Unhandled Error', err));
+    const thingName = process.argv[3];
+    __transpile().then(() => __watchThing(thingName)).catch(err => console.error('Unhandled Error', err));
     break;
   case '--transpile':
-    __transpile().catch(err => console.error('Unhandled Error', err));
+    __transpile().catch(err => console.error(err.stack));
     break;
   case '--start':
     __start().catch(err => console.error('Unhandled Error', err));
@@ -435,9 +460,21 @@ switch (cmd) {
   case '--minify':
     __minify().catch(err => console.error('Unhandled Error', err));;
     break;
-  case '--clear':
-    __clear().catch(err => console.error('Unhandled Error', err));;
+  case '--clear': // ok
+    __clear().catch(err => console.error(err.stack));;
     break;
+  case '--help':
+    console.log(`
+[soundworks-template] available commands:
+
+- \`npm run clear\`\tclean the project, delete \`dist/\`, \`public/css/\`, \`public/js\`
+- \`npm run minify\`\tminify all client files with uglify.js
+- \`npm run start\`\tstarts the server
+- \`npm run transpile\`\ttranspile and bundle all sources (js and css)
+- \`npm run watch\`\trun the server, and transpile, bundle, and restart server on file change
+- \`npm run watch:thing [name]\`\trun a thing client, and relaunch it on file change
+
+    `);
 }
 
 process.on('SIGINT', () => process.exit());

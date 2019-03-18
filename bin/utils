@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const path = require('path');
+const fs = require('fs');
 const sep = path.sep;
 
  // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
@@ -7,18 +8,49 @@ const escapeRegExp = module.exports.escapeRegExp = function(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
 
-module.exports.isJS = function(file) {
+module.exports.getTime = function(startTime = null) {
+  if (startTime === null) {
+    return new Date().getTime();
+  } else {
+    return new Date().getTime() - startTime;
+  }
+}
+
+module.exports.isJs = function(file) {
+  // @todo - move to .mjs when ready on node...
   return path.extname(file.abs) === '.js';
 }
 
 module.exports.isServerFile = function(file) {
-  const regExp = escapeRegExp(`src${sep}server${sep}`);
+  const regExp = escapeRegExp(`dist${sep}server${sep}`);
   return new RegExp('^' + regExp).test(file.rel);
 }
 
 module.exports.isClientFile = function(file) {
-  const regExp = escapeRegExp(`src${sep}client${sep}`);
+  const regExp = escapeRegExp(`dist${sep}client${sep}`);
   return new RegExp('^' + regExp).test(file.rel);
+}
+
+// maybe move to runner
+module.exports.getClientEnv = function(clientName, envFile) {
+  if (fs.existsSync(envFile)) {
+    try {
+      const data = fs.readFileSync(envFile);
+      const json = JSON.parse(data);
+
+      if (json[clientName]) {
+        return json[clientName];
+      } else {
+        return 'browser';
+      }
+    } catch(err) {
+      console.error(`Invalid JSON file "envFile"`);
+      console.error(err.stack);
+    }
+  } else {
+    // default to browser for backward compatibility
+    return 'browser';
+  }
 }
 
 module.exports.isSharedFile = function(file) {

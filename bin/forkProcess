@@ -27,12 +27,15 @@ const start = module.exports.start = function(src) {
 const stop = module.exports.stop = function(src) {
   return new Promise((resolve, reject) => {
     const proc = processes.get(src.abs);
+    let stopped = false;
 
-    if (proc)
+    if (proc) {
       terminate(proc.pid);
+      stopped = true;
+    }
 
-    processes.delete(src.abs)
-    resolve();
+    processes.delete(src.abs);
+    resolve(stopped);
   });
 }
 
