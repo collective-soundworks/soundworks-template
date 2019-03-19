@@ -117,7 +117,7 @@ async function transpileOrCopyAll() {
       const pair = await transpileOrCopy(src);
       pairs.push(pair);
     } catch(err) {
-      console.log(err.stack);
+      return Promise.reject(err);
     }
   }
 
@@ -138,8 +138,8 @@ async function bundle(src) {
     log.bundleSuccess(src, dist, getTime(startTime));
     return Promise.resolve([src, dist]);
   } catch(err) {
-    log.bundleError(src, getTime(startTime));
-    return Promise.reject([src, dist]);
+    log.bundleError(src, err);
+    return Promise.reject(err);
   }
 }
 
@@ -163,7 +163,7 @@ async function bundleAll() {
 
     return Promise.all(indexes.map(bundle));
   } catch(err) {
-    return Promise.reject();
+    return Promise.reject(err);
   }
 }
 

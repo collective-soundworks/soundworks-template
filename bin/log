@@ -47,8 +47,8 @@ module.exports.bundleSuccess = (src, dist, dt) => {
 }
 
 module.exports.bundleError = (src, err) => {
-  const msg = prefix + chalk.red(`${err.message}`);
-  console.log(msg);
+  const msg = prefix + chalk.red(`%s: bundle error`);
+  console.log(msg, src.rel);
   console.error(err.stack);
 }
 
