@@ -613,8 +613,6 @@ const serviceViews = {
           <div class="section-top flex-middle"></div>
           <div class="section-center flex-center">
               <p class="big">
-                <%= intro %>
-                <br />
                 <b><%= globals.appName %></b>
               </p>
           </div>
@@ -632,7 +630,6 @@ const serviceViews = {
         isCompatible: null,
         hasAuthorizations: null,
         checking: false,
-        intro: 'Welcome to',
         instructions: 'Touch the screen to join!',
         checkingMessage: 'Please wait while checking compatiblity',
         errorCompatibleMessage: 'Sorry,<br />Your device is not compatible with the application.',

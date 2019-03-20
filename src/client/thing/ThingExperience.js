@@ -12,7 +12,6 @@ class Metro extends masters.TimeEngine {
 
   advanceTime(syncTime) {
     console.log(syncTime);
-
     return syncTime + this.period;
   }
 }

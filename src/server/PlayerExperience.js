@@ -5,7 +5,6 @@ class PlayerExperience extends Experience {
     super(clientType);
 
     this.checkin = this.require('checkin');
-    this.sharedConfig = this.require('shared-config');
     this.sharedParams = this.require('shared-params');
     this.audioBufferManager = this.require('audio-buffer-manager');
   }

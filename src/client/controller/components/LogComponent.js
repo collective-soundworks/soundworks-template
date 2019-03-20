@@ -7,15 +7,16 @@ const template = `
 `;
 
 class LogComponent {
-  constructor(experience) {
+  constructor(experience, container) {
     this.experience = experience;
+    this.container = container;
 
     this.stackSize = 20;
     this.stack = [];
   }
 
   enter() {
-    const $container = this.experience.view.$el.querySelector('#log');
+    const $container = this.experience.view.$el.querySelector(this.container);
 
     this.view = new View(template, { logs: this.stack });
     this.view.render();
