@@ -14,6 +14,6 @@
 /bin/.browserify-cache.json
 
 # ignore junk files
-npm-debug.log
+package-lock.json
 .DS_Store
 Thumbs.db

@@ -27,9 +27,9 @@
   "dependencies": {
     "@babel/runtime": "^7.4.0",
     "@ircam/basic-controllers": "^1.0.4",
-    "debug": "^3.1.0",
+    "debug": "^4.1.1",
     "lit-html": "^1.0.0",
-    "node-libpd": "^0.1.0",
+    "node-libpd": "^0.2.4",
     "soundworks": "github:collective-soundworks/soundworks#feature-things",
     "source-map-support": "^0.5.6",
     "waves-masters": "^1.1.1"
@@ -43,12 +43,12 @@
     "browserify": "^16.2.2",
     "browserify-incremental": "^3.1.1",
     "chalk": "^2.4.1",
-    "fs-extra": "^6.0.1",
-    "klaw": "^2.1.1",
+    "fs-extra": "^7.0.1",
+    "klaw": "^3.0.0",
     "lodash.debounce": "^4.0.8",
     "node-sass": "^4.9.0",
     "terminate": "^2.1.0",
-    "uglify-js": "^3.3.28",
+    "uglify-js": "^3.5.0",
     "watch": "^1.0.1"
   }
 }
