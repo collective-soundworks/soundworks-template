@@ -430,9 +430,9 @@ async function __clear() {
   });
 }
 
-/* --------------------------------------------------------------------------
- * Parse commands
- * -------------------------------------------------------------------------- */
+// -------------------------------------------------------------
+// Parse commands
+// -------------------------------------------------------------
 
 const cmd = process.argv[2];
 
@@ -468,6 +468,7 @@ switch (cmd) {
 - \`npm run watch:thing [name]\`\trun a thing client, and relaunch it on file change
 
     `);
+    break;
 }
 
 process.on('SIGINT', () => process.exit());

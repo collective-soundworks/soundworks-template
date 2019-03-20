@@ -1,6 +1,5 @@
 {
   "sourceMap": "inline",
-  "presets": ["env"],
   "presets": ["@babel/preset-env"],
   "plugins": [
     "@babel/plugin-transform-regenerator",
