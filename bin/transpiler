@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const babel = require('babel-core');
+const babel = require('@babel/core');
 const browserify = require('browserify');
 const browserifyInc = require('browserify-incremental')
 const fse = require('fs-extra');
@@ -28,7 +28,7 @@ const bundlers = new Map();
 /**
  * Transform a given file to it's browserified version, client only.
  */
-module.exports.bundle = (src, dist, browserifyOptions) => {
+module.exports.bundle = (src, dist, browserifyOptions, babelOptions) => {
   let bundler = null;
 
   if (bundlers.has(src.abs)) {
@@ -44,9 +44,11 @@ module.exports.bundle = (src, dist, browserifyOptions) => {
   return new Promise((resolve, reject) => {
     fse.ensureFileSync(dist.abs); // ensure file exists
 
+    const babelifyOptions = Object.assign({}, babelOptions, { global: true });
     const writeStream = fse.createWriteStream(dist.abs);
 
     bundler
+      .transform('babelify', babelifyOptions)
       .bundle()
       .on('error', err => {
         return reject(err);

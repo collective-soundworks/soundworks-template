@@ -134,7 +134,7 @@ async function bundle(src) {
   const startTime = getTime();
 
   try {
-    await transpiler.bundle(src, dist, browserifyOptions);
+    await transpiler.bundle(src, dist, browserifyOptions, babelOptions);
     log.bundleSuccess(src, dist, getTime(startTime));
     return Promise.resolve([src, dist]);
   } catch(err) {
@@ -260,13 +260,6 @@ async function handleWatchDistChange(filename) {
     console.error(err.stack);
   }
 }
-
-// const deleteFile = file => {
-//   return fileStore
-//     .delete(file)
-//     .then(log.deleteFileSuccess)
-//     .catch(err => log.deleteFileError(file, err));
-// };
 
 // -------------------------------------------------------------
 // Watch functions
@@ -465,7 +458,7 @@ switch (cmd) {
     break;
   case '--help':
     console.log(`
-[soundworks-template] available commands:
+[${pkg.name}] available commands:
 
 - \`npm run clear\`\tclean the project, delete \`dist/\`, \`public/css/\`, \`public/js\`
 - \`npm run minify\`\tminify all client files with uglify.js
