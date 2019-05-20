@@ -41,8 +41,9 @@ const sharedParams = soundworks.server.require('shared-params');
 sharedParams.addText('numPlayers', '# players', '0');
 sharedParams.addText('numThings', '# things', '0');
 
-const experience = new PlayerExperience('player');
-const controller = new ControllerExperience('controller');
+const player = new PlayerExperience('player');
 const thing = new ThingExperience('thing');
+const controller = new ControllerExperience('controller', { auth: false });
+
 
 soundworks.server.start();

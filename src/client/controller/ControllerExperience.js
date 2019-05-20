@@ -13,13 +13,14 @@ class ControllerExperience extends Experience {
 
     this.sharedParams = this.require('shared-params');
 
-    this.sharedParamsComponent = new SharedParamsComponent(this, '#shared-params');
-    this.logComponent = new LogComponent(this, '#log');
+    this.sharedParamsComponent = new SharedParamsComponent('#shared-params', this);
+    this.logComponent = new LogComponent('#log', this);
 
     this.setGuiOptions('numPlayers', { readonly: true });
 
-    if (options.auth)
+    if (options.auth) {
       this.auth = this.require('auth');
+    }
   }
 
   start() {

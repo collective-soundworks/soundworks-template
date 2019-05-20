@@ -13,29 +13,31 @@ const template = `
 
 const model = { title: `ok` };
 
-
 class PlayerExperience extends soundworks.Experience {
   constructor(assetsDomain) {
     super();
 
     this.platform = this.require('platform', { features: ['web-audio'] });
     this.checkin = this.require('checkin', { showDialog: false });
+    this.sharedParams = this.require('shared-params');
     this.audioBufferManager = this.require('audio-buffer-manager', {
       assetsDomain: assetsDomain,
       files: [ /* ... */ ],
     });
   }
 
-  start() {
+  async start() {
     super.start();
 
-    this.view = new soundworks.SegmentedView(template, model, {}, {
-      id: 'player',
-    });
+    this.view = new soundworks.SegmentedView(template, model, {}, { id: 'player' });
+    await this.show();
 
-    this.show().then(() => {
-
-    });
+    const now = audioContext.currentTime;
+    const osc = audioContext.createOscillator();
+    osc.connect(audioContext.destination);
+    osc.frequency.value = 5000;
+    osc.start(now);
+    osc.stop(now + 0.001);
   }
 }
 

@@ -23,6 +23,17 @@ function bootstrap() {
   // create client side (player) experience and start the client
   const experience = new PlayerExperience(config.assetsDomain);
   soundworks.client.start();
+
+  // @todo - move to a `FailureManagement` service,
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      window.location.reload(true);
+    }
+  }, false);
+
+  soundworks.client.socket.addListener('close', () => {
+    setTimeout(() => window.location.reload(true), 2000);
+  });
 }
 
 window.addEventListener('load', bootstrap);

@@ -643,10 +643,12 @@ const serviceViews = {
     onRender() {
       super.onRender();
 
-      this.installEvents({
-        'mousedown': (e) => this._mousedownCallback(e),
-        'touchstart': (e) => this._touchstartCallback(e),
-      });
+      if (this.isCompatible) {
+        this.installEvents({
+          'mousedown': (e) => this._mousedownCallback(e),
+          'touchstart': (e) => this._touchstartCallback(e),
+        });
+      }
     }
 
     setTouchStartCallback(callback) {

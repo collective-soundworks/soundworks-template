@@ -27,10 +27,11 @@
   "dependencies": {
     "@babel/runtime": "^7.4.0",
     "@ircam/basic-controllers": "^1.0.4",
+    "babel-runtime": "^6.6.1",
     "debug": "^4.1.1",
     "lit-html": "^1.0.0",
     "node-libpd": "^0.2.4",
-    "soundworks": "github:collective-soundworks/soundworks#feature-things",
+    "soundworks": "^2.2.1",
     "source-map-support": "^0.5.6",
     "waves-masters": "^1.1.1"
   },

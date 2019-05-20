@@ -7,16 +7,15 @@ const template = `
 `;
 
 class LogComponent {
-  constructor(experience, container) {
+  constructor(selector, experience) {
+    this.selector = selector;
     this.experience = experience;
-    this.container = container;
 
-    this.stackSize = 20;
     this.stack = [];
   }
 
   enter() {
-    const $container = this.experience.view.$el.querySelector(this.container);
+    const $container = this.experience.view.$el.querySelector(this.selector);
 
     this.view = new View(template, { logs: this.stack });
     this.view.render();
@@ -28,7 +27,7 @@ class LogComponent {
   }
 
   error(file, line, col, msg, userAgent) {
-    // @todo - check ousrcemap support
+    // @todo - check sourcemap support
     // https://stackoverflow.com/questions/24637356/javascript-debug-stack-trace-with-source-maps
     const logView = `
 ${userAgent}

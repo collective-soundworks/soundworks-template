@@ -156,16 +156,16 @@ class _TriggerGui {
 
 
 class SharedParamsComponent {
-  constructor(experience, container) {
+  constructor(selector, experience) {
     this._guiOptions = {};
 
+    this.selector = selector;
     this.experience = experience;
-    this.container = container;
     this.sharedParams = experience.sharedParams;
   }
 
   enter() {
-    const $container = this.experience.view.$el.querySelector(this.container);
+    const $container = this.experience.view.$el.querySelector(this.selector);
 
     this.view = new View();
     this.view.render();
