@@ -17,11 +17,21 @@ function init() {
   const controller = new ControllerExperience({ auth: false });
   soundworks.client.start();
 
-  // reload client if server is down...
-  soundworks.client.socket.addStateListener(eventName => {
-    if (eventName === 'disconnect') {
-      setTimeout(() => window.location.reload(true), 2000);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      window.location.reload(true);
     }
+  }, false);
+
+  // @todo - move to a `FailureManagement` service,
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      window.location.reload(true);
+    }
+  }, false);
+
+  soundworks.client.socket.addListener('close', () => {
+    setTimeout(() => window.location.reload(true), 2000);
   });
 }
 

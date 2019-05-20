@@ -24,11 +24,15 @@ function bootstrap() {
   const experience = new PlayerExperience(config.assetsDomain);
   soundworks.client.start();
 
-  // reload client if server is down...
-  soundworks.client.socket.addStateListener(eventName => {
-    if (eventName === 'disconnect') {
-      setTimeout(() => window.location.reload(true), 2000);
+  // @todo - move to a `FailureManagement` service,
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      window.location.reload(true);
     }
+  }, false);
+
+  soundworks.client.socket.addListener('close', () => {
+    setTimeout(() => window.location.reload(true), 2000);
   });
 }
 

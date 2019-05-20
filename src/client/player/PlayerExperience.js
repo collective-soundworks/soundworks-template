@@ -31,7 +31,12 @@ class PlayerExperience extends soundworks.Experience {
     this.view = new soundworks.SegmentedView(template, model, {}, { id: 'player' });
     await this.show();
 
-    // do things
+    const now = audioContext.currentTime;
+    const osc = audioContext.createOscillator();
+    osc.connect(audioContext.destination);
+    osc.frequency.value = 5000;
+    osc.start(now);
+    osc.stop(now + 0.001);
   }
 }
 
