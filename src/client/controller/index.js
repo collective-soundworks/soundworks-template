@@ -1,3 +1,4 @@
+import '@babel/polyfill';
 import * as soundworks from 'soundworks/client';
 import ControllerExperience from './ControllerExperience';
 import serviceViews from '../shared/serviceViews';

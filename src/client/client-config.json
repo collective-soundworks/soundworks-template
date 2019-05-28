@@ -1,0 +1,11 @@
+{
+  "controller": {
+    "target": "browser"
+  },
+  "player": {
+    "target": "browser"
+  },
+  "thing": {
+    "target": "node"
+  }
+}

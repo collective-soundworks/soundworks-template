@@ -37,7 +37,7 @@ class PlayerExperience extends soundworks.Experience {
     osc.connect(audioContext.destination);
     osc.frequency.value = 5000;
     osc.start(now);
-    osc.stop(now + 0.001);
+    osc.stop(now + 0.01);
   }
 }
 

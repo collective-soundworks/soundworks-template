@@ -1,5 +1,6 @@
-// import client side soundworks and player experience
+import '@babel/polyfill';
 import * as soundworks from 'soundworks/client';
+console.log(soundworks);
 import PlayerExperience from './PlayerExperience';
 import serviceViews from '../shared/serviceViews';
 

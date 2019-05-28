@@ -1,6 +1,6 @@
 # transpiled files and dependencies
 /node_modules
-/public/js
+/public/dist
 /public/css
 /dist
 

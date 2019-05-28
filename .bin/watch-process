@@ -1,0 +1,93 @@
+#!/usr/bin/env node
+const fs = require('fs');
+const path = require('path');
+const chokidar = require('chokidar');
+const terminate = require('terminate');
+const { fork } = require('child_process');
+
+// Process hosting the proc
+let proc = null;
+const processes = new Map();
+
+// run the in a forked process
+const start = function(src) {
+  fs.stat(src, (err, stats) => {
+    if (err) {
+      reject(src);
+    }
+
+    if (processes.has(src)) {
+      stop(src);
+    }
+
+    proc = fork(src);
+    processes.set(src, proc);
+  });
+}
+
+// kill the forked process hosting the proc
+const stop = function(src) {
+  const proc = processes.get(src);
+  let stopped = false;
+
+  if (proc) {
+    terminate(proc.pid);
+    stopped = true;
+  }
+
+  processes.delete(src);
+}
+
+// parse arguments and watch
+const processName = process.argv[2];
+
+if (!processName) {
+  throw new Error('command watch:process requires an argument (ex: `npm run watch:process thing`')
+}
+
+const processPath = path.join('dist', processName, 'index.js');
+
+if (!fs.existsSync(processPath)) {
+  throw new Error(`Cannot start process "${processName}": file "${processPath}" does not exists`);
+}
+
+const targets = [
+  processPath,
+]
+
+if (processName === 'server') {
+  // add html template
+  targets.push(path.join('src', 'server', 'tmpl'));
+}
+
+const watcher = chokidar.watch(targets, {
+  persistent: true,
+  ignoreInitial: true,
+});
+
+let configAdded = false;
+
+// restart to principal target (processPath)
+watcher
+  .on('add', filename => start(processPath))
+  .on('change', filename => {
+    start(processPath);
+    // prevent to start server twice on startup,
+    // aka when server and config files are transpiled
+    if (!configAdded) {
+      watcher.add(path.join('dist', 'shared', 'config', '*.js'));
+      configAdded = true;
+    }
+  })
+  .on('unlink', filename => stop(processPath));
+
+
+
+
+
+
+
+
+
+
+

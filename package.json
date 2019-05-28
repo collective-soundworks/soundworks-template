@@ -5,51 +5,52 @@
     "Sébastien Robaszkiewicz",
     "Norbert Schnell"
   ],
-  "description": "Soundworks application template.",
+  "description": "soundworks application template.",
   "license": "BSD-3-Clause",
   "version": "2.2.0",
   "scripts": {
-    "clear": "node bin/runner --clear",
+    "clear": "echo \"todo\"",
     "help": "node bin/runner --help",
-    "minify": "node bin/runner --minify",
-    "start": "node bin/runner --start",
-    "transpile": "node bin/runner --transpile",
-    "watch": "node bin/runner --watch",
-    "watch:thing": "node bin/runner --watch-thing"
+    "minify": "for f in public/dist/js/*.min.js; do rm -f ${f}; done; for f in public/dist/js/*.js; do terser ${f} -o ${f//.js/.min.js}; done;",
+    "postinstall": "mkdir -p public/dist/vendors && cp -R node_modules/@webcomponents/webcomponentsjs public/dist/vendors/ && cp -R node_modules/livereload public/dist/vendors/ && npm run transpile",
+    "start": "node dist/server/index.js",
+    "transpile": "rollup -c",
+    "watch:transpile": "rollup -c --watch.chokidar",
+    "watch:process": "node .bin/watch-process",
+    "watch": "concurrently --names \"TRANSPILER,PROCESS\" \"npm run watch:transpile\" \"npm run watch:process server\""
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/collective-soundworks/soundworks-template"
   },
-  "engines": {
-    "node": ">=8"
-  },
   "dependencies": {
-    "@babel/runtime": "^7.4.0",
-    "@ircam/basic-controllers": "^1.0.4",
-    "babel-runtime": "^6.6.1",
-    "debug": "^4.1.1",
-    "lit-html": "^1.0.0",
-    "node-libpd": "^0.2.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/polyfill": "^7.4.4",
+    "@webcomponents/webcomponentsjs": "^2.2.10",
+    "lit-element": "^2.0.1",
+    "livereload": "^0.8.0",
     "soundworks": "^2.2.1",
-    "source-map-support": "^0.5.6",
-    "waves-masters": "^1.1.1"
+    "source-map-support": "^0.5.12",
+    "waves-masters": "^1.2.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.0",
-    "@babel/plugin-transform-regenerator": "^7.4.0",
-    "@babel/plugin-transform-runtime": "^7.4.0",
-    "@babel/preset-env": "^7.4.1",
-    "babelify": "^10.0.0",
-    "browserify": "^16.2.2",
-    "browserify-incremental": "^3.1.1",
-    "chalk": "^2.4.1",
-    "fs-extra": "^7.0.1",
-    "klaw": "^3.0.0",
-    "lodash.debounce": "^4.0.8",
-    "node-sass": "^4.9.0",
-    "terminate": "^2.1.0",
-    "uglify-js": "^3.5.0",
-    "watch": "^1.0.1"
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@ircam/jsdoc-template": "^1.0.2",
+    "chokidar": "^3.0.0",
+    "concurrently": "^4.1.0",
+    "jsdoc": "^3.6.2",
+    "np": "^5.0.2",
+    "rollup": "^1.12.3",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.4.0",
+    "rollup-plugin-node-resolve": "^5.0.0",
+    "terminate": "^2.1.2",
+    "terser": "^4.0.0"
   }
 }

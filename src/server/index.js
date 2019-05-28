@@ -1,3 +1,4 @@
+import '@babel/polyfill';
 import 'source-map-support/register'; // enable sourcemaps in node
 import path from 'path';
 import * as soundworks from 'soundworks/server';
@@ -5,21 +6,28 @@ import PlayerExperience from './PlayerExperience';
 import ControllerExperience from './ControllerExperience';
 import ThingExperience from './ThingExperience';
 
-const cwd = process.cwd();
-const configName = process.env.ENV || 'default';
-const configPath = path.join(cwd, 'dist', 'shared', 'config', configName);
-let config = null;
+function getConfig(configName) {
+  const cwd = process.cwd();
+  const configPath = path.join(cwd, 'dist', 'shared', 'config', configName);
+  let config = null;
 
-// rely on node `require` as the path is dynamic
-try {
-  config = require(configPath).default;
-} catch(err) {
-  console.error(`Invalid ENV "${configName}", file "${configPath}.js" not found`);
-  process.exit(1);
+  try {
+    // rely on node `require` as the path is dynamic
+    // @todo - replace with dynamic import
+    config = require(configPath);
+  } catch(err) {
+    console.error(`Invalid ENV "${configName}", file "${configPath}.js" not found`);
+    process.exit(1);
+  }
+
+  return config;
 }
 
+const configName = process.env.ENV || 'default';
+const config = getConfig(configName);
+// set NODE_ENV to the value defined in config file
 process.env.NODE_ENV = config.env;
-
+// if PORT is defined in command (aka allow `sudo PORT=80 node/dist/server/index.js`)
 if (process.env.PORT) {
   config.port = process.env.PORT;
 }

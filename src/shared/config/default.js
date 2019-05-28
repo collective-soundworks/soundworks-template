@@ -50,7 +50,7 @@ export default {
   publicDirectory: path.join(cwd, 'public'),
 
   // directory where the server templating system looks for the `ejs` templates
-  templateDirectory: path.join(cwd, 'dist', 'server', 'tmpl'),
+  templateDirectory: path.join(cwd, 'src', 'server', 'tmpl'),
 
   // socket.io configuration
   websockets: {
