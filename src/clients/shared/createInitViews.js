@@ -31,7 +31,6 @@ function createInitViews(serviceManager, globals = {}, $container = document.bod
   // observe `serviceManager` state, the manager triggers an event each time a
   // service that is between the start and ready state updates its internal state
   const unsubscribe = serviceManager.observe(() => {
-    // console.log('update', switchServices(serviceManager, globals));
     render(switchServices(serviceManager, globals), $container);
   });
   // stop listening when ready

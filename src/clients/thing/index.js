@@ -1,19 +1,8 @@
-// npm WARN deprecated @babel/polyfill@7.4.4: As of Babel 7.4.0, this
-// npm WARN deprecated package has been deprecated in favor of directly
-// npm WARN deprecated including core-js/stable (to polyfill ECMAScript
-// npm WARN deprecated features) and regenerator-runtime/runtime
-// npm WARN deprecated (needed to use transpiled generator functions):
-// npm WARN deprecated
-// npm WARN deprecated   > import "core-js/stable";
-// npm WARN deprecated   > import "regenerator-runtime/runtime";
 import '@babel/polyfill';
 import 'source-map-support/register'; // enable sourcemaps in node
 
 import path from 'path';
-import pd from 'node-libpd';
 import soundworks from '@soundworks/core/client';
-import syncService from '@soundworks/service-sync/client';
-import liveCodingService from '@soundworks/service-live-coding/client';
 import ThingExperience from './ThingExperience';
 
 // ----------------------------------------------------

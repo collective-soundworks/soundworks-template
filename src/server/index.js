@@ -1,61 +1,52 @@
 import '@babel/polyfill';
-import 'source-map-support/register'; // enable sourcemaps in node
+import 'source-map-support/register';
 
-import path from 'path';
 import soundworks from '@soundworks/core/server';
-
+import fs from 'fs';
+import JSON5 from 'json5';
+import path from 'path';
 import PlayerExperience from './PlayerExperience';
 
-// import servicePlatform from '@soundworks/service-platform/server';
-// import serviceLiveCoding from '@soundworks/service-live-coding/server';
-// import serviceSync from '@soundworks/service-sync/server';
+const ENV = process.env.ENV || 'default';
+let envConfig = null;
+let appConfig = null;
+// parse env config
+try {
+  const envConfigPath = path.join('config', 'env', `${ENV}.json`);
+  envConfig = JSON5.parse(fs.readFileSync(envConfigPath, 'utf-8'));
 
-// import ControllerExperience from './ControllerExperience';
-// import ThingExperience from './ThingExperience';
-
-// import * as schemas from './schemas/index';
-
-// soundworks.registerService(servicePlatform);
-// soundworks.registerService(serviceSync);
-// soundworks.registerService(serviceLiveCoding);
-
-function getConfig(configName) {
-  const cwd = process.cwd();
-  const configPath = path.join(cwd, 'dist', 'config', configName);
-  let config = null;
-
-  try {
-    // rely on node `require` as the path is dynamic
-    // @todo - replace with dynamic import
-    config = require(configPath);
-  } catch(err) {
-    console.error(`Invalid ENV "${configName}", file "${configPath}.js" not found`);
-    process.exit(1);
+  if (process.env.PORT) {
+    envConfig.port = process.env.PORT;
   }
-
-  return config;
+} catch(err) {
+  console.log(`Invalid "${ENV}" env config file`);
+  process.exit(0);
+}
+// parse app config
+try {
+  const appConfigPath = path.join('config', 'application.json');
+  appConfig = JSON5.parse(fs.readFileSync(appConfigPath, 'utf-8'));
+} catch(err) {
+  console.log(`Invalid app config file`);
+  process.exit(0);
 }
 
-const configName = process.env.ENV || 'default';
-const config = getConfig(configName);
-// set NODE_ENV to the value defined in config file
-process.env.NODE_ENV = config.env;
-// if PORT is defined in command (aka allow `sudo PORT=80 node/dist/server/index.js`)
-if (process.env.PORT) {
-  config.port = process.env.PORT;
-}
+console.log(`
+-------------------------------------------------------
+- running "${appConfig.name}" in "${ENV}" environment -
+-------------------------------------------------------
+`);
 
-// launch application
 (async function launch() {
   try {
-    await soundworks.init(config, (clientType, config, httpRequest) => {
+    await soundworks.init(envConfig, (clientType, config, httpRequest) => {
       return {
         clientType: clientType,
-        env: config.env,
-        appName: config.appName,
-        websockets: config.websockets,
-        defaultType: config.defaultClient,
-        assetsDomain: config.assetsDomain,
+        appName: appConfig.name,
+        env: envConfig.env,
+        websockets: envConfig.websockets,
+        defaultType: envConfig.defaultClient,
+        assetsDomain: envConfig.assetsDomain,
       };
     });
 

@@ -1,10 +1,4 @@
-import path from 'path';
-const cwd = process.cwd();
-
-// @todo - move to JSON file
-
-// configuration of the application
-export default {
+{
   // name of the environnement (development | production)
   env: 'development',
 
@@ -45,17 +39,17 @@ export default {
   // --------------------------------------------------------
   // name of the default client type, i.e. the client that can access the
   // application at its root URL
-  defaultClient: 'controller',
+  defaultClient: 'player',
 
   // --------------------------------------------------------
   // @todo - remove that, go in index.js `setPublicDirectory`
   // --------------------------------------------------------
   // location of the public directory (accessible through http(s) requests)
-  publicDirectory: path.join(cwd, 'public'),
+  publicDirectory: 'public',
 
   // --------------------------------------------------------
   // @todo - remove that, go in index.js `setHtmlTemplateDirectory`
   // --------------------------------------------------------
   // directory where the server templating system looks for the `ejs` templates
-  templateDirectory: path.join(cwd, 'src', 'server', 'tmpl'),
+  templateDirectory: 'dist/server/tmpl',
 }
