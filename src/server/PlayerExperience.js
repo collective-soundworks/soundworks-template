@@ -1,28 +1,18 @@
-import { Experience } from 'soundworks/server';
+import soundworks from '@soundworks/core/server';
 
-class PlayerExperience extends Experience {
-  constructor(clientType) {
-    super(clientType);
-
-    this.checkin = this.require('checkin');
-    this.sharedParams = this.require('shared-params');
-    this.audioBufferManager = this.require('audio-buffer-manager');
+class PlayerExperience extends soundworks.Experience {
+  constructor(soundworks, clientTypes, options = {}) {
+    super(soundworks, clientTypes);
   }
 
-  start() {
-
-  }
+  start() {}
 
   enter(client) {
-    super.enter(client);
-
-    this.sharedParams.update('numPlayers', this.clients.length);
+    console.log('client enter', client.id);
   }
 
   exit(client) {
-    super.exit(client);
-
-    this.sharedParams.update('numPlayers', this.clients.length);
+    console.log('client exit', client.id);
   }
 }
 

@@ -1,7 +1,6 @@
 # transpiled files and dependencies
 /node_modules
 /public/dist
-/public/css
 /dist
 
 # ignore all config except default
@@ -9,11 +8,9 @@
 !/src/server/config/default.js
 
 # application instance specific
-/logs
 .soundworks
-/bin/.browserify-cache.json
 
-# ignore junk files
+# junk files
 package-lock.json
 .DS_Store
 Thumbs.db

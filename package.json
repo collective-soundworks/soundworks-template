@@ -1,46 +1,41 @@
 {
   "name": "soundworks-template",
   "authors": [
-    "Benjamin Matuszewski",
-    "Sébastien Robaszkiewicz",
-    "Norbert Schnell"
+    "Benjamin Matuszewski"
   ],
-  "description": "soundworks application template.",
+  "description": "soundworks application template",
   "license": "BSD-3-Clause",
   "version": "2.2.0",
   "scripts": {
-    "clear": "echo \"todo\"",
+    "clean": "rm -Rf dist && rm -Rf public/dist/js && rm -Rf logs",
     "help": "node bin/runner --help",
     "minify": "for f in public/dist/js/*.min.js; do rm -f ${f}; done; for f in public/dist/js/*.js; do terser ${f} -o ${f//.js/.min.js}; done;",
-    "postinstall": "mkdir -p public/dist/vendors && cp -R node_modules/@webcomponents/webcomponentsjs public/dist/vendors/ && cp -R node_modules/livereload public/dist/vendors/ && npm run transpile",
     "start": "node dist/server/index.js",
-    "transpile": "rollup -c",
-    "watch:transpile": "rollup -c --watch.chokidar",
+    "transpile": "node .bin/build-application",
+    "watch": "concurrently \"npm run watch:transpile\" \"npm run watch:process server\"",
     "watch:process": "node .bin/watch-process",
-    "watch": "concurrently --names \"TRANSPILER,PROCESS\" \"npm run watch:transpile\" \"npm run watch:process server\""
+    "watch:transpile": "node .bin/build-application --watch"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/collective-soundworks/soundworks-template"
   },
   "dependencies": {
-    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/polyfill": "^7.4.4",
-    "@webcomponents/webcomponentsjs": "^2.2.10",
-    "lit-element": "^2.0.1",
-    "livereload": "^0.8.0",
-    "soundworks": "^2.2.1",
-    "source-map-support": "^0.5.12",
-    "waves-masters": "^1.2.1"
+    "lit-html": "^1.1.2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.5.5",
     "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
     "@babel/preset-env": "^7.4.5",
     "@ircam/jsdoc-template": "^1.0.2",
+    "chalk": "^2.4.2",
     "chokidar": "^3.0.0",
     "concurrently": "^4.1.0",
+    "fs-extra": "^8.1.0",
     "jsdoc": "^3.6.2",
     "np": "^5.0.2",
     "rollup": "^1.12.3",
@@ -50,6 +45,7 @@
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-globals": "^1.4.0",
     "rollup-plugin-node-resolve": "^5.0.0",
+    "rollup-plugin-sourcemaps": "^0.4.2",
     "terminate": "^2.1.2",
     "terser": "^4.0.0"
   }

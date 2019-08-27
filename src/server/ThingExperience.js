@@ -1,29 +1,24 @@
-import { Experience } from 'soundworks/server';
+import soundworks from '@soundworks/core/server';
 
+class ControllerExperience extends soundworks.Experience {
+  constructor(soundworks, clientTypes, auditState, options = {}) {
+    super(soundworks, clientTypes);
 
-class ThingExperience extends Experience {
-  constructor(clientTypes) {
-    super(clientTypes);
-
-    this.sharedParams = this.require('shared-params');
+    this.auditState = auditState;
     this.sync = this.require('sync');
+    this.liveCoding = this.require('live-coding');
   }
 
-  start() {
-
-  }
+  start() {}
 
   enter(client) {
-    super.enter(client);
-
-    this.sharedParams.update('numThings', this.clients.length);
+    console.log('thing entered', this.clients.size);
+    this.auditState.set({ 'numThings': this.clients.size });
   }
 
   exit(client) {
-    super.exit(client);
-
-    this.sharedParams.update('numThings', this.clients.length);
+    this.auditState.set({ 'numThings': this.clients.size });
   }
 }
 
-export default ThingExperience;
+export default ControllerExperience;

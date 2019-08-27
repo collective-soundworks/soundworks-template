@@ -42,10 +42,10 @@ const stop = function(src) {
 const processName = process.argv[2];
 
 if (!processName) {
-  throw new Error('command watch:process requires an argument (ex: `npm run watch:process thing`')
+  throw new Error('command watch:process requires an argument (ex: `npm run watch:process thing`)')
 }
 
-const processPath = path.join('dist', processName, 'index.js');
+const processPath = path.join('dist', processName);
 
 if (!fs.existsSync(processPath)) {
   throw new Error(`Cannot start process "${processName}": file "${processPath}" does not exists`);
@@ -55,22 +55,27 @@ const targets = [
   processPath,
 ]
 
+let ignoreInitial = false;
+
 if (processName === 'server') {
   // add html template
   targets.push(path.join('src', 'server', 'tmpl'));
+  ignoreInitial = true;
 }
 
 const watcher = chokidar.watch(targets, {
   persistent: true,
-  ignoreInitial: true,
+  ignoreInitial,
 });
 
 let configAdded = false;
 
+console.log('watching', processPath);
 // restart to principal target (processPath)
 watcher
   .on('add', filename => start(processPath))
   .on('change', filename => {
+    // console.log('> changed:', filename);
     start(processPath);
     // prevent to start server twice on startup,
     // aka when server and config files are transpiled

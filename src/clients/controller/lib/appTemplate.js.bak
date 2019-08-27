@@ -1,0 +1,105 @@
+import { html } from 'lit-element';
+import createStateView from './lib/createStateView'
+
+const auditTemplate = (values, eventListeners) => {
+  return html`
+    <p>#things: ${values.numThings}</p>
+  `;
+}
+
+const globalsTemplate = (values, eventListeners) => {
+  return html`
+    <h1>Globals</h1>
+
+    <label>master
+      <input
+        type="range" min="-60" max="6"
+        .value="${values.master}"
+        @input=${eventListeners.updateMaster}
+      />
+      <span>${values.master} dB</span>
+    </label>
+    <label>basePeriod
+      <input
+        type="number"
+        .value="${values.basePeriod}"
+        @change=${eventListeners.updateBasePeriod}
+      />
+    </label>
+  `;
+};
+
+const thingsSynthTemplate = (values, eventListeners) => {
+  const synths = [];
+
+  for (let nodeId in values) {
+    const nodeValues = values[nodeId];
+
+    const tmpl = html`
+      <p>${nodeId}</p>
+      <button @click="${eventListeners.startSynth}" data-node-id="${nodeId}">start</button>
+      <button @click="${eventListeners.stopSynth}" data-node-id="${nodeId}">stop</button>
+
+      <select @change="${eventListeners.setBuffer}" data-node-id="${nodeId}">
+        <option ?selected="${nodeValues.buffer === 'sine'}" value="sine">sine</option>
+        <option ?selected="${nodeValues.buffer === 'noise'}" value="noise">noise</option>
+        <option ?selected="${nodeValues.buffer === 'sawtooth'}" value="sawtooth">sawtooth</option>
+        <option ?selected="${nodeValues.buffer === 'square'}" value="square">square</option>
+        <option ?selected="${nodeValues.buffer === 'bol-tibetain'}" value="bol-tibetain">bol-tibetain</option>
+        <option ?selected="${nodeValues.buffer === 'cloche-japonaise'}" value="cloche-japonaise">cloche-japonaise</option>
+        <option ?selected="${nodeValues.buffer === 'cloches-tibetaines'}" value="cloches-tibetaines">cloches-tibetaines</option>
+        <option ?selected="${nodeValues.buffer === 'noise-djembe'}" value="noise-djembe">noise-djembe</option>
+        <option ?selected="${nodeValues.buffer === 'tambour-basque'}" value="tambour-basque">tambour-basque</option>
+      </select>
+
+      <select @change="${eventListeners.setAuto}" data-node-id="${nodeId}">
+        <option ?selected="${!nodeValues.auto}" value="0">auto disabled</option>
+        <option ?selected="${nodeValues.auto}" value="1">auto enabled</option>
+      <select>
+
+      <select @change="${eventListeners.setTest}" data-node-id="${nodeId}">
+        <option ?selected="${!nodeValues.test}" value="0">test disabled</option>
+        <option ?selected="${nodeValues.test}" value="1">test enabled</option>
+      <select>
+
+      <br />
+      <p>seeLight: ${nodeValues.seeLight ? 'true' : 'false' }</p>
+    `;
+
+    synths.push(tmpl);
+  }
+
+  return synths;
+}
+
+const scriptsTemplate = (values, eventListeners) => {
+  const scripts = [];
+
+  for (let name in values) {
+    scripts.push(html`
+      <h4>> script: ${name}</h4>
+      <div class="script-${name}"></div>
+      <button
+        class="update"
+        data-target="${name}"
+        @click="${eventListeners.updateScript}">update
+      </button>
+    `);
+  }
+
+  return scripts;
+}
+
+const appTemplate = (values, eventListeners) => {
+  return html`
+    <div id="audit-state">${auditTemplate(values.audit, eventListeners)}</div>
+    <div id="globals-state">${globalsTemplate(values.globals, eventListeners)}</div>
+    <div id="thing-synths">${thingsSynthTemplate(values.thingSynths, eventListeners)}</div>
+    ${ Object.keys(values)
+      ? html`<div id="scripts">${scriptsTemplate(values.scripts, eventListeners)}</div>`
+      : ''
+    }
+  `;
+}
+
+export default appTemplate;

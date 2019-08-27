@@ -1,22 +1,17 @@
-import { Experience } from 'soundworks/server';
+import soundworks from '@soundworks/core/server';
 
-class ControllerExperience extends Experience {
-  constructor(clientTypes, options = {}) {
-    super(clientTypes);
+class ControllerExperience extends soundworks.Experience {
+  constructor(soundworks, clientTypes, options = {}) {
+    super(soundworks, clientTypes);
 
-    this.sharedParams = this.require('shared-params');
-    this.errorReporter = this.require('error-reporter');
-
-    if (options.auth) {
-      this.auth = this.require('auth');
-    }
+    this.liveCoding = this.require('live-coding');
   }
 
-  start() {
-    this.errorReporter.addListener('error', (file, line, col, msg, userAgent) => {
-      this.broadcast('controller', null, 'log', 'error', file, line, col, msg, userAgent);
-    });
-  }
+  start() {}
+
+  enter(client) {}
+
+  exit(client) {}
 }
 
 export default ControllerExperience;
