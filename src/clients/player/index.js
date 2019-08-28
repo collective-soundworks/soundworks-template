@@ -1,23 +1,26 @@
 import '@babel/polyfill';
 import soundworks from '@soundworks/core/client';
+import delayServiceFactory from '@soundworks/service-delay/client';
 import PlayerExperience from './PlayerExperience';
 
 async function init() {
   try {
-    // remove initial loader
     const config = window.soundworksConfig;
-    // initialize sockets
+
+    soundworks.registerService('delay-1', delayServiceFactory);
+    soundworks.registerService('delay-2', delayServiceFactory);
+
     await soundworks.init(config);
-    // create client side (player) experience and start the client
+
     const controller = new PlayerExperience(soundworks, config);
 
     document.body.classList.remove('loading');
-    // start everything
+
     soundworks.start().then(() => {
       controller.start();
     });
 
-    // ...
+    // QoS
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         window.location.reload(true);

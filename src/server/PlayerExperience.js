@@ -3,16 +3,21 @@ import soundworks from '@soundworks/core/server';
 class PlayerExperience extends soundworks.Experience {
   constructor(soundworks, clientTypes, options = {}) {
     super(soundworks, clientTypes);
+
+    this.delay1 = this.require('delay-1');
+    this.delay2 = this.require('delay-2', {}, ['delay-1']);
   }
 
-  start() {}
+  start() {
+    super.start();
+  }
 
   enter(client) {
-    console.log('client enter', client.id);
+    super.enter(client);
   }
 
   exit(client) {
-    console.log('client exit', client.id);
+    super.exit(client);
   }
 }
 

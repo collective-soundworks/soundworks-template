@@ -24,9 +24,9 @@
     </script>
 
     <% if (data.env === 'production') { %>
-    <script src="<%= data.assetsDomain %>dist/js/<%= data.clientType %>.min.js"></script>
+    <script src="<%= data.assetsDomain %>build/<%= data.clientType %>.min.js"></script>
     <% } else { %>
-    <script src="<%= data.assetsDomain %>dist/js/<%= data.clientType %>.js"></script>
+    <script src="<%= data.assetsDomain %>build/<%= data.clientType %>.js"></script>
     <% } %>
 
     <% if (data.env === 'production' && data.gaId) { %>

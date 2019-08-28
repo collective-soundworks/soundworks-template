@@ -6,19 +6,22 @@ class PlayerExperience extends soundworks.Experience {
   constructor(soudnworks, options = {}) {
     super(soudnworks);
 
+    this.delay1 = this.require('delay-1');
+    this.delay2 = this.require('delay-2', {}, ['delay-1']);
+
     this.$container = document.querySelector('#container');
+
+    this.renderApp('Initializing...');
   }
 
-  async start(_client) {
+  start() {
     super.start();
 
-    console.log('Experience started');
-    // init app with current values
-    this.renderApp();
+    this.renderApp('Hello');
   }
 
-  renderApp() {
-    render(html`<div><h3>ok</h3></div>`, this.$container);
+  renderApp(msg) {
+    render(html`<div><h3>${msg}</h3></div>`, this.$container);
   }
 }
 

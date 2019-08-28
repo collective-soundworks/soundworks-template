@@ -2,34 +2,15 @@ import '@babel/polyfill';
 import 'source-map-support/register';
 
 import soundworks from '@soundworks/core/server';
-import fs from 'fs';
-import JSON5 from 'json5';
-import path from 'path';
+import serveStatic from 'serve-static';
+import getConfig from './utils/getConfig';
+
+import delayServiceFactory from '@soundworks/service-delay/server';
+// import delayService2 from '@soundworks/service-delay/server';
 import PlayerExperience from './PlayerExperience';
 
 const ENV = process.env.ENV || 'default';
-let envConfig = null;
-let appConfig = null;
-// parse env config
-try {
-  const envConfigPath = path.join('config', 'env', `${ENV}.json`);
-  envConfig = JSON5.parse(fs.readFileSync(envConfigPath, 'utf-8'));
-
-  if (process.env.PORT) {
-    envConfig.port = process.env.PORT;
-  }
-} catch(err) {
-  console.log(`Invalid "${ENV}" env config file`);
-  process.exit(0);
-}
-// parse app config
-try {
-  const appConfigPath = path.join('config', 'application.json');
-  appConfig = JSON5.parse(fs.readFileSync(appConfigPath, 'utf-8'));
-} catch(err) {
-  console.log(`Invalid app config file`);
-  process.exit(0);
-}
+const { envConfig, appConfig } = getConfig(ENV);
 
 console.log(`
 -------------------------------------------------------
@@ -39,6 +20,10 @@ console.log(`
 
 (async function launch() {
   try {
+    // const soundworks = new Soundworks();
+    soundworks.registerService('delay-1', delayServiceFactory);
+    soundworks.registerService('delay-2', delayServiceFactory);
+
     await soundworks.init(envConfig, (clientType, config, httpRequest) => {
       return {
         clientType: clientType,
@@ -54,15 +39,19 @@ console.log(`
     //   soundworks.stateManager.registerSchema(name, schemas[name]);
     // }
 
-    const player = new PlayerExperience(soundworks, 'player');
+    const playerExperience = new PlayerExperience(soundworks, 'player');
     // const globalsState = soundworks.stateManager.create('globals');
     // const auditState = soundworks.stateManager.create('audit');
     // const controller = new ControllerExperience(soundworks, 'controller');
     // const thing = new ThingExperience(soundworks, 'thing', auditState);
 
+    // static files
+    await soundworks.server.router.use(serveStatic('public'));
+    await soundworks.server.router.use('build', serveStatic('.build/public'));
+
     await soundworks.start();
-    // controller.start();
-    // thing.start();
+    playerExperience.start(); // -> called automatically when
+
   } catch (err) {
     console.error(err.stack);
   }
