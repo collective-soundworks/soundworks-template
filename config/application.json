@@ -1,7 +1,6 @@
 {
   "name": "Application Name",
 
-  // testsetets
   "clients": {
     "player": {
       "target": "browser",

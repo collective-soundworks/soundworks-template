@@ -6,7 +6,6 @@ import serveStatic from 'serve-static';
 import getConfig from './utils/getConfig';
 
 import delayServiceFactory from '@soundworks/service-delay/server';
-// import delayService2 from '@soundworks/service-delay/server';
 import PlayerExperience from './PlayerExperience';
 
 const ENV = process.env.ENV || 'default';
@@ -21,8 +20,8 @@ console.log(`
 (async function launch() {
   try {
     // const soundworks = new Soundworks();
-    soundworks.registerService('delay-1', delayServiceFactory);
-    soundworks.registerService('delay-2', delayServiceFactory);
+    soundworks.registerService('delay-1', delayServiceFactory, { delayTime: 1 }, []);
+    soundworks.registerService('delay-2', delayServiceFactory, { delayTime: 2 }, ['delay-1']);
 
     await soundworks.init(envConfig, (clientType, config, httpRequest) => {
       return {
@@ -39,7 +38,6 @@ console.log(`
     //   soundworks.stateManager.registerSchema(name, schemas[name]);
     // }
 
-    const playerExperience = new PlayerExperience(soundworks, 'player');
     // const globalsState = soundworks.stateManager.create('globals');
     // const auditState = soundworks.stateManager.create('audit');
     // const controller = new ControllerExperience(soundworks, 'controller');
@@ -48,6 +46,9 @@ console.log(`
     // static files
     await soundworks.server.router.use(serveStatic('public'));
     await soundworks.server.router.use('build', serveStatic('.build/public'));
+
+    const playerExperience = new PlayerExperience(soundworks, 'player');
+    const test = new PlayerExperience(soundworks, 'controller');
 
     await soundworks.start();
     playerExperience.start(); // -> called automatically when

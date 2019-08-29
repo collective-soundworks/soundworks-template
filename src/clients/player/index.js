@@ -7,8 +7,8 @@ async function init() {
   try {
     const config = window.soundworksConfig;
 
-    soundworks.registerService('delay-1', delayServiceFactory);
-    soundworks.registerService('delay-2', delayServiceFactory);
+    soundworks.registerService('delay-1', delayServiceFactory, { delayTime: 1 }, []);
+    soundworks.registerService('delay-2', delayServiceFactory, { delayTime: 2 }, ['delay-1']);
 
     await soundworks.init(config);
 

@@ -5,7 +5,7 @@ class PlayerExperience extends soundworks.Experience {
     super(soundworks, clientTypes);
 
     this.delay1 = this.require('delay-1');
-    this.delay2 = this.require('delay-2', {}, ['delay-1']);
+    this.delay2 = this.require('delay-2');
   }
 
   start() {
