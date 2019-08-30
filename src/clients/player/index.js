@@ -5,29 +5,22 @@ import PlayerExperience from './PlayerExperience';
 
 async function init() {
   try {
+    const client = new soundworks.Client();
+
+    client.registerService('delay-1', delayServiceFactory, { delayTime: 1 }, []);
+    // application.registerService('delay-2', delayServiceFactory, { delayTime: 2 }, ['delay-1']);
+
     const config = window.soundworksConfig;
+    await client.init(config);
 
-    soundworks.registerService('delay-1', delayServiceFactory, { delayTime: 1 }, []);
-    soundworks.registerService('delay-2', delayServiceFactory, { delayTime: 2 }, ['delay-1']);
-
-    await soundworks.init(config);
-
-    const controller = new PlayerExperience(soundworks, config);
+    const playerExperience = new PlayerExperience(client, config);
 
     document.body.classList.remove('loading');
 
-    soundworks.start().then(() => {
-      controller.start();
-    });
+    await client.start()
+    playerExperience.start();
 
-    // QoS
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        window.location.reload(true);
-      }
-    }, false);
-
-    soundworks.client.socket.addListener('close', () => {
+    client.socket.addListener('close', () => {
       setTimeout(() => window.location.reload(true), 2000);
     });
   } catch(err) {
@@ -35,4 +28,14 @@ async function init() {
   }
 }
 
-window.addEventListener('load', init);
+window.addEventListener('load', () => {
+  // for (let i = 0; i < 100; i++) { init(); }
+  init();
+});
+
+// QoS
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    window.location.reload(true);
+  }
+}, false);

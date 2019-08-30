@@ -1,8 +1,8 @@
-import soundworks from '@soundworks/core/server';
+import { Experience } from '@soundworks/core/server';
 
-class PlayerExperience extends soundworks.Experience {
-  constructor(soundworks, clientTypes, options = {}) {
-    super(soundworks, clientTypes);
+class PlayerExperience extends Experience {
+  constructor(server, clientTypes, options = {}) {
+    super(server, clientTypes);
 
     this.delay1 = this.require('delay-1');
     this.delay2 = this.require('delay-2');

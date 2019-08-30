@@ -1,7 +1,7 @@
 import '@babel/polyfill';
 import 'source-map-support/register';
 
-import soundworks from '@soundworks/core/server';
+import * as soundworks from '@soundworks/core/server';
 import serveStatic from 'serve-static';
 import getConfig from './utils/getConfig';
 
@@ -19,11 +19,12 @@ console.log(`
 
 (async function launch() {
   try {
+    const server = new soundworks.Server();
     // const soundworks = new Soundworks();
-    soundworks.registerService('delay-1', delayServiceFactory, { delayTime: 1 }, []);
-    soundworks.registerService('delay-2', delayServiceFactory, { delayTime: 2 }, ['delay-1']);
+    server.registerService('delay-1', delayServiceFactory, { delayTime: 1 }, []);
+    server.registerService('delay-2', delayServiceFactory, { delayTime: 2 }, ['delay-1']);
 
-    await soundworks.init(envConfig, (clientType, config, httpRequest) => {
+    await server.init(envConfig, (clientType, config, httpRequest) => {
       return {
         clientType: clientType,
         appName: appConfig.name,
@@ -35,23 +36,22 @@ console.log(`
     });
 
     // for (let name in schemas) {
-    //   soundworks.stateManager.registerSchema(name, schemas[name]);
+    //   server.stateManager.registerSchema(name, schemas[name]);
     // }
 
-    // const globalsState = soundworks.stateManager.create('globals');
-    // const auditState = soundworks.stateManager.create('audit');
-    // const controller = new ControllerExperience(soundworks, 'controller');
-    // const thing = new ThingExperience(soundworks, 'thing', auditState);
+    // const globalsState = server.stateManager.create('globals');
+    // const auditState = server.stateManager.create('audit');
+    // const controller = new ControllerExperience(server, 'controller');
+    // const thing = new ThingExperience(server, 'thing', auditState);
 
     // static files
-    await soundworks.server.router.use(serveStatic('public'));
-    await soundworks.server.router.use('build', serveStatic('.build/public'));
+    await server.router.use(serveStatic('public'));
+    await server.router.use('build', serveStatic('.build/public'));
 
-    const playerExperience = new PlayerExperience(soundworks, 'player');
-    const test = new PlayerExperience(soundworks, 'controller');
+    const playerExperience = new PlayerExperience(server, 'player');
 
-    await soundworks.start();
-    playerExperience.start(); // -> called automatically when
+    await server.start();
+    playerExperience.start();
 
   } catch (err) {
     console.error(err.stack);

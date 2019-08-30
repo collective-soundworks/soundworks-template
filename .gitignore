@@ -1,14 +1,12 @@
 # transpiled files and dependencies
 /node_modules
-/public/dist
-/dist
 
 # ignore all config except default
-/src/server/config/*
-!/src/server/config/default.js
+/config/env/*
+!/config/env/default.js
 
 # application instance specific
-.soundworks
+.db
 .build
 
 # junk files
