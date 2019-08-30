@@ -6,8 +6,14 @@
       "target": "browser",
       "default": true
     },
-    // "thing": {
-    //   "target": "node"
-    // }
-  }
+    "controller": {
+      "target": "browser",
+      // "default": true
+    },
+    "thing": {
+      "target": "node",
+    }
+  },
+
+  "htmlTemplateDirectory": ".build/server/tmpl",
 }

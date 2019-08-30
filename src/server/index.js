@@ -2,19 +2,20 @@ import '@babel/polyfill';
 import 'source-map-support/register';
 
 import * as soundworks from '@soundworks/core/server';
-import serveStatic from 'serve-static';
 import getConfig from './utils/getConfig';
+import path from 'path';
+import serveStatic from 'serve-static';
 
 import delayServiceFactory from '@soundworks/service-delay/server';
 import PlayerExperience from './PlayerExperience';
 
 const ENV = process.env.ENV || 'default';
-const { envConfig, appConfig } = getConfig(ENV);
+const config = getConfig(ENV);
 
 console.log(`
--------------------------------------------------------
-- running "${appConfig.name}" in "${ENV}" environment -
--------------------------------------------------------
+--------------------------------------------------------
+- running "${config.app.name}" in "${ENV}" environment -
+--------------------------------------------------------
 `);
 
 (async function launch() {
@@ -24,14 +25,14 @@ console.log(`
     server.registerService('delay-1', delayServiceFactory, { delayTime: 1 }, []);
     server.registerService('delay-2', delayServiceFactory, { delayTime: 2 }, ['delay-1']);
 
-    await server.init(envConfig, (clientType, config, httpRequest) => {
+    await server.init(config, (clientType, config, httpRequest) => {
       return {
         clientType: clientType,
-        appName: appConfig.name,
-        env: envConfig.env,
-        websockets: envConfig.websockets,
-        defaultType: envConfig.defaultClient,
-        assetsDomain: envConfig.assetsDomain,
+        appName: config.app.name,
+        env: config.env.env,
+        websockets: config.env.websockets,
+        assetsDomain: config.env.assetsDomain,
+        // services: config.services,
       };
     });
 
@@ -46,7 +47,7 @@ console.log(`
 
     // static files
     await server.router.use(serveStatic('public'));
-    await server.router.use('build', serveStatic('.build/public'));
+    await server.router.use('build', serveStatic(path.join('.build', 'public')));
 
     const playerExperience = new PlayerExperience(server, 'player');
 

@@ -33,18 +33,18 @@ npm run start
 ## Files structure
 
 The template consists of the following files and directories:
-* `dist` - transpiled version of the server and node clients
+* `config` - config files written using JSON5
+  + `application.json` - application config file
+  + `env` - folder
 * `public` - public directory, accessible through http
-  + `dist` - transpiled version of the browsers clients
 * `src` - javascript sources
-  + `clients` - sources of every clients,  
+  + `clients` - sources of every clients (browser or node),  
     each folder should be dedicated to a specific client, for example:
     - `player`
     - `controller`
     - `...`
   + `server` - sources of the server
   + `config` - environnement config files
-* `application.json` - application config file
 
 _@important - this structure is required by the helper scripts, modify at your own risks._
 

@@ -5,6 +5,7 @@ import path from 'path';
 function getConfig(ENV) {
   let envConfig = null;
   let appConfig = null;
+  let servicesConfig = null;
   // parse env config
   try {
     const envConfigPath = path.join('config', 'env', `${ENV}.json`);
@@ -26,7 +27,16 @@ function getConfig(ENV) {
     process.exit(0);
   }
 
-  return { envConfig, appConfig };
+  // parse services config
+  try {
+    const servicesConfigPath = path.join('config', 'services.json');
+    servicesConfig = JSON5.parse(fs.readFileSync(servicesConfigPath, 'utf-8'));
+  } catch(err) {
+    console.log(`Invalid services config file`);
+    process.exit(0);
+  }
+
+  return { env: envConfig, app: appConfig, services: servicesConfig };
 }
 
 export default getConfig;

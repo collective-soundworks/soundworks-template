@@ -1,19 +1,25 @@
 {
   // name of the environnement (development | production)
-  env: 'development',
+  "type": "development",
 
-  // ip of the server, mandatory for `things` clients
-  ip: '127.0.0.1',
+  // port on which the server will listen
+  // - 80 is default http port
+  // - 443 is the default https port
+  // these two ports
+  "port": 8000,
 
-  port: 8000,
+  // domain
+  "assetsDomain": "",
 
-  assetsDomain: '',
+  // ip of the server,
+  // used by node clients to open the socket to the server
+  "serverIp": "10.0.0.1",
 
-    // websockets configuration
-  websockets: {
-    path: 'socket',
-    url: '',
-    pingInterval: 5000
+  // websockets configuration
+  "websockets": {
+    "path": "socket",
+    "url": "",
+    "pingInterval": 5000
   },
 
   // port used to open the http server, in production this value is typically 80
@@ -21,27 +27,13 @@
   // define if the HTTP server should be launched using secure connections.
   // For development purposes when set to `true` and no certificates are given
   // (cf. `httpsInfos`), a self-signed certificate is created.
-  useHttps: false,
+  "useHttps": false,
 
   // paths to the key and certificate to be used in order to launch the https
   // server. Both entries are required otherwise a self-signed certificate
   // is generated.
-  httpsInfos: {
-    key: null,
-    cert: null,
+  "httpsInfos": {
+    "key": null,
+    "cert": null,
   },
-
-
-  // --------------------------------------------------------
-  // @todo - move to `application.json`
-  // --------------------------------------------------------
-  // name of the default client type, i.e. the client that can access the
-  // application at its root URL
-  defaultClient: 'player',
-
-  // --------------------------------------------------------
-  // @todo - remove that, go in index.js `setHtmlTemplateDirectory`
-  // --------------------------------------------------------
-  // directory where the server templating system looks for the `ejs` templates
-  templateDirectory: '.build/server/tmpl',
 }
