@@ -32,7 +32,7 @@ npm run start
 
 ## Files structure
 
-The template consists of the following files and directories you should know about:
+The template consists of the following files and directories:
 * `dist` - transpiled version of the server and node clients
 * `public` - public directory, accessible through http
   + `dist` - transpiled version of the browsers clients
@@ -46,7 +46,7 @@ The template consists of the following files and directories you should know abo
   + `config` - environnement config files
 * `application.json` - application config file
 
-This structure is required by the helper scripts, modify at your own risks.
+_@important - this structure is required by the helper scripts, modify at your own risks._
 
 # License 
 
