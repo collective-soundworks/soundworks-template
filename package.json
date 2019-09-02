@@ -26,7 +26,8 @@
     "json5": "^2.1.0",
     "lit-html": "^1.1.2",
     "serve-static": "^1.14.1",
-    "strip-json-comments": "^3.0.1"
+    "strip-json-comments": "^3.0.1",
+    "template-literal": "^1.0.3"
   },
   "devDependencies": {
     "@soundworks/template-build": "^3.0.0-alpha.1"

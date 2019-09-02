@@ -29,8 +29,8 @@ async function init() {
 }
 
 window.addEventListener('load', () => {
-  // for (let i = 0; i < 100; i++) { init(); }
-  init();
+  for (let i = 0; i < 100; i++) { init(); }
+  // init();
 });
 
 // QoS
