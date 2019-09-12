@@ -4,8 +4,8 @@ class PlayerExperience extends Experience {
   constructor(server, clientTypes, options = {}) {
     super(server, clientTypes);
 
-    this.delay1 = this.require('delay-1');
-    this.delay2 = this.require('delay-2');
+    // this.delay1 = this.require('delay-1');
+    // this.delay2 = this.require('delay-2');
   }
 
   start() {

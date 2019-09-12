@@ -1,39 +1,29 @@
-import soundworks from '@soundworks/core/client';
+import { Experience } from '@soundworks/core/client';
 import { render, html } from 'lit-html';
 
+class PlayerExperience extends Experience {
+  constructor(client, config = {}, $container) {
+    super(client);
 
-class PlayerExperience extends soundworks.Experience {
-  constructor(application, options = {}) {
-    super(application);
+    this.config = config;
+    this.$container = $container;
 
-    this.application = application;
-
-    this.delay1 = this.require('delay-1');
-    // this.delay2 = this.require('delay-2');
-    const r = Math.floor(Math.random() * 256);
-    const g = Math.floor(Math.random() * 256);
-    const b = Math.floor(Math.random() * 256);
-    this.$root = document.querySelector('#container')
-    this.$container = document.createElement('div');
-    this.$container.style.width = '200px';
-    this.$container.style.height = '200px';
-    this.$container.style.float = 'left';
-    this.$container.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
-    this.$root.appendChild(this.$container);
-
-    this.renderApp('Initializing...');
+    // require services
   }
 
   start() {
     super.start();
 
-    this.renderApp(`Hello ${this.application.id}`);
+    this.renderApp(`Hello ${this.client.id}`);
   }
 
   renderApp(msg) {
     render(html`
-      <div>
-        <h3>${msg}</h3>
+      <div class="screen">
+        <section class="half-screen aligner">
+          <h1 class="title">${msg}</h1>
+        </section>
+        <section class="half-screen aligner"></section>
       </div>
     `, this.$container);
   }

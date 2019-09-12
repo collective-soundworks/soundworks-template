@@ -6,10 +6,10 @@
     <meta name="theme-color" content="#000000">
 
     <title>
-      ${d.appName} | ${d.clientType}
+      ${d.app.name} | ${d.clientType}
     </title>
 
-    <link rel="stylesheet" href="${d.assetsDomain}css/main.css">
+    <link rel="stylesheet" href="${d.env.assetsDomain}css/main.css">
   </head>
 
   <body class="loading">
@@ -21,8 +21,8 @@
 
     ${
       (d.env === 'production')
-        ? `<script src="${d.assetsDomain}build/${d.clientType}.min.js"></script>`
-        : `<script src="${d.assetsDomain}build/${d.clientType}.js"></script>`
+        ? `<script src="${d.env.assetsDomain}build/${d.clientType}.min.js"></script>`
+        : `<script src="${d.env.assetsDomain}build/${d.clientType}.js"></script>`
     }
   </body>
 </html>
