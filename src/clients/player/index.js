@@ -1,9 +1,8 @@
 import '@babel/polyfill';
+import '@wessberg/pointer-events';
 import { Client } from '@soundworks/core/client';
 // import services
 
-// default views for services
-import renderAppInitialization from '../views/renderAppInitialization';
 import PlayerExperience from './PlayerExperience';
 
 const config = window.soundworksConfig;
@@ -21,7 +20,7 @@ async function init($container, index) {
     // register services
     // -------------------------------------------------------------------
 
-    // here
+    // client.registerService('stuff', stuffFactory, {}, []);
 
     // -------------------------------------------------------------------
     // launch application
@@ -36,7 +35,6 @@ async function init($container, index) {
     }
     // remove loader and init default views for the services
     document.body.classList.remove('loading');
-    renderAppInitialization(client, config, $container);
 
     await client.start();
     playerExperience.start();

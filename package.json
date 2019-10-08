@@ -8,7 +8,8 @@
   "version": "3.0.0-alpha.0",
   "scripts": {
     "start": "node dist/server/index.js",
-    "watch": "npm run clean && npm run watch:build & npm run watch:process-inspect server",
+    "prewatch": "npm run clean",
+    "watch": "npm run watch:build & sleep 5 && npm run watch:process-inspect server",
     "build": "soundworks-template-build --build",
     "clean": "soundworks-template-build --clean",
     "minify": "soundworks-template-build --build && soundworks-template-build --minify",
@@ -23,7 +24,9 @@
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
     "@soundworks/core": "^3.0.0-alpha.1",
+    "@wessberg/pointer-events": "^1.0.9",
     "json5": "^2.1.0",
+    "lit-element": "^2.2.1",
     "lit-html": "^1.1.2",
     "serve-static": "^1.14.1",
     "template-literal": "^1.0.3"

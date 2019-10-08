@@ -8,7 +8,6 @@ import serveStatic from 'serve-static';
 import compile from 'template-literal';
 
 // import services
-
 import PlayerExperience from './PlayerExperience';
 
 const ENV = process.env.ENV || 'default';
@@ -28,7 +27,7 @@ console.log(`
     // register services
     // -------------------------------------------------------------------
 
-    // here
+
 
     // -------------------------------------------------------------------
     // launch application

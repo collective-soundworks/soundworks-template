@@ -1,18 +1,11 @@
 import { html, render } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined';
-
-function header(config) {
-  return html`
-    <div class="align-center">
-      <h1 class="title">${config.app.name}</h1>
-      <p class="author">${config.app.author ? `by ${config.app.author}` : ''}</p>
-    </div>
-  `;
-}
+import './elements/sw-app-header';
+import './elements/sw-service-position';
 
 // this one is very special
 const renderScreen = {
-  platform(platform, config) {
+  platform(platform, config, containerInfos) {
     const serviceState = platform.state.getValues();
 
     let msg;
@@ -38,7 +31,7 @@ const renderScreen = {
         @touchend="${ifDefined(bindListener)}"
       >
         <section class="half-screen aligner">
-          ${header(config)}
+          <sw-app-header title="${config.app.name}" subtitle="${config.app.author}" />
         </section>
         <section class="half-screen aligner">
           <p class="normal align-center ${blink ? 'soft-blink' : ''}">${msg}</p>
@@ -47,11 +40,32 @@ const renderScreen = {
     `
   },
 
-  default(services, config) {
+  position(position, config, containerInfos) {
+    const { xRange, yRange } = position.options;
+
+    const callback = (e) => {
+      const { x, y } = e.detail;
+      position.setPosition(x, y);
+    };
+
+    return html`
+      <div class="screen">
+        <sw-service-position
+          x-range="${JSON.stringify(xRange)}"
+          y-range="${JSON.stringify(yRange)}"
+          @change="${callback}"
+          width="${containerInfos.width}"
+          height="${containerInfos.height}"
+        />
+      </div>
+    `;
+  },
+
+  default(services, config, containerInfos) {
     return html`
       <div class="screen">
         <section class="half-screen aligner">
-          ${header(config)}
+          <sw-app-header title="${config.app.name}" subtitle="${config.app.author}"></sw-app-header>
         </section>
         <section class="half-screen aligner services">
           <div class="aligner-item--top">
@@ -70,11 +84,11 @@ const renderScreen = {
     `;
   },
 
-  errored(service, config) {
+  errored(service, config, containerInfos) {
     return html`
       <div class="screen">
         <section class="half-screen aligner">
-          ${header(config)}
+          <sw-app-header title="${config.app.name}" subtitle="${config.app.author}"></sw-app-header>
         </section>
         <section class="half-screen aligner services">
           <div>
@@ -104,7 +118,7 @@ const errorMsg = {
       authorized: 'asking authorizations',
       initialized: 'initializing application',
       finalized: 'finalizing initialization',
-    }
+    };
 
     let errorMsg;
     let erroredFeatures = [];
@@ -155,20 +169,27 @@ const errorMsg = {
  */
 export default function renderAppInitialization(client, config, $container) {
   const unsubscribe = client.serviceManager.observe(status => {
+    const { width, height } = $container.getBoundingClientRect();
+
     let $screen;
     // handle platform first
     if (status['platform'] && status['platform'] === 'started') {
 
       const platformService = client.serviceManager.get('platform');
-      $screen = renderScreen.platform(platformService, config);
+      $screen = renderScreen.platform(platformService, config, { width, height });
 
     } else if (status['platform'] && status['platform'] === 'errored') {
 
       const platformService = client.serviceManager.get('platform');
-      $screen = renderScreen.errored(platformService, config);
+      $screen = renderScreen.errored(platformService, config, { width, height });
 
     // then every one else...
-    } else if (!status['platform'] || status['platform'] === 'ready') {
+    } else if (status['position'] && status['position'] === 'started') {
+
+      const positionService = client.serviceManager.get('position');
+      $screen = renderScreen.position(positionService, config, { width, height });
+
+    } else {
       // platform is ready, or not platform at all...
       const started = [];
       const errored = null; // only one service can be errored at once (normally)
@@ -185,9 +206,9 @@ export default function renderAppInitialization(client, config, $container) {
       }
 
       if (errored) {
-        $screen = renderScreen.errored(errored, config);
+        $screen = renderScreen.errored(errored, config, { width, height });
       } else {
-        $screen = renderScreen.default(started, config);
+        $screen = renderScreen.default(started, config, { width, height });
       }
     }
 
