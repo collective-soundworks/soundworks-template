@@ -8,7 +8,7 @@ class PlayerExperience extends Experience {
 
     this.config = config;
     this.$container = $container;
-
+    this.rafId = null;
     // require services
 
     // default initialization views
@@ -18,18 +18,24 @@ class PlayerExperience extends Experience {
   start() {
     super.start();
 
-    this.renderApp(`Hello ${this.client.id}`);
+    this.renderApp();
   }
 
-  renderApp(msg) {
-    render(html`
-      <div class="screen">
-        <section class="half-screen aligner">
-          <h1 class="title">${msg}</h1>
-        </section>
-        <section class="half-screen aligner"></section>
-      </div>
-    `, this.$container);
+  renderApp() {
+    window.cancelAnimationFrame(this.rafId);
+
+    this.rafId = window.requestAnimationFrame(() => {
+
+
+      render(html`
+        <div class="screen">
+          <section class="half-screen aligner">
+            <h1 class="title">player [id: ${this.client.id}]</h1>
+          </section>
+          <section class="half-screen aligner"></section>
+        </div>
+      `, this.$container);
+    });
   }
 }
 

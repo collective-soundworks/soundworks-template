@@ -9,9 +9,8 @@ const renderScreen = {
     const serviceState = platform.state.getValues();
 
     let msg;
+    let bindListener = undefined;
     let blink = false;
-    let bindListener = false;
-
 
     if (serviceState.available === null) {
       msg = 'Checkin...';

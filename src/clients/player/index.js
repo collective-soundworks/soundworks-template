@@ -3,12 +3,12 @@ import '@wessberg/pointer-events';
 import { Client } from '@soundworks/core/client';
 // import services
 
+import initQoS from '../utils/qos';
+
+// default views for services
 import PlayerExperience from './PlayerExperience';
 
 const config = window.soundworksConfig;
-
-const AudioContext = (window.AudioContext || window.webkitAudioContext);
-const audioContext = new AudioContext();
 // initalize all clients at once for emulated clients
 const platformServices = new Set();
 
@@ -20,13 +20,12 @@ async function init($container, index) {
     // register services
     // -------------------------------------------------------------------
 
-    // client.registerService('stuff', stuffFactory, {}, []);
-
     // -------------------------------------------------------------------
     // launch application
     // -------------------------------------------------------------------
 
     await client.init(config);
+    initQoS(client);
 
     const playerExperience = new PlayerExperience(client, config, $container);
     // store platform service to be able to call all `onUserGesture` at once
@@ -39,18 +38,7 @@ async function init($container, index) {
     await client.start();
     playerExperience.start();
 
-    // minimalistic, non subtle QoS
-    client.socket.addListener('close', () => {
-      setTimeout(() => window.location.reload(true), 2000);
-    });
-
-    if (config.env.type === 'production') {
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          window.location.reload(true);
-        }
-      }, false);
-    }
+    return Promise.resolve();
   } catch(err) {
     console.error(err);
   }
@@ -64,8 +52,23 @@ window.addEventListener('load', async () => {
   // this allows to emulate multiple clients in the same page
   // to facilitate development and testing
   // ...be careful in production...
-  const numClients = config.env.type === 'production' ? 1 : 5;
+  function getQueryVariable(variable) {
+    const query = window.location.search.substring(1);
+    const vars = query.split('&');
 
+    for (let i = 0; i < vars.length; i++) {
+        const pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == variable) {
+            return decodeURIComponent(pair[1]);
+        }
+    }
+
+    return null;
+  }
+
+  const numClients = parseInt(getQueryVariable('emulate')) || 1;
+
+  // special logic for emulated clients (1 click to rule them all)
   if (numClients > 1) {
     for (let i = 0; i < numClients; i++) {
       const $div = document.createElement('div');
@@ -75,21 +78,19 @@ window.addEventListener('load', async () => {
       init($div, i);
     }
 
-    if (platformServices.size > 0) {
-      const $initPlatform = document.createElement('div');
-      $initPlatform.classList.add('init-platform');
-      $initPlatform.textContent = 'resume all';
+    const $initPlatform = document.createElement('div');
+    $initPlatform.classList.add('init-platform');
+    $initPlatform.textContent = 'resume all';
 
-      function initPlatforms(e) {
-        platformServices.forEach(service => service.onUserGesture(e));
-        $initPlatform.remove();
-      }
-
-      $initPlatform.addEventListener('touchend', initPlatforms);
-      $initPlatform.addEventListener('mouseup', initPlatforms);
-
-      document.body.appendChild($initPlatform);
+    function initPlatforms(e) {
+      platformServices.forEach(service => service.onUserGesture(e));
+      $initPlatform.remove();
     }
+
+    $initPlatform.addEventListener('touchend', initPlatforms);
+    $initPlatform.addEventListener('mouseup', initPlatforms);
+
+    document.body.appendChild($initPlatform);
   } else {
     init($container, 0);
   }

@@ -1,10 +1,10 @@
 import { LitElement, html, css } from 'lit-element';
 
-class SwAppTitle extends LitElement {
+class SwAppHeader extends LitElement {
   static get properties() {
     return {
+      title: { type: String },
       subtitle: { type: String },
-      author: { type: String },
     }
   }
 
@@ -49,4 +49,4 @@ class SwAppTitle extends LitElement {
   }
 }
 
-customElements.define('ws-app-header', SwAppTitle);
+customElements.define('sw-app-header', SwAppHeader);

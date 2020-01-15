@@ -142,16 +142,19 @@ class SwDotMap extends LitElement {
 
     return html`
       <div
-        style="width: ${this.containerSize}px; height: ${this.containerSize}px;">
+        style="width: ${this.width}px; height: ${this.height}px;">
         ${this.captureEvents
           ? html`
             <sw-surface
               class="event-surface"
-              width="${this.containerSize}"
-              height="${this.containerSize}"
+              width="${this.svgWidth}"
+              height="${this.svgHeight}"
               x-range="${JSON.stringify(this.xRange)}"
               y-range="${JSON.stringify(this.yRange)}"
               @input="${this.updatePositions}"
+              style="
+                left: ${(this.width - this.svgWidth) / 2}px;
+                top: ${(this.height - this.svgHeight) / 2}px;"
             ></sw-surface>
           `
           : ''
@@ -160,8 +163,8 @@ class SwDotMap extends LitElement {
           viewBox="0 0 ${this.svgWidth} ${this.svgHeight}"
           style="width: ${this.svgWidth}px;
             height: ${this.svgHeight}px;
-            top: ${(this.containerSize - this.svgHeight) / 2}px;
-            left: ${(this.containerSize - this.svgWidth) / 2}px;"
+            left: ${(this.width - this.svgWidth) / 2}px;
+            top: ${(this.height - this.svgHeight) / 2}px;"
         >
           <!-- background -->
           <rect

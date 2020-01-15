@@ -9,6 +9,7 @@ import compile from 'template-literal';
 
 // import services
 import PlayerExperience from './PlayerExperience';
+import ControllerExperience from './ControllerExperience';
 
 const ENV = process.env.ENV || 'default';
 const config = getConfig(ENV);
@@ -56,9 +57,11 @@ console.log(`
     server.router.use('build', serveStatic(path.join('.build', 'public')));
 
     const playerExperience = new PlayerExperience(server, 'player');
+    const controllerExperience = new ControllerExperience(server, 'controller');
 
     await server.start();
     playerExperience.start();
+    controllerExperience.start();
 
   } catch (err) {
     console.error(err.stack);

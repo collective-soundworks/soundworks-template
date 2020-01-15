@@ -79,36 +79,30 @@ class SwSurface extends LitElement {
         touch-action="none"
 
         @pointerdown="${this.pointerDown}"
+        @pointermove="${this.pointerMove}"
         @pointerup="${this.pointerUp}"
         @pointercancel="${this.pointerUp}"
-        @pointermove="${this.pointerMove}"
 
         @contextmenu="${this.preventContextMenu}"
       ></div>
     `
   }
 
-  getOffsetFrom(touch, target) {
-    const rect = target.getBoundingClientRect();
-    const offsetX = touch.pageX - rect.left;
-    const offsetY = touch.pageY - rect.top;
-
-    return { offsetX, offsetY };
-  }
-
   pointerDown(e) {
     const pointerId = e.pointerId;
+    const data = { x: e.offsetX, y: e.offsetY };
     this.pointerIds.push(pointerId);
-    this.activePointers.set(pointerId, e);
+    this.activePointers.set(pointerId, data);
 
     this.propagateValues();
   }
 
   pointerMove(e) {
     const pointerId = e.pointerId;
+    const data = { x: e.offsetX, y: e.offsetY };
 
     if (this.activePointers.has(pointerId)) {
-      this.activePointers.set(pointerId, e);
+      this.activePointers.set(pointerId, data);
       this.propagateValues();
     }
   }
@@ -127,8 +121,8 @@ class SwSurface extends LitElement {
 
   propagateValues() {
     const positions = this.pointerIds.map(pointerId => {
-      const event = this.activePointers.get(pointerId);
-      return { x: this.px2x(event.offsetX), y: this.px2y(event.offsetY) };
+      const data = this.activePointers.get(pointerId);
+      return { x: this.px2x(data.x), y: this.px2y(data.y) };
     });
 
     // propagate outside the shadow dom boudaries
@@ -138,6 +132,7 @@ class SwSurface extends LitElement {
       composed: true,
       detail: positions,
     });
+
     this.dispatchEvent(event);
   }
 }
