@@ -1,6 +1,6 @@
 import { Experience } from '@soundworks/core/server';
 
-class PlayerExperience extends Experience {
+class ControllerExperience extends Experience {
   constructor(server, clientTypes, options = {}) {
     super(server, clientTypes);
 
@@ -19,4 +19,4 @@ class PlayerExperience extends Experience {
   }
 }
 
-export default PlayerExperience;
+export default ControllerExperience;
