@@ -44,54 +44,49 @@ async function init($container, index) {
   }
 }
 
-window.addEventListener('load', async () => {
-  // -------------------------------------------------------------------
-  // bootstrapping
-  // -------------------------------------------------------------------
-  const $container = document.querySelector('#container');
-  // this allows to emulate multiple clients in the same page
-  // to facilitate development and testing
-  // ...be careful in production...
-  function getQueryVariable(variable) {
-    const query = window.location.search.substring(1);
-    const vars = query.split('&');
+// -------------------------------------------------------------------
+// bootstrapping
+// -------------------------------------------------------------------
+const $container = document.querySelector('#container');
+// this allows to emulate multiple clients in the same page
+// to facilitate development and testing (be careful in production...)
+const numEmulatedClients = parseInt(function getQueryVariable(variable) {
+  const query = window.location.search.substring(1);
+  const vars = query.split('&');
 
-    for (let i = 0; i < vars.length; i++) {
-        const pair = vars[i].split('=');
-        if (decodeURIComponent(pair[0]) == variable) {
-            return decodeURIComponent(pair[1]);
-        }
-    }
-
-    return null;
+  for (let i = 0; i < vars.length; i++) {
+      const pair = vars[i].split('=');
+      if (decodeURIComponent(pair[0]) == variable) {
+          return decodeURIComponent(pair[1]);
+      }
   }
 
-  const numClients = parseInt(getQueryVariable('emulate')) || 1;
+  return null;
+}('emulate')) || 1;
 
-  // special logic for emulated clients (1 click to rule them all)
-  if (numClients > 1) {
-    for (let i = 0; i < numClients; i++) {
-      const $div = document.createElement('div');
-      $div.classList.add('emulate');
-      $container.appendChild($div);
+// special logic for emulated clients (1 click to rule them all)
+if (numEmulatedClients > 1) {
+  for (let i = 0; i < numEmulatedClients; i++) {
+    const $div = document.createElement('div');
+    $div.classList.add('emulate');
+    $container.appendChild($div);
 
-      init($div, i);
-    }
-
-    const $initPlatform = document.createElement('div');
-    $initPlatform.classList.add('init-platform');
-    $initPlatform.textContent = 'resume all';
-
-    function initPlatforms(e) {
-      platformServices.forEach(service => service.onUserGesture(e));
-      $initPlatform.remove();
-    }
-
-    $initPlatform.addEventListener('touchend', initPlatforms);
-    $initPlatform.addEventListener('mouseup', initPlatforms);
-
-    document.body.appendChild($initPlatform);
-  } else {
-    init($container, 0);
+    init($div, i);
   }
-});
+
+  const $initPlatform = document.createElement('div');
+  $initPlatform.classList.add('init-platform');
+  $initPlatform.textContent = 'resume all';
+
+  function initPlatforms(e) {
+    platformServices.forEach(service => service.onUserGesture(e));
+    $initPlatform.remove();
+  }
+
+  $initPlatform.addEventListener('touchend', initPlatforms);
+  $initPlatform.addEventListener('mouseup', initPlatforms);
+
+  document.body.appendChild($initPlatform);
+} else {
+  init($container, 0);
+}
