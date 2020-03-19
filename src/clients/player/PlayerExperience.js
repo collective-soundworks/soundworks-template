@@ -15,7 +15,7 @@ class PlayerExperience extends Experience {
     renderAppInitialization(client, config, $container);
   }
 
-  start() {
+  async start() {
     super.start();
 
     this.renderApp();
