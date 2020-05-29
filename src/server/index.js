@@ -13,27 +13,29 @@ import ControllerExperience from './ControllerExperience';
 
 const ENV = process.env.ENV || 'default';
 const config = getConfig(ENV);
+const server = new Server();
+
+// -------------------------------------------------------------------
+// register services
+// -------------------------------------------------------------------
+// server.registerPlugin(pluginNname, pluginFactory, [pluginOptions], [dependencies])
+
+// -------------------------------------------------------------------
+// register schemas
+// -------------------------------------------------------------------
+// server.registerSchemas(pluginNname, pluginFactory, [pluginOptions], [dependencies])
 
 console.log(`
 --------------------------------------------------------
-- running "${config.app.name}" in "${ENV}" environment -
+- launching "${config.app.name}" in "${ENV}" environment -
 --------------------------------------------------------
 `);
 
 (async function launch() {
   try {
-    const server = new Server();
-
-    // -------------------------------------------------------------------
-    // register services
-    // -------------------------------------------------------------------
-
-
-
     // -------------------------------------------------------------------
     // launch application
     // -------------------------------------------------------------------
-
     await server.init(config, (clientType, config, httpRequest) => {
       return {
         clientType: clientType,

@@ -169,7 +169,7 @@ class SwPreset extends LitElement {
 
   propagateValue(name, value) {
     const event = new CustomEvent('update', {
-      detail: { name, value },
+      detail: { [name]: value },
     });
 
     this.dispatchEvent(event);
