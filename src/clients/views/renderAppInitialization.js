@@ -20,6 +20,7 @@ const renderScreen = {
       msg = 'Please click to join';
       blink = true;
       let called = false;
+
       bindListener = (e) => {
         if (called) {
           return;
