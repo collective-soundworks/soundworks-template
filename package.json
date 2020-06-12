@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node dist/server/index.js",
     "prewatch": "npm run clean",
+    "postinstall": "mkdir -p .vendors/public && cp -R node_modules/@webcomponents/webcomponentsjs .vendors/public",
     "watch": "npm run watch:build & sleep 5 && npm run watch:process-inspect server",
     "build": "soundworks-template-build --build",
     "clean": "soundworks-template-build --clean",
@@ -24,7 +25,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
     "@soundworks/core": "^3.0.0-alpha.1",
-    "@ungap/event-target": "^0.2.0",
+    "@webcomponents/webcomponentsjs": "^2.4.3",
     "@wessberg/pointer-events": "^1.0.9",
     "json5": "^2.1.0",
     "lit-element": "^2.2.1",

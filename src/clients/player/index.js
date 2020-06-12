@@ -1,14 +1,11 @@
 import '@babel/polyfill';
 import '@wessberg/pointer-events';
-import EventTarget from '@ungap/event-target';
-window.EventTarget = EventTarget;
 
 import { Client } from '@soundworks/core/client';
-// import services
-
 import initQoS from '../utils/qos';
 
-// default views for services
+// import services here...
+
 import PlayerExperience from './PlayerExperience';
 
 const config = window.soundworksConfig;
