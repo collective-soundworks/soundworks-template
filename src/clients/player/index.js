@@ -1,5 +1,8 @@
 import '@babel/polyfill';
 import '@wessberg/pointer-events';
+import EventTarget from '@ungap/event-target';
+window.EventTarget = EventTarget;
+
 import { Client } from '@soundworks/core/client';
 // import services
 
