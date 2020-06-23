@@ -7,16 +7,16 @@
   "license": "BSD-3-Clause",
   "version": "3.0.0-alpha.0",
   "scripts": {
-    "start": "node dist/server/index.js",
-    "prewatch": "npm run clean",
-    "postinstall": "mkdir -p .vendors/public && cp -R node_modules/@webcomponents/webcomponentsjs .vendors/public",
-    "watch": "npm run watch:build & sleep 5 && npm run watch:process-inspect server",
+    "dev:process": "soundworks-template-build --watch-process",
+    "dev:process-inspect": "soundworks-template-build --watch-process-inspect",
+    "dev:build": "soundworks-template-build --build --watch",
+    "dev": "npm run build && (npm run dev:process-inspect server & npm run dev:build)",
     "build": "soundworks-template-build --build",
     "clean": "soundworks-template-build --clean",
     "minify": "soundworks-template-build --build && soundworks-template-build --minify",
-    "watch:process": "soundworks-template-build --watch-process",
-    "watch:process-inspect": "soundworks-template-build --watch-process-inspect",
-    "watch:build": "soundworks-template-build --build --watch"
+    "prebuild": "npm run clean",
+    "postinstall": "mkdir -p .vendors/public && cp -R node_modules/@webcomponents/webcomponentsjs .vendors/public",
+    "start": "node dist/server/index.js"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,6 @@
     "@babel/polyfill": "^7.4.4",
     "@soundworks/core": "^3.0.0-alpha.1",
     "@webcomponents/webcomponentsjs": "^2.4.3",
-    "@wessberg/pointer-events": "^1.0.9",
     "json5": "^2.1.0",
     "lit-element": "^2.2.1",
     "lit-html": "^1.1.2",

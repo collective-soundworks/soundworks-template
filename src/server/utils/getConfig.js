@@ -28,15 +28,15 @@ function getConfig(ENV) {
   }
 
   // parse services config
-  try {
-    const servicesConfigPath = path.join('config', 'services.json');
-    servicesConfig = JSON5.parse(fs.readFileSync(servicesConfigPath, 'utf-8'));
-  } catch(err) {
-    console.log(`Invalid services config file`);
-    process.exit(0);
-  }
+  // try {
+  //   const servicesConfigPath = path.join('config', 'services.json');
+  //   servicesConfig = JSON5.parse(fs.readFileSync(servicesConfigPath, 'utf-8'));
+  // } catch(err) {
+  //   console.log(`Invalid services config file`);
+  //   process.exit(0);
+  // }
 
-  return { env: envConfig, app: appConfig, services: servicesConfig };
+  return { env: envConfig, app: appConfig };
 }
 
 export default getConfig;
