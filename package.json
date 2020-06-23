@@ -33,6 +33,6 @@
     "template-literal": "^1.0.3"
   },
   "devDependencies": {
-    "@soundworks/template-build": "^3.0.0-alpha.1"
+    "@soundworks/template-build": "^3.0.0-alpha.4"
   }
 }
