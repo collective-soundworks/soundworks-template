@@ -1,8 +1,9 @@
 import '@babel/polyfill';
-// import "@wessberg/pointer-events";
 import { Client } from '@soundworks/core/client';
+import initQoS from '@soundworks/helpers/client/init-qos.js';
 import ControllerExperience from './ControllerExperience';
-import initQoS from '../utils/qos';
+
+// import services here...
 
 const config = window.soundworksConfig;
 
@@ -21,7 +22,7 @@ async function init() {
     await client.init(config);
     initQoS(client);
 
-    const $container = document.querySelector('#container');
+    const $container = document.querySelector('#__soundworks-container');
     const controllerExperience = new ControllerExperience(client, config, $container);
 
     document.body.classList.remove('loading');

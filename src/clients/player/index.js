@@ -1,8 +1,6 @@
 import '@babel/polyfill';
-// import '@wessberg/pointer-events';
-
 import { Client } from '@soundworks/core/client';
-import initQoS from '../utils/qos';
+import initQoS from '@soundworks/helpers/client/init-qos.js';
 
 // import services here...
 
@@ -28,11 +26,12 @@ async function init($container, index) {
     initQoS(client);
 
     const playerExperience = new PlayerExperience(client, config, $container);
-    // store platform service to be able to call all `onUserGesture` at once
+    // store platform service to be able to call all
+    // `platform.onUserGesture` at once (see line 80)
     if (playerExperience.platform) {
       platformServices.add(playerExperience.platform);
     }
-    // remove loader and init default views for the services
+
     document.body.classList.remove('loading');
 
     await client.start();
@@ -47,7 +46,7 @@ async function init($container, index) {
 // -------------------------------------------------------------------
 // bootstrapping
 // -------------------------------------------------------------------
-const $container = document.querySelector('#container');
+const $container = document.querySelector('#__soundworks-container');
 // this allows to emulate multiple clients in the same page
 // to facilitate development and testing (be careful in production...)
 const numEmulatedClients = parseInt(function getQueryVariable(variable) {
@@ -62,7 +61,7 @@ const numEmulatedClients = parseInt(function getQueryVariable(variable) {
   }
 
   return null;
-}('emulate')) || 1;
+}('emulate')) || 1;
 
 // special logic for emulated clients (1 click to rule them all)
 if (numEmulatedClients > 1) {

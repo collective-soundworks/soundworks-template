@@ -18,17 +18,17 @@ const server = new Server();
 // -------------------------------------------------------------------
 // register services
 // -------------------------------------------------------------------
-// server.registerPlugin(pluginNname, pluginFactory, [pluginOptions], [dependencies])
+// server.pluginHandler.register(pluginName, pluginFactory, [pluginOptions], [dependencies])
 
 // -------------------------------------------------------------------
 // register schemas
 // -------------------------------------------------------------------
-// server.registerSchemas(pluginNname, pluginFactory, [pluginOptions], [dependencies])
+// server.stateHandler.register(name, schema);
 
 console.log(`
---------------------------------------------------------
+----------------------------------------------------------
 - launching "${config.app.name}" in "${ENV}" environment -
---------------------------------------------------------
+----------------------------------------------------------
 `);
 
 (async function launch() {

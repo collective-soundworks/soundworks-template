@@ -1,6 +1,6 @@
 import { Experience } from '@soundworks/core/client';
+import renderInitialization from '@soundworks/helpers/client/render-initialization.js';
 import { render, html } from 'lit-html';
-import renderAppInitialization from '../views/renderAppInitialization';
 
 class PlayerExperience extends Experience {
   constructor(client, config = {}, $container) {
@@ -12,28 +12,23 @@ class PlayerExperience extends Experience {
     // require services
 
     // default initialization views
-    renderAppInitialization(client, config, $container);
+    renderInitialization(client, config, $container);
   }
 
   async start() {
     super.start();
 
-    this.renderApp();
+    window.addEventListener('resize', () => this.render());
+    this.render();
   }
 
-  renderApp() {
+  render() {
+    // debounce with requestAnimationFrame
     window.cancelAnimationFrame(this.rafId);
 
     this.rafId = window.requestAnimationFrame(() => {
-
-
       render(html`
-        <div class="screen">
-          <section class="half-screen aligner">
-            <h1 class="title">player [id: ${this.client.id}]</h1>
-          </section>
-          <section class="half-screen aligner"></section>
-        </div>
+        <h1 style="padding: 20px">${this.client.type} [id: ${this.client.id}]</h1>
       `, this.$container);
     });
   }
