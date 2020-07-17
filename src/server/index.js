@@ -26,9 +26,10 @@ const server = new Server();
 // server.stateHandler.register(name, schema);
 
 console.log(`
-----------------------------------------------------------
-- launching "${config.app.name}" in "${ENV}" environment -
-----------------------------------------------------------
+--------------------------------------------------------
+- launching "${config.app.name}" in "${ENV}" environment
+- [pid: ${process.pid}]
+--------------------------------------------------------
 `);
 
 (async function launch() {

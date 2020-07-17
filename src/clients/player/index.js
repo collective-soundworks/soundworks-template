@@ -1,10 +1,13 @@
 import '@babel/polyfill';
+import soundworks from '@soundworks/core/client';
 import { Client } from '@soundworks/core/client';
 import initQoS from '@soundworks/helpers/client/init-qos.js';
 
+console.log(soundworks);
+
 // import services here...
 
-import PlayerExperience from './PlayerExperience';
+import PlayerExperience from './PlayerExperience.js';
 
 const config = window.soundworksConfig;
 // initalize all clients at once for emulated clients

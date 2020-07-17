@@ -1,5 +1,5 @@
 {
-  // name of the environnement (development | production)
+  // name of the environnement (development | production)
   "type": "development",
 
   // port on which the server will listen

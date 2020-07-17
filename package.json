@@ -7,16 +7,14 @@
   "license": "BSD-3-Clause",
   "version": "3.0.0-alpha.0",
   "scripts": {
-    "dev:process": "soundworks-template-build --watch-process",
-    "dev:process-inspect": "soundworks-template-build --watch-process-inspect",
-    "dev:build": "soundworks-template-build --build --watch",
-    "dev": "npm run build && (npm run dev:process-inspect server & npm run dev:build)",
-    "build": "soundworks-template-build --build",
-    "clean": "soundworks-template-build --clean",
-    "minify": "soundworks-template-build --build && soundworks-template-build --minify",
-    "prebuild": "npm run clean",
+    "build": "npm run clean && soundworks-template-build -b",
+    "build:production": "npm run clean && soundworks-template-build -b -m",
+    "clean": "soundworks-template-build -c",
+    "watch-process": "soundworks-template-build -p",
+    "watch-process:inspect": "soundworks-template-build -i -p",
+    "dev": "npm run build && (npm run watch-process:inspect server & soundworks-template-build -b -w)",
     "postinstall": "mkdir -p .vendors/public && cp -R node_modules/@webcomponents/webcomponentsjs .vendors/public",
-    "start": "node dist/server/index.js"
+    "start": "node .build/server/index.js"
   },
   "repository": {
     "type": "git",
@@ -33,6 +31,7 @@
     "template-literal": "^1.0.3"
   },
   "devDependencies": {
-    "@soundworks/template-build": "^3.0.0-alpha.4"
+    "@soundworks/template-build": "^3.0.0-alpha.4",
+    "babel-preset-minify": "^0.5.1"
   }
 }
