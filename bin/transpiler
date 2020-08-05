@@ -4,7 +4,6 @@ const browserify = require('browserify');
 const browserifyInc = require('browserify-incremental')
 const fse = require('fs-extra');
 const terser = require('terser');
-const { default: chalk } = require('chalk');
 
 // transpile `src` into `dist`
 module.exports.transpile = (src, dist, babelOptions) => {
