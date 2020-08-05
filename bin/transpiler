@@ -3,7 +3,8 @@ const babel = require('babel-core');
 const browserify = require('browserify');
 const browserifyInc = require('browserify-incremental')
 const fse = require('fs-extra');
-const uglify = require('uglify-js');
+const terser = require('terser');
+const { default: chalk } = require('chalk');
 
 // transpile `src` into `dist`
 module.exports.transpile = (src, dist, babelOptions) => {
@@ -57,23 +58,27 @@ module.exports.bundle = (src, dist, browserifyOptions) => {
 };
 
 /**
- * Uglify `scr` into `dist`.
- * @fixme
+ * Terser `scr` into `dist`.
  */
 module.exports.minify = (src, dist) => {
   return new Promise((resolve, reject) => {
     fse.readFile(src.abs, (err, buf) => {
       if (err)
         return reject(err);
+      
+      const result = terser.minify(buf.toString());
+      result.then(success => {
+        // Note: Without the copy step, the result only contains `undefined`
+        const saveResult = success.code
+        fse.outputFile(dist.abs, saveResult, (err) => {
+          if (err)
+            reject(err);
 
-      const result = uglify.minify(buf.toString());
-
-      fse.outputFile(dist.abs, result.code, (err) => {
-        if (err)
-          reject(err);
-
-        resolve([src, dist])
-      });
+          resolve([src, dist])
+        });
+      }, (err) => {
+        reject(err);
+      })
     });
   });
 };
