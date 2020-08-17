@@ -1,44 +1,36 @@
-import '@babel/polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import soundworks from '@soundworks/core/client';
 import { Client } from '@soundworks/core/client';
-import initQoS from '@soundworks/helpers/client/init-qos.js';
-
-console.log(soundworks);
-
-// import services here...
-
+import initQoS from '@soundworks/template-helpers/client/init-qos.js';
 import PlayerExperience from './PlayerExperience.js';
 
 const config = window.soundworksConfig;
-// initalize all clients at once for emulated clients
-const platformServices = new Set();
+// store experiences of emulated clients
+const experiences = new Set();
+
+// -------------------------------------------------------------------
+// register services
+// -------------------------------------------------------------------
 
 async function launch($container, index) {
   try {
     const client = new Client();
 
     // -------------------------------------------------------------------
-    // register services
-    // -------------------------------------------------------------------
-
-    // -------------------------------------------------------------------
     // launch application
     // -------------------------------------------------------------------
-
     await client.init(config);
     initQoS(client);
 
-    const playerExperience = new PlayerExperience(client, config, $container);
-    // store platform service to be able to call all
-    // `platform.onUserGesture` at once (see line 80)
-    if (playerExperience.platform) {
-      platformServices.add(playerExperience.platform);
-    }
+    const experience = new PlayerExperience(client, config, $container);
+    // store exprience for emulated clients
+    experiences.add(experience);
 
     document.body.classList.remove('loading');
 
     await client.start();
-    playerExperience.start();
+    experience.start();
 
     return Promise.resolve();
   } catch(err) {
@@ -50,21 +42,10 @@ async function launch($container, index) {
 // bootstrapping
 // -------------------------------------------------------------------
 const $container = document.querySelector('#__soundworks-container');
-// this allows to emulate multiple clients in the same page
-// to facilitate development and testing (be careful in production...)
-const numEmulatedClients = parseInt(function getQueryVariable(variable) {
-  const query = window.location.search.substring(1);
-  const vars = query.split('&');
-
-  for (let i = 0; i < vars.length; i++) {
-      const pair = vars[i].split('=');
-      if (decodeURIComponent(pair[0]) == variable) {
-          return decodeURIComponent(pair[1]);
-      }
-  }
-
-  return null;
-}('emulate')) || 1;
+const searchParams = new URLSearchParams(window.location.search);
+// enable instanciation of multiple clients in the same page to facilitate
+// development and testing (be careful in production...)
+const numEmulatedClients = parseInt(searchParams.get('emulate')) || 1;
 
 // special logic for emulated clients (1 click to rule them all)
 if (numEmulatedClients > 1) {
@@ -76,19 +57,25 @@ if (numEmulatedClients > 1) {
     launch($div, i);
   }
 
-  const $initPlatform = document.createElement('div');
-  $initPlatform.classList.add('init-platform');
-  $initPlatform.textContent = 'resume all';
+  const $initPlatformBtn = document.createElement('div');
+  $initPlatformBtn.classList.add('init-platform');
+  $initPlatformBtn.textContent = 'resume all';
 
   function initPlatforms(e) {
-    platformServices.forEach(service => service.onUserGesture(e));
-    $initPlatform.remove();
+    experiences.forEach(experience => {
+      if (experience.platform) {
+        experience.platform.onUserGesture(e)
+      }
+    });
+    $initPlatformBtn.removeEventListener('touchend', initPlatforms);
+    $initPlatformBtn.removeEventListener('mouseup', initPlatforms);
+    $initPlatformBtn.remove();
   }
 
-  $initPlatform.addEventListener('touchend', initPlatforms);
-  $initPlatform.addEventListener('mouseup', initPlatforms);
+  $initPlatformBtn.addEventListener('touchend', initPlatforms);
+  $initPlatformBtn.addEventListener('mouseup', initPlatforms);
 
-  document.body.appendChild($initPlatform);
+  $container.appendChild($initPlatformBtn);
 } else {
   launch($container, 0);
 }

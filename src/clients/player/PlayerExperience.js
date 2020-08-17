@@ -9,9 +9,9 @@ class PlayerExperience extends Experience {
     this.config = config;
     this.$container = $container;
     this.rafId = null;
-    // require services
 
-    // default initialization views
+    // require plugins if needed
+
     renderInitializationScreens(client, config, $container);
   }
 

@@ -1,6 +1,4 @@
-import '@babel/polyfill';
 import 'source-map-support/register';
-
 import { Server } from '@soundworks/core/server';
 import getConfig from './utils/getConfig';
 import path from 'path';
@@ -14,6 +12,12 @@ import ControllerExperience from './ControllerExperience';
 const ENV = process.env.ENV || 'default';
 const config = getConfig(ENV);
 const server = new Server();
+// html template and static files (in most case, this should not be modified)
+server.templateEngine = { compile };
+server.templateDirectory = path.join('.build', 'server', 'tmpl');
+server.router.use(serveStatic('public'));
+server.router.use('build', serveStatic(path.join('.build', 'public')));
+server.router.use('vendors', serveStatic(path.join('.vendors', 'public')));
 
 console.log(`
 --------------------------------------------------------
@@ -32,20 +36,10 @@ console.log(`
 // -------------------------------------------------------------------
 // server.stateHandler.register(name, schema);
 
-// register schemas and init shared states
-
-// html template and static files (in most case, this should not be modified)
-server.configureHtmlTemplates({ compile }, path.join('.build', 'server', 'tmpl'))
-server.router.use(serveStatic('public'));
-server.router.use('build', serveStatic(path.join('.build', 'public')));
-server.router.use('vendors', serveStatic(path.join('.vendors', 'public')));
 
 (async function launch() {
   try {
-    // -------------------------------------------------------------------
-    // launch application
-    // -------------------------------------------------------------------
-    // don't do much but keep it for paralellism andpossibly future entry point
+    // @todo - check how this behaves with a node client...
     await server.init(config, (clientType, config, httpRequest) => {
       return {
         clientType: clientType,

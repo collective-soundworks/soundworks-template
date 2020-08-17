@@ -10,6 +10,8 @@ class ControllerExperience extends Experience {
     this.$container = $container;
     this.rafId = null;
 
+    // require plugins if needed
+
     renderInitializationScreens(client, config, $container);
   }
 
