@@ -1,6 +1,6 @@
 import { Experience } from '@soundworks/core/client';
-import renderInitialization from '@soundworks/helpers/client/render-initialization.js';
 import { render, html } from 'lit-html';
+import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 
 class ControllerExperience extends Experience {
   constructor(client, config, $container) {
@@ -10,7 +10,7 @@ class ControllerExperience extends Experience {
     this.$container = $container;
     this.rafId = null;
 
-    renderInitialization(client, config, $container);
+    renderInitializationScreens(client, config, $container);
   }
 
   async start() {
@@ -21,6 +21,7 @@ class ControllerExperience extends Experience {
   }
 
   render() {
+    // debounce with requestAnimationFrame
     window.cancelAnimationFrame(this.rafId);
 
     this.rafId = window.requestAnimationFrame(() => {

@@ -7,7 +7,7 @@ import ControllerExperience from './ControllerExperience';
 
 const config = window.soundworksConfig;
 
-async function init() {
+async function launch() {
   try {
     const client = new Client();
 
@@ -35,4 +35,4 @@ async function init() {
   }
 }
 
-init();
+launch();

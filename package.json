@@ -23,6 +23,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
     "@soundworks/core": "^3.0.0-alpha.9",
+    "@soundworks/template-helpers": "^1.0.0",
     "@webcomponents/webcomponentsjs": "^2.4.3",
     "json5": "^2.1.0",
     "lit-element": "^2.2.1",

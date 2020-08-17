@@ -1,6 +1,6 @@
 import { Experience } from '@soundworks/core/client';
-import renderInitialization from '@soundworks/helpers/client/render-initialization.js';
 import { render, html } from 'lit-html';
+import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 
 class PlayerExperience extends Experience {
   constructor(client, config = {}, $container) {
@@ -12,7 +12,7 @@ class PlayerExperience extends Experience {
     // require services
 
     // default initialization views
-    renderInitialization(client, config, $container);
+    renderInitializationScreens(client, config, $container);
   }
 
   async start() {

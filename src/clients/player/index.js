@@ -13,7 +13,7 @@ const config = window.soundworksConfig;
 // initalize all clients at once for emulated clients
 const platformServices = new Set();
 
-async function init($container, index) {
+async function launch($container, index) {
   try {
     const client = new Client();
 
@@ -73,7 +73,7 @@ if (numEmulatedClients > 1) {
     $div.classList.add('emulate');
     $container.appendChild($div);
 
-    init($div, i);
+    launch($div, i);
   }
 
   const $initPlatform = document.createElement('div');
@@ -90,5 +90,5 @@ if (numEmulatedClients > 1) {
 
   document.body.appendChild($initPlatform);
 } else {
-  init($container, 0);
+  launch($container, 0);
 }
