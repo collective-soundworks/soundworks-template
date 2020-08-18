@@ -1,17 +1,17 @@
 import 'source-map-support/register';
 import { Server } from '@soundworks/core/server';
-import getConfig from './utils/getConfig';
 import path from 'path';
 import serveStatic from 'serve-static';
 import compile from 'template-literal';
 
-// import services
-import PlayerExperience from './PlayerExperience';
-import ControllerExperience from './ControllerExperience';
+import PlayerExperience from './PlayerExperience.js';
+import ControllerExperience from './ControllerExperience.js';
 
+import getConfig from './utils/getConfig.js';
 const ENV = process.env.ENV || 'default';
 const config = getConfig(ENV);
 const server = new Server();
+
 // html template and static files (in most case, this should not be modified)
 server.templateEngine = { compile };
 server.templateDirectory = path.join('.build', 'server', 'tmpl');

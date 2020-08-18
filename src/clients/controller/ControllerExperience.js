@@ -1,8 +1,8 @@
-import { Experience } from '@soundworks/core/client';
+import { AbstractExperience } from '@soundworks/core/client';
 import { render, html } from 'lit-html';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 
-class ControllerExperience extends Experience {
+class ControllerExperience extends AbstractExperience {
   constructor(client, config, $container) {
     super(client);
 
