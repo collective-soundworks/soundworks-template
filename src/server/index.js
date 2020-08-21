@@ -27,14 +27,14 @@ console.log(`
 `);
 
 // -------------------------------------------------------------------
-// register services
+// register plugins
 // -------------------------------------------------------------------
-// server.pluginHandler.register(pluginName, pluginFactory, [pluginOptions], [dependencies])
+// server.pluginManager.register(pluginName, pluginFactory, [pluginOptions], [dependencies])
 
 // -------------------------------------------------------------------
 // register schemas
 // -------------------------------------------------------------------
-// server.stateHandler.register(name, schema);
+// server.stateManager.registerSchema(name, schema);
 
 
 (async function launch() {
@@ -58,8 +58,8 @@ console.log(`
     const playerExperience = new PlayerExperience(server, 'player');
     const controllerExperience = new ControllerExperience(server, 'controller');
 
+    // start all the things
     await server.start();
-
     playerExperience.start();
     controllerExperience.start();
 

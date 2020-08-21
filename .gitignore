@@ -7,7 +7,7 @@
 
 # application instance specific
 .build
-.db
+.data
 .vendors
 
 # junk files

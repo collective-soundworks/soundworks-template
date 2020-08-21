@@ -1,21 +1,23 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import soundworks from '@soundworks/core/client';
 import { Client } from '@soundworks/core/client';
 import initQoS from '@soundworks/template-helpers/client/init-qos.js';
+
 import PlayerExperience from './PlayerExperience.js';
 
 const config = window.soundworksConfig;
 // store experiences of emulated clients
 const experiences = new Set();
 
-// -------------------------------------------------------------------
-// register services
-// -------------------------------------------------------------------
 
 async function launch($container, index) {
   try {
     const client = new Client();
+
+    // -------------------------------------------------------------------
+    // register plugins
+    // -------------------------------------------------------------------
+    // client.pluginManager.register(pluginName, pluginFactory, [pluginOptions], [dependencies])
 
     // -------------------------------------------------------------------
     // launch application
@@ -29,6 +31,7 @@ async function launch($container, index) {
 
     document.body.classList.remove('loading');
 
+    // start all the things
     await client.start();
     experience.start();
 
