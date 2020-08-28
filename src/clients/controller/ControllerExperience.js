@@ -28,7 +28,9 @@ class ControllerExperience extends AbstractExperience {
 
     this.rafId = window.requestAnimationFrame(() => {
       render(html`
-        <h1 style="padding: 20px; margin: 0">${this.client.type} [id: ${this.client.id}]</h1>
+        <div style="padding: 20px">
+          <h1 style="margin: 20px 0">${this.client.type} [id: ${this.client.id}]</h1>
+        </div>
       `, this.$container);
     });
   }
