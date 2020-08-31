@@ -2,7 +2,7 @@
 
 > Project template for developing [*soundworks*](https://github.com/collective-soundworks/soundworks/) applications.
 
-_For a complete documentation of *soundworks*, please refer to [http://collective-soundworks.github.io/soundworks/](http://collective-soundworks.github.io/soundworks/)_
+_For a complete documentation of *soundworks*, please refer to [http://collective-soundworks.github.io](http://collective-soundworks.github.io)_
 
 ## Creating a new application
 
