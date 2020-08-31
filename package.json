@@ -5,7 +5,7 @@
   ],
   "description": "soundworks application template",
   "license": "BSD-3-Clause",
-  "version": "3.0.0-alpha.0",
+  "version": "3.0.0",
   "scripts": {
     "build": "npm run clean && soundworks-template-build -b",
     "build:production": "npm run clean && soundworks-template-build -b -m",
@@ -33,6 +33,6 @@
     "template-literal": "^1.0.3"
   },
   "devDependencies": {
-    "@soundworks/template-build": "^3.0.0"
+    "@soundworks/template-build": "^3.0.1"
   }
 }
