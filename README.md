@@ -18,7 +18,11 @@ npm run dev
 
 ### `@soundworks/template-build`
 
+The [`@soundworks/template-build`](https://github.com/collective-soundworks/soundworks-template-build) package contains all the build scripts for the `soundworks-template`
+
 ### `@soundworks/template-helpers`
+
+The [`@soundworks/template-helpers`](https://github.com/collective-soundworks/soundworks-template-helpers) package contains common helpers (views, etc.) shared by most the applications.
 
 ## License
 
