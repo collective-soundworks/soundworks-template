@@ -16,9 +16,9 @@ npm run dev
 
 ## Internal tools
 
-## `@soundworks/template-build`
+### `@soundworks/template-build`
 
-## `@soundworks/template-helpers`
+### `@soundworks/template-helpers`
 
 ## License
 
