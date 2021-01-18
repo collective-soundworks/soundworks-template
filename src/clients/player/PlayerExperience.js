@@ -3,7 +3,7 @@ import { render, html } from 'lit-html';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 
 class PlayerExperience extends AbstractExperience {
-  constructor(client, config = {}, $container) {
+  constructor(client, config, $container) {
     super(client);
 
     this.config = config;
