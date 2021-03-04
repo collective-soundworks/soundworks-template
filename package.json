@@ -14,7 +14,9 @@
     "watch-process": "soundworks-template-build -p",
     "watch-process:inspect": "soundworks-template-build -i -p",
     "dev": "npm run build && (npm run watch-process:inspect server & soundworks-template-build -b -w)",
-    "postinstall": "mkdir -p .vendors/public && cp -R node_modules/@webcomponents/webcomponentsjs .vendors/public",
+    "postinstall": "run-script-os",
+    "postinstall:default": "mkdir -p .vendors/public && cp -R node_modules/@webcomponents/webcomponentsjs .vendors/public",
+    "postinstall:win32": "Xcopy /E /I /H /Y node_modules\\@webcomponents\\webcomponentsjs .vendors\\public",
     "start": "node .build/server/index.js"
   },
   "repository": {
@@ -30,6 +32,7 @@
     "lit-element": "^2.2.1",
     "lit-html": "^1.1.2",
     "regenerator-runtime": "^0.13.7",
+    "run-script-os": "^1.1.5",
     "serve-static": "^1.14.1",
     "template-literal": "^1.0.3"
   },
