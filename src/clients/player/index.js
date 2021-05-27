@@ -70,13 +70,11 @@ if (numEmulatedClients > 1) {
         experience.platform.onUserGesture(e)
       }
     });
-    $initPlatformBtn.removeEventListener('touchend', initPlatforms);
-    $initPlatformBtn.removeEventListener('mouseup', initPlatforms);
+    $initPlatformBtn.removeEventListener('click', initPlatforms);
     $initPlatformBtn.remove();
   }
 
-  $initPlatformBtn.addEventListener('touchend', initPlatforms);
-  $initPlatformBtn.addEventListener('mouseup', initPlatforms);
+  $initPlatformBtn.addEventListener('click', initPlatforms);
 
   $container.appendChild($initPlatformBtn);
 } else {
