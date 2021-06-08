@@ -15,7 +15,7 @@
     <script src="${d.env.assetsDomain}vendors/webcomponentsjs/webcomponents-bundle.js"></script>
 
     ${
-      (d.env === 'production')
+      (d.env.type === 'production')
         ? `<script defer src="${d.env.assetsDomain}build/${d.clientType}.min.js"></script>`
         : `<script defer src="${d.env.assetsDomain}build/${d.clientType}.js"></script>`
     }
