@@ -7,7 +7,7 @@ import compile from 'template-literal';
 import PlayerExperience from './PlayerExperience.js';
 import ControllerExperience from './ControllerExperience.js';
 
-import getConfig from './utils/getConfig.js';
+import getConfig from '../utils/getConfig.js';
 const ENV = process.env.ENV || 'default';
 const config = getConfig(ENV);
 const server = new Server();
