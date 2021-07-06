@@ -11,10 +11,6 @@
   // domain
   "assetsDomain": "",
 
-  // ip of the server,
-  // used by node clients to open the socket to the server
-  "serverIp": "10.0.0.1",
-
   // websockets configuration
   "websockets": {
     "path": "socket",
@@ -22,7 +18,8 @@
     "pingInterval": 5000
   },
 
-  // port used to open the http server, in production this value is typically 80
+  // Ip of the server, mandatory for node cients (e.g. screen less RPi)
+  // "serverIp": "127.0.01",
 
   // define if the HTTP server should be launched using secure connections.
   // For development purposes when set to `true` and no certificates are given
