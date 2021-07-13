@@ -1,36 +1,30 @@
 {
   // name of the environnement (development | production)
-  "type": "development",
+  type: 'development',
 
   // port on which the server will listen
   // - 80 is default http port
   // - 443 is the default https port
   // these two ports
-  "port": 8000,
+  port: 8000,
 
-  // domain
-  "assetsDomain": "",
-
-  // websockets configuration
-  "websockets": {
-    "path": "socket",
-    "url": "",
-    "pingInterval": 5000
-  },
-
-  // Ip of the server, mandatory for node cients (e.g. screen less RPi)
-  // "serverIp": "127.0.01",
+  // If the application runs behind a proxy server (e.g. https://my-domain.com/my-app/`),
+  // path to the application root (i.e. 'my-app')
+  subpath: '',
 
   // define if the HTTP server should be launched using secure connections.
   // For development purposes when set to `true` and no certificates are given
   // (cf. `httpsInfos`), a self-signed certificate is created.
-  "useHttps": false,
+  useHttps: false,
 
   // paths to the key and certificate to be used in order to launch the https
   // server. Both entries are required otherwise a self-signed certificate
   // is generated.
-  "httpsInfos": {
-    "key": null,
-    "cert": null,
+  httpsInfos: {
+    key: null,
+    cert: null,
   },
+
+  // @important: for node clients only, Ip of the server
+  // serverIp: '127.0.0.1',
 }

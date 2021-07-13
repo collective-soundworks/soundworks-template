@@ -23,7 +23,7 @@ async function launch($container, index) {
     // launch application
     // -------------------------------------------------------------------
     await client.init(config);
-    initQoS(client);
+    initQoS(client, { visibilityChange: false });
 
     const experience = new ControllerExperience(client, config, $container);
     // store exprience for emulated clients

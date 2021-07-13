@@ -39,7 +39,6 @@ console.log(`
 
 (async function launch() {
   try {
-    // @todo - check how this behaves with a node client...
     await server.init(config, (clientType, config, httpRequest) => {
       return {
         clientType: clientType,
@@ -50,7 +49,7 @@ console.log(`
         env: {
           type: config.env.type,
           websockets: config.env.websockets,
-          assetsDomain: config.env.assetsDomain,
+          subpath: config.env.subpath,
         }
       };
     });

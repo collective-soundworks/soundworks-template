@@ -1,18 +1,14 @@
 {
-  "name": "soundworks",
-  "author": "",
+  name: 'soundworks',
+  author: '',
 
-  "clients": {
-    "player": {
-      "target": "browser",
-      "default": true
+  clients: {
+    player: {
+      target: 'browser',
+      default: true
     },
-    "controller": {
-      "target": "browser",
-      // "default": true
+    controller: {
+      target: 'browser',
     },
-    "thing": {
-      "target": "node",
-    }
   },
 }
