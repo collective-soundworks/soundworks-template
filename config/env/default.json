@@ -27,4 +27,11 @@
 
   // @important: for node clients only, Ip of the server
   // serverIp: '127.0.0.1',
+
+  // protect pages with a password
+  // auth: {
+  //   clients: ['controller'],
+  //   login: 'my-login',
+  //   password: 'my-password',
+  // },
 }

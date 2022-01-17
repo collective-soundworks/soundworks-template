@@ -9,6 +9,7 @@ const config = window.soundworksConfig;
 // store experiences of emulated clients
 const experiences = new Set();
 
+console.info('> self.crossOriginIsolated', self.crossOriginIsolated);
 
 async function launch($container, index) {
   try {

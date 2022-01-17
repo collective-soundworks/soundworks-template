@@ -14,3 +14,6 @@
 package-lock.json
 .DS_Store
 Thumbs.db
+
+# TLS certificates
+/**/*.pem
