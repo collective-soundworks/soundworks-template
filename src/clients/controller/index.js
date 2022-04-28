@@ -1,5 +1,8 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+import '@webcomponents/webcomponentsjs/webcomponents-bundle.js';
+import 'lit/polyfill-support.js';
+
 import { Client } from '@soundworks/core/client';
 import initQoS from '@soundworks/template-helpers/client/init-qos.js';
 
@@ -8,7 +11,6 @@ import ControllerExperience from './ControllerExperience.js';
 const config = window.soundworksConfig;
 // store experiences of emulated clients
 const experiences = new Set();
-
 
 async function launch($container, index) {
   try {
