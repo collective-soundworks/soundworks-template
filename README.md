@@ -24,9 +24,9 @@ The [`@soundworks/template-build`](https://github.com/collective-soundworks/soun
 
 The [`@soundworks/template-helpers`](https://github.com/collective-soundworks/soundworks-template-helpers) package contains common helpers (views, etc.) shared by most the applications.
 
-## Support
+## Browser support
 
-The application should support all major evergreen browsers and iOS Safari >= 9.3.5
+In version 3.1.0: the `soundworks-template` aims at supporting all major evergreen browsers and iOS Safari >= 9.3.5
 
 ## License
 
