@@ -15,8 +15,8 @@
     "watch-process:inspect": "soundworks-template-build -i -p",
     "dev": "npm run build && (concurrently -p \"none\" \"npm run watch-process:inspect server\" \"soundworks-template-build -b -w\")",
     "postinstall": "run-script-os",
-    "postinstall:default": "mkdir -p .vendors/public && cp -R node_modules/@webcomponents/webcomponentsjs .vendors/public",
-    "postinstall:win32": "Xcopy /E /I /H /Y node_modules\\@webcomponents\\webcomponentsjs .vendors\\public",
+    "postinstall:default": "mkdir -p .vendors/public && cp -R node_modules/@webcomponents/webcomponentsjs .vendors/public && cp -R node_modules/lit .vendors/public",
+    "postinstall:win32": "Xcopy /E /I /H /Y node_modules\\@webcomponents\\webcomponentsjs .vendors\\public && Xcopy /E /I /H /Y node_modules\\lit .vendors\\public",
     "start": "node .build/server/index.js"
   },
   "repository": {
@@ -24,13 +24,13 @@
     "url": "https://github.com/collective-soundworks/soundworks-template"
   },
   "dependencies": {
+    "@ircam/simple-components": "^2.0.1",
     "@soundworks/core": "^3.1.0",
-    "@soundworks/template-helpers": "^1.2.3",
+    "@soundworks/template-helpers": "^2.0.0",
     "@webcomponents/webcomponentsjs": "^2.4.3",
-    "core-js": "^3.21.1",
+    "core-js": "^3.22.3",
     "json5": "^2.2.1",
-    "lit-element": "^2.5.0",
-    "lit-html": "^1.4.0",
+    "lit": "^2.2.2",
     "regenerator-runtime": "^0.13.7",
     "run-script-os": "^1.1.6",
     "serve-static": "^1.15.0",
@@ -39,6 +39,6 @@
   },
   "devDependencies": {
     "@soundworks/template-build": "^3.1.0",
-    "concurrently": "^6.1.0"
+    "concurrently": "^7.1.0"
   }
 }

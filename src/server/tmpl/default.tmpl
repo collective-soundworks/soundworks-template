@@ -13,6 +13,7 @@
       window.soundworksConfig = JSON.parse('${JSON.stringify(d)}');
     </script>
     <script src="${d.env.subpath ? `/${d.env.subpath}` : ''}/vendors/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script src="${d.env.subpath ? `/${d.env.subpath}` : ''}/vendors/lit/polyfill-support.js"></script>
 
     ${
       (d.env.type === 'production')
