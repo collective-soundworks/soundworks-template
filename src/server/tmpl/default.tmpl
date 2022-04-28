@@ -21,11 +21,11 @@
         : `<script defer src="${d.env.subpath ? `/${d.env.subpath}` : ''}/build/${d.clientType}.js"></script>`
     }
 
-    <link rel="stylesheet" href="${d.env.subpath ? `/${d.env.subpath}` : ''}/css/normalize.css">
-    <link rel="stylesheet" href="${d.env.subpath ? `/${d.env.subpath}` : ''}/css/styles.css">
+    <link rel="stylesheet" href="${d.env.subpath ? `/${d.env.subpath}` : ''}/build/css/normalize.css">
+    <link rel="stylesheet" href="${d.env.subpath ? `/${d.env.subpath}` : ''}/build/css/app.css">
   </head>
 
-  <body class="loading">
+  <body class="loading ${d.clientType}">
     <div id="__soundworks-container"></div>
   </body>
 </html>

@@ -13,7 +13,8 @@
     "clean": "soundworks-template-build -c",
     "watch-process": "soundworks-template-build -p",
     "watch-process:inspect": "soundworks-template-build -i -p",
-    "dev": "npm run build && (concurrently -p \"none\" \"npm run watch-process:inspect server\" \"soundworks-template-build -b -w\")",
+    "watch-sass": "sass --watch src/clients/styles:.build/public/css",
+    "dev": "npm run build && (concurrently -p \"none\" \"npm run watch-process:inspect server\" \"soundworks-template-build -b -w\" \"npm run watch-sass\")",
     "postinstall": "run-script-os",
     "postinstall:default": "mkdir -p .vendors/public && cp -R node_modules/@webcomponents/webcomponentsjs .vendors/public && cp -R node_modules/lit .vendors/public",
     "postinstall:win32": "Xcopy /E /I /H /Y node_modules\\@webcomponents\\webcomponentsjs .vendors\\public && Xcopy /E /I /H /Y node_modules\\lit .vendors\\public",
@@ -33,6 +34,7 @@
     "lit": "^2.2.2",
     "regenerator-runtime": "^0.13.7",
     "run-script-os": "^1.1.6",
+    "sass": "^1.51.0",
     "serve-static": "^1.15.0",
     "source-map-support": "^0.5.21",
     "template-literal": "^1.0.3"
