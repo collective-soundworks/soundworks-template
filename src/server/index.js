@@ -17,7 +17,6 @@ server.templateEngine = { compile };
 server.templateDirectory = path.join('.build', 'server', 'tmpl');
 server.router.use(serveStatic('public'));
 server.router.use('build', serveStatic(path.join('.build', 'public')));
-server.router.use('vendors', serveStatic(path.join('.vendors', 'public')));
 
 console.log(`
 --------------------------------------------------------
