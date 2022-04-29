@@ -14,6 +14,16 @@ npm install
 npm run dev
 ```
 
+## Support
+
+### Browsers
+
+In version 3.1.0: the project aims at supporting all major evergreen browsers and iOS Safari >= 9.3.5
+
+### Node
+
+node >= 14
+
 ## Internal tools
 
 ### `@soundworks/template-build`
@@ -22,11 +32,7 @@ The [`@soundworks/template-build`](https://github.com/collective-soundworks/soun
 
 ### `@soundworks/template-helpers`
 
-The [`@soundworks/template-helpers`](https://github.com/collective-soundworks/soundworks-template-helpers) package contains common helpers (views, etc.) shared by most the applications.
-
-## Browser support
-
-In version 3.1.0: the `soundworks-template` aims at supporting all major evergreen browsers and iOS Safari >= 9.3.5
+The [`@soundworks/template-helpers`](https://github.com/collective-soundworks/soundworks-template-helpers) package contains common helpers (views, etc.) shared by most applications.
 
 ## License
 
