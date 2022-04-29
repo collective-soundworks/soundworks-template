@@ -4,8 +4,7 @@ import path from 'path';
 import serveStatic from 'serve-static';
 import compile from 'template-literal';
 
-import PlayerExperience from './PlayerExperience.js';
-import ControllerExperience from './ControllerExperience.js';
+import experiences from './experiences/index.js';
 
 import getConfig from '../utils/getConfig.js';
 const ENV = process.env.ENV || 'default';
@@ -53,13 +52,12 @@ console.log(`
       };
     });
 
-    const playerExperience = new PlayerExperience(server, 'player');
-    const controllerExperience = new ControllerExperience(server, 'controller');
+    await experiences.load(server, config, {});
+    // console.log(experiences.get('player'));
 
     // start all the things
     await server.start();
-    playerExperience.start();
-    controllerExperience.start();
+    await experiences.start();
 
   } catch (err) {
     console.error(err.stack);

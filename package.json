@@ -27,6 +27,7 @@
     "@soundworks/core": "^3.2.0",
     "@soundworks/template-helpers": "^2.0.0",
     "@webcomponents/webcomponentsjs": "^2.4.3",
+    "camelcase": "^6.3.0",
     "core-js": "^3.22.3",
     "json5": "^2.2.1",
     "lit": "^2.2.2",

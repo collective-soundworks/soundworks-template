@@ -1,9 +1,8 @@
 import { AbstractExperience } from '@soundworks/core/server.js';
 
-class PlayerExperience extends AbstractExperience {
-  constructor(server, clientTypes, options = {}) {
+export class PlayerExperience extends AbstractExperience {
+  constructor(server, clientTypes, context = {}) {
     super(server, clientTypes);
-
   }
 
   start() {
@@ -18,5 +17,3 @@ class PlayerExperience extends AbstractExperience {
     super.exit(client);
   }
 }
-
-export default PlayerExperience;
