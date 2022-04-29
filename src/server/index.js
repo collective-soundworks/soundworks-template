@@ -4,7 +4,8 @@ import path from 'path';
 import serveStatic from 'serve-static';
 import compile from 'template-literal';
 
-import experiences from './experiences/index.js';
+import experiencesLoader from './experiences/loader.js';
+import { schemasLoader } from './schemas/loader.js';
 
 import getConfig from '../utils/getConfig.js';
 const ENV = process.env.ENV || 'default';
@@ -29,13 +30,10 @@ console.log(`
 // -------------------------------------------------------------------
 // server.pluginManager.register(pluginName, pluginFactory, [pluginOptions], [dependencies])
 
-// -------------------------------------------------------------------
-// register schemas
-// -------------------------------------------------------------------
-// server.stateManager.registerSchema(name, schema);
-
-
 (async function launch() {
+  // load all declared schemas
+  await schemasLoader(server);
+
   try {
     await server.init(config, (clientType, config, httpRequest) => {
       return {
@@ -52,12 +50,17 @@ console.log(`
       };
     });
 
-    await experiences.load(server, config, {});
-    // console.log(experiences.get('player'));
+    // create some global states here
+    // const globals = await server.stateManager.create('globals');
+
+    // instanciate all `${clientType}Experience` according to client types
+    // declared in `config/application.json`. Use the third argument to pass
+    // arbitrary data or objects to the experiences.
+    await experiencesLoader.init(server, config, {});
 
     // start all the things
     await server.start();
-    await experiences.start();
+    await experiencesLoader.start();
 
   } catch (err) {
     console.error(err.stack);

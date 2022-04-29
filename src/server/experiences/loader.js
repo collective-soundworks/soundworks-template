@@ -5,6 +5,8 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// the goal of this file is to be able to create new clients programmatically
+// without impacting existing user code
 export default {
   _experiences: new Map(),
 
@@ -13,7 +15,7 @@ export default {
    * @param {Object} config - application config
    * @param {Object} [context={}] - user defined object to be passed the experiences
    */
-  async load(server, config, context = {}) {
+  async init(server, config, context = {}) {
     for (let clientType in config.app.clients) {
       // console.log(clientType);
       const className = camelcase(`${clientType}Experience`, { pascalCase: true });
