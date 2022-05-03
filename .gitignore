@@ -1,6 +1,5 @@
 # transpiled files and dependencies
 /node_modules
-/public/vendors
 # ignore all config except default
 /config/env/*
 !/config/env/default.json
@@ -11,7 +10,6 @@
 .vendors
 
 # junk files
-package-lock.json
 .DS_Store
 Thumbs.db
 
