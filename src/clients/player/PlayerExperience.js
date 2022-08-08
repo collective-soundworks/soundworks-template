@@ -1,4 +1,4 @@
-import { AbstractExperience } from '@soundworks/core/client.js';
+import { AbstractExperience } from '@soundworks/core/client';
 import { render, html } from 'lit/html.js';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 

@@ -1,4 +1,4 @@
-import { AbstractExperience } from '@soundworks/core/server.js';
+import { AbstractExperience } from '@soundworks/core/server';
 
 class PlayerExperience extends AbstractExperience {
   constructor(server, clientTypes, options = {}) {

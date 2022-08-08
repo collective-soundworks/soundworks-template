@@ -7,7 +7,6 @@
   "license": "BSD-3-Clause",
   "version": "3.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "npm run clean && soundworks-template-build -b",
     "build:production": "npm run clean && soundworks-template-build -b -m",

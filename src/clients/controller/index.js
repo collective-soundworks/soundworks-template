@@ -1,9 +1,9 @@
-import 'core-js/stable/index.js';
-import 'regenerator-runtime/runtime.js';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import '@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import 'lit/polyfill-support.js';
 
-import { Client } from '@soundworks/core/client.js';
+import { Client } from '@soundworks/core/client';
 import initQoS from '@soundworks/template-helpers/client/init-qos.js';
 
 import ControllerExperience from './ControllerExperience.js';

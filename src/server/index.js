@@ -1,5 +1,5 @@
-import 'source-map-support/register.js';
-import { Server } from '@soundworks/core/server.js';
+import 'source-map-support/register';
+import { Server } from '@soundworks/core/server';
 import path from 'path';
 import serveStatic from 'serve-static';
 import compile from 'template-literal';
