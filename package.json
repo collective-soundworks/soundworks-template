@@ -8,7 +8,7 @@
   "version": "3.1.0",
   "private": true,
   "scripts": {
-    "build": "npm run clean && soundworks-template-build -b",
+    "build": "npm run clean && sass src/clients/styles:.build/public/css && soundworks-template-build -b",
     "build:production": "npm run clean && soundworks-template-build -b -m",
     "clean": "soundworks-template-build -c",
     "watch-process": "soundworks-template-build -p",
